@@ -1,0 +1,8 @@
+<div class="tabs-labels">
+    <ngx-tabs-label *ngFor="let tab of tabs; let idx = index" (click)="onTabClick($event, tab, idx)">
+        <ng-container *ngTemplateOutlet="tab.label"></ng-container>
+    </ngx-tabs-label>
+</div>
+<ngx-tabs-content>
+    <ng-container contentOutlet></ng-container>
+</ngx-tabs-content>

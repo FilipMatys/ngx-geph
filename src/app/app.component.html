@@ -1,0 +1,27 @@
+<h2>Select component</h2>
+<ngx-select [config]="config" placeholder="Select some value!">
+  <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
+  <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
+  <ngx-select-loading>Loading...</ngx-select-loading>
+  <ngx-select-empty>Nothing found</ngx-select-empty>
+</ngx-select>
+
+<h2>Tabs</h2>
+<ngx-tabs [tabs]="tabs" [index]="activeTabIndex">
+  <ng-container ngxTab="tab1">
+    <ng-container *ngxTabLabel>Tab 1</ng-container>
+    <ng-container *ngxTabContent>Tab 1 Content</ng-container>
+  </ng-container>
+  <ng-container ngxTab="tab2">
+    <ng-container *ngxTabLabel>Tab 2</ng-container>
+    <ng-container *ngxTabContent>Tab 2 Content</ng-container>
+  </ng-container>
+  <ng-container ngxTab="tab3">
+    <ng-container *ngxTabLabel>Tab 3</ng-container>
+    <ng-container *ngxTabContent>Tab 3 Content</ng-container>
+  </ng-container>
+</ngx-tabs>
+<button (click)="onTwoTabsClick()">2 Tabs</button>
+<button (click)="onThreeTabsClick()">3 Tabs</button>
+<button (click)="onTabIndexSelect(0)">Index 0</button>
+<button (click)="onTabIndexSelect(1)">Index 1</button>

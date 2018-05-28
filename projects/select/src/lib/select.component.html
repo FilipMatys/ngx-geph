@@ -1,0 +1,22 @@
+<div class="select-container">
+    <span *ngIf="(!value && value !== 0); else hasValue" class="select-placeholder">{{ placeholder }}</span>
+    <ng-template #hasValue>
+        <ngx-select-value>
+            <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: 'Some value' }"></ng-container>
+        </ngx-select-value>
+    </ng-template>
+</div>
+<ul *ngIf="isSelectionOpen" class="select-options">
+    <li [class.select-hidden]="config.allowSearch" class="select-input">
+        <input #searchInput type="text" name="search-input" id="search-input">
+    </li>
+    <ng-container *ngIf="isLoading">
+        <ng-content select="ngx-select-loading"></ng-content>
+    </ng-container>
+    <ng-container *ngIf="!isLoading && !options.length">
+        <ng-content select="ngx-select-empty"></ng-content>
+    </ng-container>
+    <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)">
+        <ng-container *ngTemplateOutlet="selectOptionTemplate; context: { $implicit: option, index: idx }"></ng-container>
+    </ngx-select-option>
+</ul>
