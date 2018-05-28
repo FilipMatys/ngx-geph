@@ -1,7 +1,7 @@
 <ng-content select="ngx-pagination-first"></ng-content>
 <ng-content select="ngx-pagination-prev"></ng-content>
 <ng-container *ngFor="let page of pages">
-    <ngx-pagination-page (click)="onPageClick($event, page)">{{ page }}</ngx-pagination-page>
+    <ngx-pagination-page [class.current]="page === value" (click)="onPageClick($event, page)">{{ page }}</ngx-pagination-page>
 </ng-container>
 <ng-content select="ngx-pagination-next"></ng-content>
 <ng-content select="ngx-pagination-last"></ng-content>

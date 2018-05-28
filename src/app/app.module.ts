@@ -6,6 +6,7 @@ import { NgModule } from '@angular/core';
 import { SelectModule } from "select";
 import { TabsModule } from "tabs";
 import { AccordionModule } from "accordion";
+import { PaginationModule } from "pagination";
 
 import { AppComponent } from './app.component';
 
@@ -17,7 +18,8 @@ import { AppComponent } from './app.component';
     BrowserModule,
     SelectModule,
     TabsModule,
-    AccordionModule
+    AccordionModule,
+    PaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]
