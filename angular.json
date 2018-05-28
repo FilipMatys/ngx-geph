@@ -200,6 +200,46 @@
           }
         }
       }
+    },
+    "accordion": {
+      "root": "projects/accordion",
+      "sourceRoot": "projects/accordion/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/accordion/tsconfig.lib.json",
+            "project": "projects/accordion/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/accordion/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/accordion/src/test.ts",
+            "tsConfig": "projects/accordion/tsconfig.spec.json",
+            "karmaConfig": "projects/accordion/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/accordion/tsconfig.lib.json",
+              "projects/accordion/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "geph"

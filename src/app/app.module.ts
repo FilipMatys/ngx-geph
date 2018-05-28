@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 // Projects
 import { SelectModule } from "select";
 import { TabsModule } from "tabs";
+import { AccordionModule } from "accordion";
 
 import { AppComponent } from './app.component';
 
@@ -15,7 +16,8 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     SelectModule,
-    TabsModule
+    TabsModule,
+    AccordionModule
   ],
   providers: [],
   bootstrap: [AppComponent]

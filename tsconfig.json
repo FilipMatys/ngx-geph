@@ -22,6 +22,9 @@
       ],
       "tabs": [
         "dist/tabs"
+      ],
+      "accordion": [
+        "dist/accordion"
       ]
     }
   }

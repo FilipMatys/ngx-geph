@@ -25,3 +25,14 @@
 <button (click)="onThreeTabsClick()">3 Tabs</button>
 <button (click)="onTabIndexSelect(0)">Index 0</button>
 <button (click)="onTabIndexSelect(1)">Index 1</button>
+<h2>Accordion</h2>
+<ngx-accordion [single]="true">
+  <ngx-accordion-item>
+    <ngx-accordion-heading>Helo there</ngx-accordion-heading>
+    <ngx-accordion-content>Hello there content</ngx-accordion-content>
+  </ngx-accordion-item>
+  <ngx-accordion-item>
+    <ngx-accordion-heading>Bye there</ngx-accordion-heading>
+    <ngx-accordion-content>Bye there content</ngx-accordion-content>
+  </ngx-accordion-item>
+</ngx-accordion>
