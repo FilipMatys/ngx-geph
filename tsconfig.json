@@ -25,6 +25,9 @@
       ],
       "accordion": [
         "dist/accordion"
+      ],
+      "pagination": [
+        "dist/pagination"
       ]
     }
   }
