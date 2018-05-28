@@ -28,6 +28,12 @@ export class TabsComponent implements AfterContentInit {
   // Active index
   @Input("index")
   public set activeIndex(index: number) {
+    // Check if index changed
+    if (this._activeIndex === index) {
+      // There is nothing to be done
+      return;
+    }
+
     // Set active index
     this._activeIndex = index;
 

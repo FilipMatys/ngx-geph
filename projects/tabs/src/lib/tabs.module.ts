@@ -5,6 +5,7 @@ import { CommonModule } from "@angular/common";
 // Components
 import { TabsComponent } from './tabs.component';
 import { TabsLabelComponent } from "./components/label/label.component";
+import { TabsLabelsComponent } from "./components/labels/labels.component";
 import { TabsContentComponent } from "./components/content/content.component";
 
 // Directives
@@ -18,6 +19,7 @@ import { TabsContentOutlet } from "./outlets/content/content.outlet";
 // List of components
 const TABS_COMPONENTS = [
   TabsComponent,
+  TabsLabelsComponent,
   TabsLabelComponent,
   TabsContentComponent
 ];
