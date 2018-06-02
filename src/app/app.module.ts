@@ -7,6 +7,7 @@ import { SelectModule } from "select";
 import { TabsModule } from "tabs";
 import { AccordionModule } from "accordion";
 import { PaginationModule } from "pagination";
+import { ListModule } from "list";
 
 import { AppComponent } from './app.component';
 
@@ -19,7 +20,8 @@ import { AppComponent } from './app.component';
     SelectModule,
     TabsModule,
     AccordionModule,
-    PaginationModule
+    PaginationModule,
+    ListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

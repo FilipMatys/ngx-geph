@@ -28,6 +28,9 @@
       ],
       "pagination": [
         "dist/pagination"
+      ],
+      "list": [
+        "dist/list"
       ]
     }
   }
