@@ -1,0 +1,7 @@
+<ng-container [ngSwitch]="type">
+    <i class="material-icons" *ngSwitchCase="'material'">{{ name }}</i>  
+    <i class="fas fa-{{ name }}" *ngSwitchCase="'awesome-solid'"></i>
+    <i class="far fa-{{ name }}" *ngSwitchCase="'awesome-regular'"></i>
+    <i class="fab fa-{{ name }}" *ngSwitchCase="'awesome-brands'"></i> 
+    <i class="fal fa-{{ name }}" *ngSwitchCase="'awesome-light'"></i>
+</ng-container>

@@ -31,6 +31,9 @@
       ],
       "list": [
         "dist/list"
+      ],
+      "icon": [
+        "dist/icon"
       ]
     }
   }
