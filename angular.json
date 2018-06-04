@@ -360,6 +360,46 @@
           }
         }
       }
+    },
+    "collapsible": {
+      "root": "projects/collapsible",
+      "sourceRoot": "projects/collapsible/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/collapsible/tsconfig.lib.json",
+            "project": "projects/collapsible/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/collapsible/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/collapsible/src/test.ts",
+            "tsConfig": "projects/collapsible/tsconfig.spec.json",
+            "karmaConfig": "projects/collapsible/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/collapsible/tsconfig.lib.json",
+              "projects/collapsible/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "geph"

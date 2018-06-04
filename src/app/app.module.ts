@@ -8,6 +8,7 @@ import { TabsModule } from "tabs";
 import { AccordionModule } from "accordion";
 import { PaginationModule } from "pagination";
 import { ListModule } from "list";
+import { CollapsibleModule } from "collapsible";
 
 import { AppComponent } from './app.component';
 
@@ -21,7 +22,8 @@ import { AppComponent } from './app.component';
     TabsModule,
     AccordionModule,
     PaginationModule,
-    ListModule
+    ListModule,
+    CollapsibleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
