@@ -1,5 +1,6 @@
 // External modules
-import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, Renderer } from "@angular/core";
+import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, Renderer, forwardRef, AfterContentInit } from "@angular/core";
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -13,12 +14,31 @@ import { SelectValueDirective, ISelectValueContext } from "./directives/value.di
 @Component({
 	selector: "ngx-select",
 	templateUrl: "./select.component.html",
-	styleUrls: ["./select.component.scss"]
+	styleUrls: ["./select.component.scss"],
+	providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SelectComponent),
+            multi: true
+        }
+    ],
 })
 export class SelectComponent {
 
 	@Input("value")
-	public value: any;
+	private _value: any;
+
+	// Value getter
+	public get value() { return this._value };
+
+	// Value setter
+	public set value(value: any) {
+		// Assign value
+		this._value = value;
+
+		// Propagate change
+		this.propagateChange(this._value);
+	}
 
 	// List of options
 	@Input("options")
@@ -32,6 +52,7 @@ export class SelectComponent {
 	@Input("config")
 	public config: ISelectConfig<any> = {
 		allowSearch: false,
+		allowClear: false,
 		searchInputDelay: 300
 	}
 
@@ -42,6 +63,14 @@ export class SelectComponent {
 		this.config.allowSearch = value;
 	}
 
+	// Allow clear
+	@Input("allowClear")
+	public set allowClear(value: boolean) {
+		// Set allow clear
+		this.config.allowClear = value;
+	}
+
+	// Search input delay
 	@Input("searchInputDelay")
 	public set searchInputDelay(value: number) {
 		// Assign search input delay
@@ -128,6 +157,46 @@ export class SelectComponent {
 		private element: ElementRef,
 		private renderer: Renderer
 	) { }
+
+    /**
+     * Write value
+     * @param value 
+     */
+    public writeValue(value: any) {
+        // Check if value is defined
+        if (value === undefined) {
+            return;
+        }
+
+        // Assign value
+        this.value = value;
+    }
+
+    /** Propagate change */
+    public propagateChange = (_: any) => { };
+
+    /**
+     * Register on change
+     * @param fn 
+     */
+    public registerOnChange(fn) {
+        this.propagateChange = fn;
+    }
+
+    /** Register on touched */
+	public registerOnTouched() { }
+	
+	/**
+	 * On clear click
+	 * @param event 
+	 */
+	public onClearClick(event: Event) {
+		// Stop event propagation
+		event.stopPropagation();
+
+		// Clear value
+		this.value = null;
+	}
 
 	/**
 	 * On option click

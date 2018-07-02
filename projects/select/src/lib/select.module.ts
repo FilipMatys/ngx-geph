@@ -8,6 +8,7 @@ import { SelectOptionComponent } from "./components/option/option.component";
 import { SelectValueComponent } from "./components/value/value.component";
 import { SelectEmptyComponent } from "./components/empty/empty.component";
 import { SelectLoadingComponent } from "./components/loading/loading.component";
+import { SelectClearComponent } from "./components/clear/clear.component";
 
 // Directives
 import { SelectOptionDirective } from "./directives/option.directive";
@@ -19,7 +20,8 @@ const SELECT_COMPONENTS = [
   SelectOptionComponent,
   SelectValueComponent,
   SelectEmptyComponent,
-  SelectLoadingComponent
+  SelectLoadingComponent,
+  SelectClearComponent
 ];
 
 // List of directives

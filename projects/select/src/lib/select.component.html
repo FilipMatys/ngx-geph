@@ -2,8 +2,11 @@
     <span *ngIf="(!value && value !== 0); else hasValue" class="select-placeholder">{{ placeholder }}</span>
     <ng-template #hasValue>
         <ngx-select-value>
-            <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: 'Some value' }"></ng-container>
+            <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: value }"></ng-container>
         </ngx-select-value>
+        <ng-container *ngIf="config.allowClear">
+            <ng-content select="ngx-select-clear"></ng-content>
+        </ng-container>
     </ng-template>
 </div>
 <ul *ngIf="isSelectionOpen" class="select-options">

@@ -17,6 +17,7 @@ export class AppComponent {
 
   public config: ISelectConfig<string> = {
     allowSearch: true,
+    allowClear: true,
     getOptions: (term) => Promise.resolve(this.options.filter(o => !term || o.startsWith(term))),
     searchInputDelay: 300
   }
