@@ -11,6 +11,8 @@ export class AppComponent {
 
   public options: string[] = ['Hello', 'Mr', 'Frodo'];
 
+  public selectValue: string = 'Hello';
+
   public activeTabIndex: number = 0;
 
   public tabs: string[] = ['tab1', 'tab2', 'tab3'];

@@ -1,6 +1,7 @@
 // External modules
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from "@angular/forms";
 
 // Projects
 import { SelectModule } from "select";
@@ -20,6 +21,7 @@ import { AppComponent } from './app.component';
     BrowserModule,
     SelectModule,
     TabsModule,
+    FormsModule,
     AccordionModule,
     PaginationModule,
     ListModule,

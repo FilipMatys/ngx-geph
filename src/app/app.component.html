@@ -1,5 +1,5 @@
 <h2>Select component</h2>
-<ngx-select [config]="config" placeholder="Select some value!">
+<ngx-select [config]="config" [(ngModel)]="selectValue" name="select-value" placeholder="Select some value!">
   <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
   <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
   <ngx-select-loading>Loading...</ngx-select-loading>

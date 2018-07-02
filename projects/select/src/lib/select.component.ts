@@ -194,6 +194,9 @@ export class SelectComponent {
 		// Stop event propagation
 		event.stopPropagation();
 
+		// Close
+		this.closeSelection();
+
 		// Clear value
 		this.value = null;
 	}
