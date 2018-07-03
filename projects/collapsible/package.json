@@ -1,8 +1,13 @@
 {
   "name": "@calf/ngx-collapsible",
   "version": "0.0.1",
+  "description": "Calf framework Collapsible component",
   "peerDependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
     "@angular/core": "^6.0.0-rc.0 || ^6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FilipMatys/Calf-ngx.git"
   }
 }

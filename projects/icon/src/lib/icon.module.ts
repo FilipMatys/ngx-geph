@@ -1,5 +1,6 @@
 // External modules
 import { NgModule, ModuleWithProviders } from '@angular/core';
+import { CommonModule } from "@angular/common";
 
 // Components
 import { IconComponent } from './icon.component';
@@ -11,6 +12,7 @@ import { IIconModuleConfig } from './interfaces/icon.interfaces';
 import { ICON_CONFIG } from './tokens/config.token';
 
 @NgModule({
+  imports: [CommonModule],
   declarations: [IconComponent],
   exports: [IconComponent]
 })
