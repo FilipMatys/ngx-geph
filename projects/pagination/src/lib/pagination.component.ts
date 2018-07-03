@@ -1,5 +1,6 @@
 // External modules
-import { Component, OnInit, ContentChild, AfterContentInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, ContentChild, forwardRef, AfterContentInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from "@angular/forms";
 
 // Data
 import { IPageChangeEvent } from "./interfaces/pagination.interfaces";
@@ -11,245 +12,292 @@ import { PaginationPrevComponent } from "./components/prev/prev.component";
 import { PaginationNextComponent } from "./components/next/next.component";
 
 @Component({
-  selector: 'ngx-pagination',
-  templateUrl: "./pagination.component.html"
+	selector: 'ngx-pagination',
+	templateUrl: "./pagination.component.html",
+	providers: [
+		{
+			provide: NG_VALUE_ACCESSOR,
+			useExisting: forwardRef(() => PaginationComponent),
+			multi: true
+		}
+	]
 })
 export class PaginationComponent implements OnChanges, AfterContentInit {
 
-  // Current value
-  @Input("value")
-  public value: number = 1;
+	// Current value
+	@Input("value")
+	private _value: number = 1;
 
-  // Size
-  @Input("size")
-  public size: number = 10;
+	// Value getter
+	public get value() { return this._value };
 
-  // Total
-  @Input("total")
-  public total: number = 1;
+	// Value setter
+	public set value(value: any) {
+		// Assign value
+		this._value = value;
 
-  // List of pages
-  public pages: number[] = [];
+		// Propagate change
+		this.propagateChange(this._value);
+	}
 
-  // Page change event
-  @Output("pageChange")
-  public pageChange: EventEmitter<IPageChangeEvent> = new EventEmitter<IPageChangeEvent>();
+	// Size
+	@Input("size")
+	public size: number = 10;
 
-  // First button
-  @ContentChild(PaginationFirstComponent)
-  public first: PaginationFirstComponent;
+	// Total
+	@Input("total")
+	public total: number = 1;
 
-  // Last button
-  @ContentChild(PaginationLastComponent)
-  public last: PaginationLastComponent;
+	// List of pages
+	public pages: number[] = [];
 
-  // Prev button
-  @ContentChild(PaginationPrevComponent)
-  public prev: PaginationPrevComponent;
+	// Page change event
+	@Output("pageChange")
+	public pageChange: EventEmitter<IPageChangeEvent> = new EventEmitter<IPageChangeEvent>();
 
-  // Next button
-  @ContentChild(PaginationNextComponent)
-  public next: PaginationNextComponent;
+	// First button
+	@ContentChild(PaginationFirstComponent)
+	public first: PaginationFirstComponent;
 
-  /**
-   * After content init hook
-   */
-  public ngAfterContentInit(): void {
-    // Check for first 
-    if (this.first) {
-      this.first.firstClick.subscribe((event) => this.onFirstClick(event));
-    }
+	// Last button
+	@ContentChild(PaginationLastComponent)
+	public last: PaginationLastComponent;
 
-    // Check for last
-    if (this.last) {
-      this.last.lastClick.subscribe((event) => this.onLastClick(event));
-    }
+	// Prev button
+	@ContentChild(PaginationPrevComponent)
+	public prev: PaginationPrevComponent;
 
-    // Check for prev
-    if (this.prev) {
-      this.prev.prevClick.subscribe((event) => this.onPrevClick(event));
-    }
+	// Next button
+	@ContentChild(PaginationNextComponent)
+	public next: PaginationNextComponent;
 
-    // Check for next
-    if (this.next) {
-      this.next.nextClick.subscribe((event) => this.onNextClick(event));
-    }
-  }
+	/**
+	 * Write value
+	 * @param value 
+	 */
+	public writeValue(value: any) {
+		// Check if value is defined
+		if (value === undefined) {
+			return;
+		}
 
-  /**
-   * On changes hook
-   */
-  public ngOnChanges(): void {
-    // Build pagination
-    this.build();
-  }
+		// Assign value
+		this.value = value;
+	}
 
-  /**
-   * On page click
-   * @param event 
-   * @param page 
-   */
-  public onPageClick(event: Event, page: number) {
-    // Stop event propagation
-    event.stopPropagation();
+	/** Propagate change */
+	public propagateChange = (_: any) => { };
 
-    // Set original
-    const original: number = this.value;
+	/**
+	 * Register on change
+	 * @param fn 
+	 */
+	public registerOnChange(fn) {
+		this.propagateChange = fn;
+	}
 
-    // Set page
-    this.value = page;
+	/** Register on touched */
+	public registerOnTouched() { }
 
-    // Rebuild
-    this.build();
+	/**
+	 * After content init hook
+	 */
+	public ngAfterContentInit(): void {
+		// Check for first 
+		if (this.first) {
+			this.first.firstClick.subscribe((event) => this.onFirstClick(event));
+		}
 
-    // Emit change
-    this.pageChange.emit({
-      from: original,
-      to: this.value
-    });
-  }
+		// Check for last
+		if (this.last) {
+			this.last.lastClick.subscribe((event) => this.onLastClick(event));
+		}
 
-  /**
-   * On first click
-   * @param event 
-   */
-  private onFirstClick(event: Event) {
-    // Stop event propagation
-    event.stopPropagation();
+		// Check for prev
+		if (this.prev) {
+			this.prev.prevClick.subscribe((event) => this.onPrevClick(event));
+		}
 
-    // Check value
-    if (this.value === 1) {
-      return;
-    }
+		// Check for next
+		if (this.next) {
+			this.next.nextClick.subscribe((event) => this.onNextClick(event));
+		}
+	}
 
-    // Original
-    const original: number = this.value;
+	/**
+	 * On changes hook
+	 */
+	public ngOnChanges(): void {
+		// Build pagination
+		this.build();
+	}
 
-    // Assign value
-    this.value = 1;
+	/**
+	 * On page click
+	 * @param event 
+	 * @param page 
+	 */
+	public onPageClick(event: Event, page: number) {
+		// Stop event propagation
+		event.stopPropagation();
 
-    // Rebuild
-    this.build();
+		// Set original
+		const original: number = this.value;
 
-    // Emit change
-    this.pageChange.emit({
-      from: original,
-      to: this.value
-    });
-  }
+		// Set page
+		this.value = page;
 
-  /**
-   * On last click
-   * @param event 
-   */
-  private onLastClick(event: Event) {
-    // Stop event propagation
-    event.stopPropagation();
+		// Rebuild
+		this.build();
 
-    // Check value
-    if (this.value === this.total) {
-      return;
-    }
+		// Emit change
+		this.pageChange.emit({
+			from: original,
+			to: this.value
+		});
+	}
 
-    // Original
-    const original: number = this.value;
+	/**
+	 * On first click
+	 * @param event 
+	 */
+	private onFirstClick(event: Event) {
+		// Stop event propagation
+		event.stopPropagation();
 
-    // Assign value
-    this.value = this.total;
+		// Check value
+		if (this.value === 1) {
+			return;
+		}
 
-    // Rebuild
-    this.build();
+		// Original
+		const original: number = this.value;
 
-    // Emit change
-    this.pageChange.emit({
-      from: original,
-      to: this.value
-    });
-  }
+		// Assign value
+		this.value = 1;
 
-  /**
-   * On prev click
-   * @param event 
-   */
-  private onPrevClick(event: Event) {
-    // Stop event propagation
-    event.stopPropagation();
+		// Rebuild
+		this.build();
 
-    // Check value
-    if (this.value === 1) {
-      return;
-    }
+		// Emit change
+		this.pageChange.emit({
+			from: original,
+			to: this.value
+		});
+	}
 
-    // Change value
-    this.value = this.value - 1;
+	/**
+	 * On last click
+	 * @param event 
+	 */
+	private onLastClick(event: Event) {
+		// Stop event propagation
+		event.stopPropagation();
 
-    // Rebuild
-    this.build();
+		// Check value
+		if (this.value === this.total) {
+			return;
+		}
 
-    // Emit change
-    this.pageChange.emit({
-      from: this.value + 1,
-      to: this.value
-    });
-  }
+		// Original
+		const original: number = this.value;
 
-  /**
-   * On next click
-   * @param event 
-   */
-  private onNextClick(event: Event) {
-    // Stop event propagation
-    event.stopPropagation();
+		// Assign value
+		this.value = this.total;
 
-    // Check value
-    if (this.value === this.total) {
-      return;
-    }
+		// Rebuild
+		this.build();
 
-    // Change value
-    this.value = this.value + 1;
+		// Emit change
+		this.pageChange.emit({
+			from: original,
+			to: this.value
+		});
+	}
 
-    // Rebuild
-    this.build();
+	/**
+	 * On prev click
+	 * @param event 
+	 */
+	private onPrevClick(event: Event) {
+		// Stop event propagation
+		event.stopPropagation();
 
-    // Emit change
-    this.pageChange.emit({
-      from: this.value - 1,
-      to: this.value
-    });
-  }
+		// Check value
+		if (this.value === 1) {
+			return;
+		}
 
-  /**
-   * Build pagination
-   */
-  private build() {
-    // Get starting number
-    let start = this.value - Math.floor(this.size / 2);
+		// Change value
+		this.value = this.value - 1;
 
-    // If start if lower than 1, set it to 1
-    if (start < 1) {
-      start = 1;
-    }
+		// Rebuild
+		this.build();
 
-    // Also get maximum number
-    let max: number = this.total - this.size + 1;
-    
-    // Normalize max
-    if (max < 0) {
-      max = 1;
-    }
+		// Emit change
+		this.pageChange.emit({
+			from: this.value + 1,
+			to: this.value
+		});
+	}
 
-    // Check start
-    if (start > max) {
-      start = max;
-    }
+	/**
+	 * On next click
+	 * @param event 
+	 */
+	private onNextClick(event: Event) {
+		// Stop event propagation
+		event.stopPropagation();
 
-    // Reset pages
-    this.pages = [];
+		// Check value
+		if (this.value === this.total) {
+			return;
+		}
 
-    // Create list of pages
-    for (let page = start, index = 0; index < this.size && page <= this.total ; page++, index++) {
-      this.pages.push(page);
-    }
-  }
+		// Change value
+		this.value = this.value + 1;
+
+		// Rebuild
+		this.build();
+
+		// Emit change
+		this.pageChange.emit({
+			from: this.value - 1,
+			to: this.value
+		});
+	}
+
+	/**
+	 * Build pagination
+	 */
+	private build() {
+		// Get starting number
+		let start = this.value - Math.floor(this.size / 2);
+
+		// If start if lower than 1, set it to 1
+		if (start < 1) {
+			start = 1;
+		}
+
+		// Also get maximum number
+		let max: number = this.total - this.size + 1;
+
+		// Normalize max
+		if (max < 0) {
+			max = 1;
+		}
+
+		// Check start
+		if (start > max) {
+			start = max;
+		}
+
+		// Reset pages
+		this.pages = [];
+
+		// Create list of pages
+		for (let page = start, index = 0; index < this.size && page <= this.total; page++ , index++) {
+			this.pages.push(page);
+		}
+	}
 }

@@ -15,6 +15,8 @@ export class AppComponent {
 
   public activeTabIndex: number = 0;
 
+  public currentPage: number = 3;
+
   public tabs: string[] = ['tab1', 'tab2', 'tab3'];
 
   public config: ISelectConfig<string> = {
