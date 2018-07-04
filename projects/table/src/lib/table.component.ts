@@ -1,5 +1,8 @@
 // External modules
-import { Component, Input, QueryList, ContentChildren, AfterContentChecked } from '@angular/core';
+import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output } from '@angular/core';
+
+// Interfaces
+import { IRowClickEvent } from "./interfaces/row-click-event.interface";
 
 // Directives
 import { TableColumnDefinitionDirective } from "./directives/column/column-definition.directive";
@@ -19,6 +22,10 @@ export class TableComponent implements AfterContentChecked {
 	@Input("data")
 	public data: any[] = [];
 
+	// Row click
+	@Output("rowClick")
+	public rowClick: EventEmitter<IRowClickEvent<any>> = new EventEmitter<IRowClickEvent<any>>();
+
 	// List of column definitions
 	@ContentChildren(TableColumnDefinitionDirective)
 	public columnDefinitions: QueryList<TableColumnDefinitionDirective>;
@@ -33,6 +40,17 @@ export class TableComponent implements AfterContentChecked {
 	public ngAfterContentChecked() {
 		// Build
 		this.build();
+	}
+
+	/**
+	 * On row click
+	 * @param event 
+	 * @param item 
+	 * @param index 
+	 */
+	public onRowClick(event: Event, item: any, index: number) {
+		// Emit row click event
+		this.rowClick.emit({ event, item, index });
 	}
 
 	/**

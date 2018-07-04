@@ -3,12 +3,12 @@
         <ng-container *ngTemplateOutlet="cDef.header"></ng-container>
     </ng-container>
 </ngx-table-row>
-<ngx-table-row *ngFor="let item of data">
+<ngx-table-row class="data" *ngFor="let item of data; let idx = index" (click)="onRowClick($event, item, idx)">
     <ng-container *ngFor="let cDef of outputColumnDefinitions">
-        <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item }"></ng-container>
+        <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx }"></ng-container>
     </ng-container>
 </ngx-table-row>
-<ngx-table-row>
+<ngx-table-row class="footer">
     <ng-container *ngFor="let cDef of outputColumnDefinitions">
         <ng-container *ngIf="cDef.footer; else defaultFooterTemplate">
             <ng-container *ngTemplateOutlet="cDef.footer"></ng-container>
