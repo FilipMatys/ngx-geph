@@ -37,6 +37,9 @@
       ],
       "collapsible": [
         "dist/collapsible"
+      ],
+      "table": [
+        "dist/table"
       ]
     }
   }

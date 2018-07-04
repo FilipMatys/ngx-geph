@@ -1,0 +1,20 @@
+<ngx-table-row class="header">
+    <ng-container *ngFor="let cDef of outputColumnDefinitions">
+        <ng-container *ngTemplateOutlet="cDef.header"></ng-container>
+    </ng-container>
+</ngx-table-row>
+<ngx-table-row *ngFor="let item of data">
+    <ng-container *ngFor="let cDef of outputColumnDefinitions">
+        <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item }"></ng-container>
+    </ng-container>
+</ngx-table-row>
+<ngx-table-row>
+    <ng-container *ngFor="let cDef of outputColumnDefinitions">
+        <ng-container *ngIf="cDef.footer; else defaultFooterTemplate">
+            <ng-container *ngTemplateOutlet="cDef.footer"></ng-container>
+        </ng-container>
+        <ng-template #defaultFooterTemplate>
+            <ngx-table-footer></ngx-table-footer>
+        </ng-template>
+    </ng-container>
+</ngx-table-row>

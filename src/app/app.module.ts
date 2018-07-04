@@ -10,6 +10,7 @@ import { AccordionModule } from "accordion";
 import { PaginationModule } from "pagination";
 import { ListModule } from "list";
 import { CollapsibleModule } from "collapsible";
+import { TableModule } from "table";
 
 import { AppComponent } from './app.component';
 
@@ -24,6 +25,7 @@ import { AppComponent } from './app.component';
     FormsModule,
     AccordionModule,
     PaginationModule,
+    TableModule,
     ListModule,
     CollapsibleModule
   ],
