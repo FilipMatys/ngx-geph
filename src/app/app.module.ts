@@ -11,6 +11,7 @@ import { PaginationModule } from "pagination";
 import { ListModule } from "list";
 import { CollapsibleModule } from "collapsible";
 import { TableModule } from "table";
+import { CardModule } from "card";
 
 import { AppComponent } from './app.component';
 
@@ -27,6 +28,7 @@ import { AppComponent } from './app.component';
     PaginationModule,
     TableModule,
     ListModule,
+    CardModule,
     CollapsibleModule
   ],
   providers: [],

@@ -40,6 +40,9 @@
       ],
       "table": [
         "dist/table"
+      ],
+      "card": [
+        "dist/card"
       ]
     }
   }
