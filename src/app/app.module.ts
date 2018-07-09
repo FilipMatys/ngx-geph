@@ -12,6 +12,7 @@ import { ListModule } from "list";
 import { CollapsibleModule } from "collapsible";
 import { TableModule } from "table";
 import { CardModule } from "card";
+import { InputModule } from "input";
 
 import { AppComponent } from './app.component';
 
@@ -22,6 +23,7 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     SelectModule,
+    InputModule,
     TabsModule,
     FormsModule,
     AccordionModule,

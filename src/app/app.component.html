@@ -83,3 +83,12 @@
   <ngx-card-content>Content</ngx-card-content>
   <ngx-card-footer>Footer</ngx-card-footer>
 </ngx-card>
+<h2>Input</h2>
+<ngx-input [(ngModel)]="inputValue">
+  <ngx-input-prefix>
+    <button>Clear</button>
+  </ngx-input-prefix>
+  <ngx-input-postfix>
+    <button (click)="onInputLog($event)">Log</button>
+  </ngx-input-postfix>
+</ngx-input>

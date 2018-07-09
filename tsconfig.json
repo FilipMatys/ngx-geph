@@ -43,6 +43,9 @@
       ],
       "card": [
         "dist/card"
+      ],
+      "input": [
+        "dist/input"
       ]
     }
   }

@@ -40,6 +40,9 @@ export class AppComponent {
     { column: "Header1", direction: TableSortDirection.DESCENDING }
   ];
 
+  // Input value
+  public inputValue: string = "Some input value";
+
   public onTabIndexSelect(index) {
     this.activeTabIndex = index;
   }
@@ -54,5 +57,9 @@ export class AppComponent {
 
   public onSortChange(event: any) {
     console.log(event);
+  }
+
+  public onInputLog(event: Event) {
+    console.log(this.inputValue);
   }
 }
