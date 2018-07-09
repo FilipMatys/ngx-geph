@@ -67,13 +67,13 @@
 <button *ngxCollapsibleExpand>Expand</button>
 <div *ngxCollapsible>Collapsible content</div>
 <h2>Table</h2>
-<ngx-table [data]="options">
+<ngx-table [data]="options" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)">
   <ng-container ngxColumnDefinition="Header1">
-    <ngx-table-header *ngxHeaderDefinition>Header 1</ngx-table-header>
+    <ngx-table-header sortable="true" *ngxHeaderDefinition>Header 1</ngx-table-header>
     <ngx-table-cell *ngxCellDefinition="let item">{{ item }}</ngx-table-cell>
   </ng-container>
   <ng-container ngxColumnDefinition="Header2">
-    <ngx-table-header *ngxHeaderDefinition>Header 2</ngx-table-header>
+    <ngx-table-header sortable="true" *ngxHeaderDefinition>Header 2</ngx-table-header>
     <ngx-table-cell *ngxCellDefinition="let item">{{ item }}</ngx-table-cell>
   </ng-container>
 </ngx-table>

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
+import { ITableConfig, TableSortDirection } from "table";
+import { ITableSortColumn } from 'projects/table/src/public_api';
 
 @Component({
   selector: 'ngx-root',
@@ -26,6 +28,18 @@ export class AppComponent {
     searchInputDelay: 300
   }
 
+  public tableConfig: ITableConfig = {
+    sort: {
+      allow: true,
+      multi: true
+    }
+  }
+
+  // Table sort
+  public tableSort: ITableSortColumn[] = [
+    { column: "Header1", direction: TableSortDirection.DESCENDING }
+  ];
+
   public onTabIndexSelect(index) {
     this.activeTabIndex = index;
   }
@@ -36,5 +50,9 @@ export class AppComponent {
 
   public onThreeTabsClick() {
     this.tabs = ['tab1', 'tab2', 'tab3'];
+  }
+
+  public onSortChange(event: any) {
+    console.log(event);
   }
 }
