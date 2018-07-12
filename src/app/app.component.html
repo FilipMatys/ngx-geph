@@ -92,3 +92,11 @@
     <button (click)="onInputLog($event)">Log</button>
   </ngx-input-postfix>
 </ngx-input>
+<h2>Calendar</h2>
+<ngx-calendar>
+  <ng-container *ngxCalendarNext>&rarr;</ng-container>
+  <ng-container *ngxCalendarPrev>&larr;</ng-container>
+  <ng-container *ngxCalendarCurrent="let current">{{ current }}</ng-container>
+  <ng-container *ngxCalendarLabel="let label">{{ label }}</ng-container>
+  <ng-container *ngxCalendarDay="let day">{{ day.day }}</ng-container>
+</ngx-calendar>

@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+    flex-direction: column;
+
+    span.calendar-header-stretch {
+        flex: 1;
+    }
+
+    div.calendar-content {
+        display: table;
+    }
+}

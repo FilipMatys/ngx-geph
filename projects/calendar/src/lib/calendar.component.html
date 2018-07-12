@@ -1,0 +1,25 @@
+<ngx-calendar-header>
+    <button class="calendar-header-current">
+        <ng-container *ngTemplateOutlet="currentTemplate; context: { $implicit: selected.toDate() }"></ng-container>
+    </button>
+    <span class="calendar-header-stretch"></span>
+    <button class="calendar-header-prev-button" (click)="onPrevMonthClick($event)">
+        <ng-container *ngTemplateOutlet="prevTemplate"></ng-container>
+    </button>
+    <button class="calendar-header-next-button" (click)="onNextMonthClick($event)">
+        <ng-container *ngTemplateOutlet="nextTemplate"></ng-container>
+    </button>
+</ngx-calendar-header>
+<div class="calendar-content">
+    <ngx-calendar-week class="labels">
+        <ngx-calendar-label *ngFor="let name of weekNames">
+            <ng-container *ngTemplateOutlet="labelTemplate; context: { $implicit: name }"></ng-container>
+        </ngx-calendar-label>
+    </ngx-calendar-week>
+    <ngx-calendar-week class="days" *ngFor="let week of weeks">
+        <ngx-calendar-day (click)="onDayClick($event, day)" [today]="day.isToday" [current]="day.isCurrentMonth" [weekend]="day.isWeekend"
+            *ngFor="let day of week">
+            <ng-container *ngTemplateOutlet="dayTemplate; context: { $implicit: day }"></ng-container>
+        </ngx-calendar-day>
+    </ngx-calendar-week>
+</div>

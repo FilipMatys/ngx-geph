@@ -46,6 +46,9 @@
       ],
       "input": [
         "dist/input"
+      ],
+      "calendar": [
+        "dist/calendar"
       ]
     }
   }
