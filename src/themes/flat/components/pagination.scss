@@ -10,7 +10,7 @@ ngx-pagination {
         padding: $padding-form-input;
         background: $color-gray;
         cursor: pointer;
-        color: white;
+        color: $color-dark;
         transition: .3s;
         
         &:not(:last-child) {
@@ -20,6 +20,7 @@ ngx-pagination {
         &.current,
         &:hover {
             background: $color-primary;
+            color: white;
         }
     }
 

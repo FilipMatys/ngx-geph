@@ -100,6 +100,7 @@ export class SelectComponent {
 	public searchInputChange: EventEmitter<string> = new EventEmitter<string>();
 
 	// Is selection open flag
+	@HostBinding("class.open")
 	public isSelectionOpen: boolean = false;
 
 	/**

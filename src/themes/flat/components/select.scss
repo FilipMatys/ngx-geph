@@ -1,0 +1,82 @@
+ngx-select {
+    position: relative;
+    display: block;
+
+    div.select-container {
+        padding: $padding-form-input;
+        border: solid 2px $color-gray;
+        color: $color-dark;
+        transition: .3s;
+        position: relative;
+
+        .select-placeholder {
+            color: $color-gray-dark;
+        }
+
+        &::after {
+            top: calc(50% - 4px);
+            right: 1rem;
+            border: 8px solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-color: $color-gray-dark transparent transparent;
+            margin-left: -8px;
+        } 
+
+        ngx-select-clear {
+            position: absolute;
+            right: 3rem;
+            color: $color-gray-dark;
+        }
+    }
+
+    &.open div.select-container {
+        border-color: $color-primary;
+    }
+
+    ul.select-options {
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        background: $color-gray;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li.select-input {
+            input {
+                width: 100%;
+                box-sizing: border-box;
+                padding: $padding-form-input;
+                outline: none;
+                border: solid 2px $color-gray;
+                border-top: none;
+                border-bottom: none;
+                color: $color-dark;
+            }
+        }
+
+        ngx-select-loading,
+        ngx-select-empty {
+            padding: $padding-form-input;
+            color: $color-gray-dark;
+            background: $color-gray-light;
+            border: solid 2px $color-gray;
+            border-top: none;
+        }
+
+        ngx-select-option.select-option {
+            padding: $padding-form-input;
+            color: $color-dark;
+            cursor: pointer;
+            transition: .3s;
+
+            &:hover {
+                background: $color-gray-dark;
+            }
+        }
+    }
+}
