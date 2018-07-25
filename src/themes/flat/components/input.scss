@@ -1,0 +1,23 @@
+ngx-input {
+    input {
+        padding: $padding-form-input;
+        outline: none;
+        border: solid 2px $color-gray;
+        color: $color-dark;
+        transition: .3s;
+    }
+
+    input:focus {
+        border-color: $color-primary;
+    }
+
+    input[disabled] {
+        background: $color-gray-light;
+        color: $color-gray;
+    }
+
+    ngx-input-prefix,
+    ngx-input-postfix {
+        display: flex;
+    }
+}
