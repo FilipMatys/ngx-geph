@@ -1,0 +1,30 @@
+ngx-pagination {
+    display: flex;
+    flex-direction: row;
+
+    ngx-pagination-page,
+    ngx-pagination-prev,
+    ngx-pagination-next,
+    ngx-pagination-first,
+    ngx-pagination-last {
+        padding: $padding-form-input;
+        background: $color-gray;
+        cursor: pointer;
+        color: white;
+        transition: .3s;
+        
+        &:not(:last-child) {
+            margin-right: .1rem;
+        }
+
+        &.current,
+        &:hover {
+            background: $color-primary;
+        }
+    }
+
+    ngx-pagination-summary {
+        flex: 1;
+        text-align: right;
+    }
+}
