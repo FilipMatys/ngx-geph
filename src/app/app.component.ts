@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
-import { ITableConfig, TableSortDirection } from "table";
-import { ITableSortColumn } from 'projects/table/src/public_api';
+import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
 
 @Component({
   selector: 'ngx-root',
@@ -28,7 +27,7 @@ export class AppComponent {
     searchInputDelay: 300
   }
 
-  public tableConfig: ITableConfig = {
+  public tableConfig: ITableConfig<string> = {
     sort: {
       allow: true,
       multi: true

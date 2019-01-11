@@ -52,7 +52,10 @@ export class TableComponent implements AfterContentChecked {
 
 	// Table config
 	@Input("config")
-	private config: ITableConfig = {};
+	public config: ITableConfig<any> = {
+		// Default track by
+		trackRecordBy: (index, item) => item
+	};
 
 	// Row click
 	@Output("rowClick")
