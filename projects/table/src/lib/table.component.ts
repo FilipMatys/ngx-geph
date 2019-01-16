@@ -1,9 +1,12 @@
 // External modules
-import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding } from '@angular/core';
+import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector } from '@angular/core';
 
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
 import { IRowClickEvent } from "./interfaces/row-click-event.interface";
+
+// Tokens
+import { CONFIG } from './symbols/config.token';
 
 // Default values
 import { tableConfigDefault } from "./defaults/config.default";
@@ -96,6 +99,24 @@ export class TableComponent implements AfterContentChecked {
 
 	// List of headers
 	public headers: TableHeaderComponent[] = [];
+
+	/**
+	 * Constructor
+	 * @param injector 
+	 */
+	constructor(private injector: Injector) {
+		// Get module configuration
+		try {
+			// Get config
+			let config = Object.assign(tableConfigDefault, this.injector.get(CONFIG));
+			// Also make sure sort is set
+			config.sort = Object.assign(tableSortDefault, config.sort);
+
+			// Finally assign confit
+			this._config = config;
+		}
+		catch (e) { }
+	}
 
 	/**
 	 * On changes hook

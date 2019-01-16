@@ -31,7 +31,6 @@ export class AppComponent {
   public tableConfig: ITableConfig<string> = {
     allowRowClick: false,
     sort: {
-      allow: true,
       multi: true,
       mapGetFn: (columns) => columns.map(c => c.column)
     }

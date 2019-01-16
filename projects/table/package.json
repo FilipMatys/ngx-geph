@@ -1,13 +1,13 @@
 {
-  "name": "@calf/ngx-table",
-  "version": "0.0.4",
-  "description": "Calf framework Table component",
-  "peerDependencies": {
-    "@angular/common": "^6.0.0",
-    "@angular/core": "^6.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/FilipMatys/Calf-ngx.git"
-  }
+	"name": "@calf/ngx-table",
+	"version": "0.0.5",
+	"description": "Calf framework Table component",
+	"peerDependencies": {
+		"@angular/common": "^6.0.0",
+		"@angular/core": "^6.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/FilipMatys/Calf-ngx.git"
+	}
 }
