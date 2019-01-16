@@ -1,8 +1,29 @@
 // Data
 import { ITableSort } from "./sort.interface";
+import { ITableSortColumn } from "dist/table/public_api";
 
 // Table config interface
 export interface ITableConfig<T> {
-    sort?: ITableSort;
+    
+    /**
+     * Sort
+     * @description Sort configuration
+     * @default Sort is disabled on default.
+     */
+    sort?: ITableSort<any>;
+    
+    /**
+     * Allow row click
+     * @description Allows row clicks and attaches 
+     * 'clickable' class to table
+     * @default true
+     */
+    allowRowClick?: boolean;
+    
+    /**
+     * Track record by
+     * @description Custom function for items tracking 
+     * @default Track by item
+     */
     trackRecordBy?: (index: number, item: T) => any;
 }

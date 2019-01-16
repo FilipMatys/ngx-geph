@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
+import { ITableSort } from 'projects/table/src/public_api';
 
 @Component({
   selector: 'ngx-root',
@@ -28,9 +29,11 @@ export class AppComponent {
   }
 
   public tableConfig: ITableConfig<string> = {
+    allowRowClick: false,
     sort: {
       allow: true,
-      multi: true
+      multi: true,
+      mapGetFn: (columns) => columns.map(c => c.column)
     }
   }
 
@@ -53,6 +56,11 @@ export class AppComponent {
   public onThreeTabsClick() {
     this.tabs = ['tab1', 'tab2', 'tab3'];
   }
+
+  public onRowClick(event: any): void {
+    console.log(event);
+  }
+
 
   public onSortChange(event: any) {
     console.log(event);

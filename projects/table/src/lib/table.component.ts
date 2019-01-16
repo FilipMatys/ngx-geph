@@ -1,9 +1,13 @@
 // External modules
-import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output } from '@angular/core';
+import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding } from '@angular/core';
 
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
 import { IRowClickEvent } from "./interfaces/row-click-event.interface";
+
+// Default values
+import { tableConfigDefault } from "./defaults/config.default";
+import { tableSortDefault } from "./defaults/sort.default";
 
 // Directives
 import { TableColumnDefinitionDirective } from "./directives/column/column-definition.directive";
@@ -39,9 +43,9 @@ export class TableComponent implements AfterContentChecked {
 
 
 	@Input("sort")
-	public set sort(value: ITableSortColumn[]) {
-		// Assign valye
-		this._sort = value;
+	public set sort(value: any[]) {
+		// Assign value
+		this._sort = this.config.sort.mapSetFn(value);
 
 		// Update headers
 		this.updateHeaders();
@@ -50,12 +54,25 @@ export class TableComponent implements AfterContentChecked {
 	// List of sort columns
 	private _sort: ITableSortColumn[] = [];
 
-	// Table config
+	// Table config setter
 	@Input("config")
-	public config: ITableConfig<any> = {
-		// Default track by
-		trackRecordBy: (index, item) => item
+	public set config(value: ITableConfig<any>) {
+		// First make sure config is set
+		let config = Object.assign(tableConfigDefault, value);
+		// Also make sure sort is set
+		config.sort = Object.assign(tableSortDefault, config.sort);
+
+		// Finally assign confit
+		this._config = config;
 	};
+
+	// Table config getter
+	public get config(): ITableConfig<any> {
+		return this._config;
+	}
+
+	// Table config
+	private _config: ITableConfig<any> = tableConfigDefault;
 
 	// Row click
 	@Output("rowClick")
@@ -64,6 +81,10 @@ export class TableComponent implements AfterContentChecked {
 	// Sort change
 	@Output("sortChange")
 	public sortChange: EventEmitter<ITableSortColumn[]> = new EventEmitter<ITableSortColumn[]>();
+
+	// Clickable class binding
+	@HostBinding("class.clickable")
+	public get isClickable(): boolean { return this._config.allowRowClick; }
 
 	// List of column definitions
 	@ContentChildren(TableColumnDefinitionDirective)
@@ -128,9 +149,15 @@ export class TableComponent implements AfterContentChecked {
 	 * @param item 
 	 * @param index 
 	 */
-	public onRowClick(event: Event, item: any, index: number) {
+	public onRowClick(event: Event, item: any, index: number): void {
 		// Stop event propagation
 		event.stopPropagation();
+
+		// Check if click events are allowed
+		if (!this._config.allowRowClick) {
+			// Do not emit row click event
+			return;
+		}
 
 		// Emit row click event
 		this.rowClick.emit({ item, index });
@@ -188,7 +215,7 @@ export class TableComponent implements AfterContentChecked {
 		}
 
 		// Emit sort change
-		this.sortChange.emit(this._sort);
+		this.sortChange.emit(this.config.sort.mapGetFn(this._sort));
 	}
 
 	/**
