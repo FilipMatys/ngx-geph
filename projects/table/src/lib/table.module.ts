@@ -14,6 +14,7 @@ import { TableRowComponent } from "./components/row/row.component";
 import { TableCellComponent } from "./components/cell/cell.component";
 import { TableHeaderComponent } from "./components/header/header.component";
 import { TableFooterComponent } from "./components/footer/footer.component";
+import { TableEmptyComponent } from "./components/empty/empty.component";
 
 // Directives
 import { TableColumnDefinitionDirective } from "./directives/column/column-definition.directive";
@@ -31,6 +32,7 @@ import { TableFooterDefinitionDirective } from "./directives/footer/footer-defin
 		TableCellComponent,
 		TableHeaderComponent,
 		TableFooterComponent,
+		TableEmptyComponent,
 		TableColumnDefinitionDirective,
 		TableCellDefinitionDirective,
 		TableHeaderDefinitionDirective,
@@ -41,6 +43,7 @@ import { TableFooterDefinitionDirective } from "./directives/footer/footer-defin
 		TableCellComponent,
 		TableHeaderComponent,
 		TableFooterComponent,
+		TableEmptyComponent,
 		TableColumnDefinitionDirective,
 		TableCellDefinitionDirective,
 		TableHeaderDefinitionDirective,
