@@ -4,6 +4,8 @@ import { Component, Input, QueryList, ContentChildren, AfterContentChecked, Even
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
 import { IRowClickEvent } from "./interfaces/row-click-event.interface";
+import { ITableConfig } from './interfaces/config.interface';
+import { ITableSortColumn } from './interfaces/sort-column.interface';
 
 // Tokens
 import { CONFIG } from './symbols/config.token';
@@ -17,8 +19,6 @@ import { TableColumnDefinitionDirective } from "./directives/column/column-defin
 
 // Components
 import { TableHeaderComponent } from './components/header/header.component';
-import { ITableConfig } from './interfaces/config.interface';
-import { ITableSortColumn } from './interfaces';
 
 @Component({
 	selector: 'ngx-table',
