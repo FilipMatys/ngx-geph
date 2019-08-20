@@ -1,6 +1,5 @@
 // Data
 import { ITableSort } from "./sort.interface";
-import { ITableSortColumn } from "dist/table/public_api";
 
 // Table config interface
 export interface ITableConfig<T> {

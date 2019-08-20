@@ -25,7 +25,8 @@ export class AppComponent {
     allowSearch: true,
     allowClear: true,
     getOptions: (term) => Promise.resolve(this.options.filter(o => !term || o.startsWith(term))),
-    searchInputDelay: 300
+    searchInputDelay: 300,
+    searchPlaceholder: "Hledat..."
   }
 
   public tableConfig: ITableConfig<string> = {
