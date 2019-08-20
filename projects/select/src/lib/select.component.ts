@@ -53,6 +53,7 @@ export class SelectComponent {
 	public config: ISelectConfig<any> = {
 		allowSearch: false,
 		allowClear: false,
+		searchPlaceholder: "",
 		searchInputDelay: 300
 	}
 
@@ -75,6 +76,13 @@ export class SelectComponent {
 	public set searchInputDelay(value: number) {
 		// Assign search input delay
 		this.config.searchInputDelay = value;
+	}
+
+	// Search placeholder
+	@Input("searchPlaceholder")
+	public set searchPlaceholder(value: string) {
+		// Assign search placeholder
+		this.config.searchPlaceholder = value;
 	}
 
 	// Readonly flag

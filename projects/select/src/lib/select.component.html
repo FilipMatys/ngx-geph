@@ -11,7 +11,7 @@
 </div>
 <ul *ngIf="isSelectionOpen" class="select-options">
     <li [class.select-hidden]="config.allowSearch" class="select-input">
-        <input #searchInput type="text" name="search-input" id="search-input">
+        <input #searchInput type="text" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
     </li>
     <ng-container *ngIf="isLoading">
         <ng-content select="ngx-select-loading"></ng-content>
@@ -19,7 +19,10 @@
     <ng-container *ngIf="!isLoading && !options.length">
         <ng-content select="ngx-select-empty"></ng-content>
     </ng-container>
-    <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)">
-        <ng-container *ngTemplateOutlet="selectOptionTemplate; context: { $implicit: option, index: idx }"></ng-container>
-    </ngx-select-option>
+    <div class="select-options-container">
+        <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)">
+            <ng-container *ngTemplateOutlet="selectOptionTemplate; context: { $implicit: option, index: idx }">
+            </ng-container>
+        </ngx-select-option>
+    </div>
 </ul>
