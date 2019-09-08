@@ -13,7 +13,7 @@ import { CollapsibleModule } from "collapsible";
 import { TableModule } from "table";
 import { CardModule } from "card";
 import { InputModule } from "input";
-import { CalendarModule } from "calendar";
+//import { CalendarModule } from "calendar";
 
 import { AppComponent } from './app.component';
 
@@ -27,7 +27,7 @@ import { AppComponent } from './app.component';
     InputModule,
     TabsModule,
     FormsModule,
-    CalendarModule,
+    //CalendarModule,
     AccordionModule,
     PaginationModule,
     TableModule.forRoot({

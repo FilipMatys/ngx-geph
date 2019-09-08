@@ -1,12 +1,24 @@
 <div class="select-container">
-    <span *ngIf="(!value && value !== 0); else hasValue" class="select-placeholder">{{ placeholder }}</span>
+    <ng-container *ngIf="config.multi && (value && value.length)">
+        <span class="select-value-multi" *ngFor="let item of value; let idx = index">
+            <ngx-select-value>
+                <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: item, index: idx }">
+                </ng-container>
+            </ngx-select-value>
+            <ngx-select-clear (click)="onClearClick($event, idx)" *ngIf="config.allowClear">
+                <ng-container *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value, index: idx }"></ng-container>
+            </ngx-select-clear>
+        </span>
+    </ng-container>
+    <span *ngIf="(!value && value !== 0) || config.multi; else hasValue"
+        class="select-placeholder">{{ placeholder }}</span>
     <ng-template #hasValue>
         <ngx-select-value>
             <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: value }"></ng-container>
         </ngx-select-value>
-        <ng-container *ngIf="config.allowClear">
-            <ng-content select="ngx-select-clear"></ng-content>
-        </ng-container>
+        <ngx-select-clear (click)="onClearClick($event)" *ngIf="config.allowClear">
+            <ng-container *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value }"></ng-container>
+        </ngx-select-clear>
     </ng-template>
 </div>
 <ul *ngIf="isSelectionOpen" class="select-options">

@@ -4,8 +4,17 @@
   <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
   <ngx-select-loading>Loading...</ngx-select-loading>
   <ngx-select-empty>Nothing found</ngx-select-empty>
-  <ngx-select-clear>Clear</ngx-select-clear>
+  <ng-container *ngxSelectClear>Clear</ng-container>
 </ngx-select>
+
+<h2>Select component [multi]</h2>
+<ngx-select [config]="multiConfig" [(ngModel)]="multiSelectValue" name="multi-select-value" placeholder="Select some value!">
+    <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
+    <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
+    <ngx-select-loading>Loading...</ngx-select-loading>
+    <ngx-select-empty>Nothing found</ngx-select-empty>
+    <ng-container *ngxSelectClear>Clear</ng-container>
+  </ngx-select>
 
 <h2>Tabs</h2>
 <ngx-tabs [tabs]="tabs" [index]="activeTabIndex">
@@ -94,11 +103,11 @@
   </ngx-input-postfix>
 </ngx-input>
 <ngx-input [disabled]="true"></ngx-input>
-<h2>Calendar</h2>
+<!-- <h2>Calendar</h2>
 <ngx-calendar>
   <ng-container *ngxCalendarNext>&rarr;</ng-container>
   <ng-container *ngxCalendarPrev>&larr;</ng-container>
   <ng-container *ngxCalendarCurrent="let current">{{ current }}</ng-container>
   <ng-container *ngxCalendarLabel="let label">{{ label }}</ng-container>
   <ng-container *ngxCalendarDay="let day">{{ day.day }}</ng-container>
-</ngx-calendar>
+</ngx-calendar> -->
