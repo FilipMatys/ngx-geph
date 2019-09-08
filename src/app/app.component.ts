@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
-import { ITableConfig, TableSortDirection } from "table";
-import { ITableSortColumn } from 'projects/table/src/public_api';
+import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
+import { ITableSort } from 'projects/table/src/public_api';
 
 @Component({
   selector: 'ngx-root',
@@ -25,13 +25,15 @@ export class AppComponent {
     allowSearch: true,
     allowClear: true,
     getOptions: (term) => Promise.resolve(this.options.filter(o => !term || o.startsWith(term))),
-    searchInputDelay: 300
+    searchInputDelay: 300,
+    searchPlaceholder: "Hledat..."
   }
 
-  public tableConfig: ITableConfig = {
+  public tableConfig: ITableConfig<string> = {
+    allowRowClick: false,
     sort: {
-      allow: true,
-      multi: true
+      multi: true,
+      mapGetFn: (columns) => columns.map(c => c.column)
     }
   }
 
@@ -54,6 +56,11 @@ export class AppComponent {
   public onThreeTabsClick() {
     this.tabs = ['tab1', 'tab2', 'tab3'];
   }
+
+  public onRowClick(event: any): void {
+    console.log(event);
+  }
+
 
   public onSortChange(event: any) {
     console.log(event);

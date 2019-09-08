@@ -40,6 +40,7 @@ ngx-select {
     ul.select-options {
         position: absolute;
         width: 100%;
+        z-index: 100;
         box-sizing: border-box;
         background: $color-gray;
         list-style: none;

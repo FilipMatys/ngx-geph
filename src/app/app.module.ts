@@ -30,7 +30,12 @@ import { AppComponent } from './app.component';
     CalendarModule,
     AccordionModule,
     PaginationModule,
-    TableModule,
+    TableModule.forRoot({
+      allowRowClick: false,
+      sort: {
+        allow: true
+      }
+    }),
     ListModule,
     CardModule,
     CollapsibleModule
