@@ -224,6 +224,9 @@ export class SelectComponent {
 			// Remove item from select
 			(this.value as Array<any>).splice(index, 1);
 
+			// Propagate change
+			this.propagateChange(this.value);
+
 			// Do nothing else
 			return;
 		}
@@ -251,6 +254,9 @@ export class SelectComponent {
 			else {
 				// Add option to values
 				(this.value as Array<any>).push(option);
+
+				// Propagate change
+				this.propagateChange(this.value);
 			}
 		}
 		else {

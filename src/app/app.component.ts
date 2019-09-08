@@ -80,4 +80,12 @@ export class AppComponent {
   public onInputLog(event: Event) {
     console.log(this.inputValue);
   }
+
+  /**
+   * On multi select value change
+   * @param event 
+   */
+  public onMultiSelectValueChange(event: Event): void {
+    console.log("On multi change", event);
+  }
 }

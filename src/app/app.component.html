@@ -8,7 +8,7 @@
 </ngx-select>
 
 <h2>Select component [multi]</h2>
-<ngx-select [config]="multiConfig" [(ngModel)]="multiSelectValue" name="multi-select-value" placeholder="Select some value!">
+<ngx-select [config]="multiConfig" [(ngModel)]="multiSelectValue" (ngModelChange)="onMultiSelectValueChange($event)" name="multi-select-value" placeholder="Select some value!">
     <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
     <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
     <ngx-select-loading>Loading...</ngx-select-loading>
