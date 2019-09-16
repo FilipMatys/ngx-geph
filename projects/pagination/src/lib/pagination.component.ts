@@ -283,7 +283,7 @@ export class PaginationComponent implements OnChanges, AfterContentInit {
 		let max: number = this.total - this.size + 1;
 
 		// Normalize max
-		if (max < 0) {
+		if (max < 1) {
 			max = 1;
 		}
 
