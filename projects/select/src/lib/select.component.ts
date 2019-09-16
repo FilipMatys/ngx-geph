@@ -10,18 +10,19 @@ import { ISelectConfig } from "./interfaces/select.interfaces";
 // Directives
 import { SelectOptionDirective, ISelectOptionContext } from "./directives/option.directive";
 import { SelectValueDirective, ISelectValueContext } from "./directives/value.directive";
+import { SelectClearDirective, ISelectClearContext } from "./directives/clear.directive";
 
 @Component({
 	selector: "ngx-select",
 	templateUrl: "./select.component.html",
 	styleUrls: ["./select.component.scss"],
 	providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => SelectComponent),
-            multi: true
-        }
-    ],
+		{
+			provide: NG_VALUE_ACCESSOR,
+			useExisting: forwardRef(() => SelectComponent),
+			multi: true
+		}
+	],
 })
 export class SelectComponent {
 
@@ -69,6 +70,13 @@ export class SelectComponent {
 	public set allowClear(value: boolean) {
 		// Set allow clear
 		this.config.allowClear = value;
+	}
+
+	// Allow multi select
+	@Input("multi")
+	public set multi(value: boolean) {
+		// Assign multi flag
+		this.config.multi = value;
 	}
 
 	// Search input delay
@@ -153,6 +161,10 @@ export class SelectComponent {
 	@ContentChild(SelectValueDirective, { read: TemplateRef })
 	public selectValueTemplate: TemplateRef<ISelectValueContext<any>>;
 
+	// Clear template
+	@ContentChild(SelectClearDirective, { read: TemplateRef })
+	public selectClearTemplate: TemplateRef<ISelectClearContext<any>>;
+
 	// Search input
 	@ViewChild('searchInput')
 	public searchInput: ElementRef;
@@ -171,40 +183,53 @@ export class SelectComponent {
      * Write value
      * @param value 
      */
-    public writeValue(value: any) {
-        // Check if value is defined
-        if (value === undefined) {
-            return;
-        }
+	public writeValue(value: any) {
+		// Check if value is defined
+		if (value === undefined) {
+			return;
+		}
 
-        // Assign value
-        this.value = value;
-    }
+		// Assign value
+		this.value = value;
+	}
 
-    /** Propagate change */
-    public propagateChange = (_: any) => { };
+	/** Propagate change */
+	public propagateChange = (_: any) => { };
 
     /**
      * Register on change
      * @param fn 
      */
-    public registerOnChange(fn) {
-        this.propagateChange = fn;
-    }
+	public registerOnChange(fn) {
+		this.propagateChange = fn;
+	}
 
-    /** Register on touched */
+	/** Register on touched */
 	public registerOnTouched() { }
-	
+
 	/**
 	 * On clear click
 	 * @param event 
+	 * @param index
 	 */
-	public onClearClick(event: Event) {
+	public onClearClick(event: Event, index?: number): void {
 		// Stop event propagation
 		event.stopPropagation();
 
 		// Close
 		this.closeSelection();
+
+		// Check for multi
+		if (this.config.multi && index !== undefined) {
+			// Remove item from select
+			(this.value as Array<any>).splice(index, 1);
+
+			// Propagate change
+			this.propagateChange(this.value);
+
+			// Do nothing else
+			return;
+		}
 
 		// Clear value
 		this.value = null;
@@ -219,8 +244,25 @@ export class SelectComponent {
 		// Stop event propagation
 		event.stopPropagation();
 
-		// Assign value
-		this.value = option;
+		// Check for multi
+		if (this.config.multi) {
+			// Check if value is set
+			if (!this.value) {
+				// Init value with selected option
+				this.value = [option];
+			}
+			else {
+				// Add option to values
+				(this.value as Array<any>).push(option);
+
+				// Propagate change
+				this.propagateChange(this.value);
+			}
+		}
+		else {
+			// Assign value
+			this.value = option;
+		}
 
 		// Close selection
 		this.closeSelection();

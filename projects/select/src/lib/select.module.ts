@@ -13,7 +13,8 @@ import { SelectClearComponent } from "./components/clear/clear.component";
 // Directives
 import { SelectOptionDirective } from "./directives/option.directive";
 import { SelectValueDirective } from "./directives/value.directive";
-
+import { SelectClearDirective } from "./directives/clear.directive";
+ 
 // List of components
 const SELECT_COMPONENTS = [
   SelectComponent,
@@ -27,7 +28,8 @@ const SELECT_COMPONENTS = [
 // List of directives
 const SELECT_DIRECTIVES = [
   SelectValueDirective,
-  SelectOptionDirective
+  SelectOptionDirective,
+  SelectClearDirective
 ];
 
 @NgModule({

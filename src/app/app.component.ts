@@ -15,6 +15,8 @@ export class AppComponent {
 
   public selectValue: string = 'Hello';
 
+  public multiSelectValue: string[];
+
   public activeTabIndex: number = 0;
 
   public currentPage: number = 3;
@@ -24,6 +26,15 @@ export class AppComponent {
   public config: ISelectConfig<string> = {
     allowSearch: true,
     allowClear: true,
+    getOptions: (term) => Promise.resolve(this.options.filter(o => !term || o.startsWith(term))),
+    searchInputDelay: 300,
+    searchPlaceholder: "Hledat..."
+  }
+
+  public multiConfig: ISelectConfig<string> = {
+    allowSearch: true,
+    allowClear: true,
+    multi: true,
     getOptions: (term) => Promise.resolve(this.options.filter(o => !term || o.startsWith(term))),
     searchInputDelay: 300,
     searchPlaceholder: "Hledat..."
@@ -68,5 +79,13 @@ export class AppComponent {
 
   public onInputLog(event: Event) {
     console.log(this.inputValue);
+  }
+
+  /**
+   * On multi select value change
+   * @param event 
+   */
+  public onMultiSelectValueChange(event: Event): void {
+    console.log("On multi change", event);
   }
 }

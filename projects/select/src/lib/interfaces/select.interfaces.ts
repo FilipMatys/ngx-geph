@@ -4,5 +4,6 @@ export interface ISelectConfig<T> {
     allowClear?: boolean;
     searchInputDelay?: number;
     searchPlaceholder?: string;
+    multi?: boolean;
     getOptions?: (term: string) => Promise<T[]>;
 }
