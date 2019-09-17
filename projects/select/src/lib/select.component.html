@@ -22,7 +22,7 @@
     </ng-template>
 </div>
 <ul *ngIf="isSelectionOpen" class="select-options">
-    <li [class.select-hidden]="config.allowSearch" class="select-input">
+    <li [class.select-hidden]="!config.allowSearch" class="select-input">
         <input #searchInput type="text" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
     </li>
     <ng-container *ngIf="isLoading">
