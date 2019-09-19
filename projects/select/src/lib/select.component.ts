@@ -37,15 +37,24 @@ export class SelectComponent {
 		// Propagate change
 		let propagateChange: boolean = true;
 
+		// Value changed fn
+		let isValueChangedFn = this.config.isValueChangedFn || ((prev, next) => true);
+
 		// Check for single
 		if (!this.config.multi) {
 			// Check whether values are different
-			propagateChange = this.config.isValueChangedFn(this._value, value);
+			propagateChange = isValueChangedFn(this._value, value);
 		}
 		// Compare multi
 		else {
-			// Propagate change if lengths are different
-			propagateChange = this._value.length !== value.length;
+			// Make sure both are set
+			if (!this._value || !value) {
+				propagateChange = true;
+			}
+			else {
+				// Propagate change if lengths are different
+				propagateChange = this._value.length !== value.length;
+			}
 		}
 
 		// Assign value
