@@ -6,4 +6,5 @@ export interface ISelectConfig<T> {
     searchPlaceholder?: string;
     multi?: boolean;
     getOptions?: (term: string) => Promise<T[]>;
+    compareFn?: (prev: T, next: T) => boolean;
 }

@@ -34,11 +34,24 @@ export class SelectComponent {
 
 	// Value setter
 	public set value(value: any) {
+		// Propagate change
+		let propagateChange: boolean = true;
+
+		// Check for single
+		if (!this.config.multi) {
+			// Check whether values are different
+			propagateChange = this.config.compareFn(this._value, value);
+		}
+		// Compare multi
+		else {
+
+		}
+
 		// Assign value
 		this._value = value;
 
 		// Propagate change
-		this.propagateChange(this._value);
+		propagateChange && this.propagateChange(this._value);
 	}
 
 	// List of options
@@ -55,7 +68,8 @@ export class SelectComponent {
 		allowSearch: false,
 		allowClear: false,
 		searchPlaceholder: "",
-		searchInputDelay: 300
+		searchInputDelay: 300,
+		compareFn: (prev, next) => true
 	}
 
 	// Allow search flag
