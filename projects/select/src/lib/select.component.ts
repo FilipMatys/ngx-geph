@@ -40,11 +40,12 @@ export class SelectComponent {
 		// Check for single
 		if (!this.config.multi) {
 			// Check whether values are different
-			propagateChange = this.config.compareFn(this._value, value);
+			propagateChange = this.config.isValueChangedFn(this._value, value);
 		}
 		// Compare multi
 		else {
-
+			// Propagate change if lengths are different
+			propagateChange = this._value.length !== value.length;
 		}
 
 		// Assign value
@@ -69,7 +70,7 @@ export class SelectComponent {
 		allowClear: false,
 		searchPlaceholder: "",
 		searchInputDelay: 300,
-		compareFn: (prev, next) => true
+		isValueChangedFn: (prev, next) => true
 	}
 
 	// Allow search flag
