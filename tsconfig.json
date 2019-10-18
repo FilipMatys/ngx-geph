@@ -49,6 +49,9 @@
       ],
       "calendar": [
         "dist/calendar"
+      ],
+      "layout": [
+        "dist/layout"
       ]
     }
   }
