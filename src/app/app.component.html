@@ -7,6 +7,13 @@
   <ng-container *ngxSelectClear>Clear</ng-container>
 </ngx-select>
 
+<h2>Boolean Select component</h2>
+<ngx-select [config]="selectBooleanConfig" [(ngModel)]="booleanSelectValue" name="boolean-select-value" placeholder="Select some value!">
+  <ng-container *ngxSelectValue="let value">{{ value ? "Yes" : "No" }}</ng-container>
+  <ng-container *ngxSelectOption="let option">{{ option ? "Yes" : "No" }}</ng-container>
+  <ng-container *ngxSelectClear>Clear</ng-container>
+</ngx-select>
+
 <h2>Select component [multi]</h2>
 <ngx-select [config]="multiConfig" [(ngModel)]="multiSelectValue" (ngModelChange)="onMultiSelectValueChange($event)" name="multi-select-value" placeholder="Select some value!">
     <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>

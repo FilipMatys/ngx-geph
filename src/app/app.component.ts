@@ -15,6 +15,8 @@ export class AppComponent {
 
   public selectValue: string = 'Hello';
 
+  public booleanSelectValue: boolean = true;
+
   public multiSelectValue: string[];
 
   public activeTabIndex: number = 0;
@@ -29,6 +31,12 @@ export class AppComponent {
     getOptions: (term) => Promise.resolve(this.options.filter(o => !term || o.startsWith(term))),
     searchInputDelay: 300,
     searchPlaceholder: "Hledat..."
+  }
+
+  public selectBooleanConfig: ISelectConfig<boolean> = {
+    allowClear: true,
+    allowSearch: false,
+    getOptions: async () => [true, false] 
   }
 
   public multiConfig: ISelectConfig<string> = {
