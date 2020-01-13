@@ -1,8 +1,0 @@
-:host {
-    display: table-row;
-
-    &.empty {
-        display: table-caption;
-        caption-side: bottom;
-    }
-}

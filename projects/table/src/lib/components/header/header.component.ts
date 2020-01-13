@@ -8,7 +8,7 @@ import { TableSortDirection } from "../../enums/sort-direction.enum";
 import { TableComponent } from "../../table.component";
 
 @Component({
-    selector: "ngx-table-header",
+    selector: ".ngx-table-header",
     templateUrl: "./header.component.html",
     styleUrls: ["./header.component.scss"]
 })

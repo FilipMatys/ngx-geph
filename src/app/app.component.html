@@ -8,20 +8,22 @@
 </ngx-select>
 
 <h2>Boolean Select component</h2>
-<ngx-select [config]="selectBooleanConfig" [(ngModel)]="booleanSelectValue" name="boolean-select-value" placeholder="Select some value!">
+<ngx-select [config]="selectBooleanConfig" [(ngModel)]="booleanSelectValue" name="boolean-select-value"
+  placeholder="Select some value!">
   <ng-container *ngxSelectValue="let value">{{ value ? "Yes" : "No" }}</ng-container>
   <ng-container *ngxSelectOption="let option">{{ option ? "Yes" : "No" }}</ng-container>
   <ng-container *ngxSelectClear>Clear</ng-container>
 </ngx-select>
 
 <h2>Select component [multi]</h2>
-<ngx-select [config]="multiConfig" [(ngModel)]="multiSelectValue" (ngModelChange)="onMultiSelectValueChange($event)" name="multi-select-value" placeholder="Select some value!">
-    <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
-    <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
-    <ngx-select-loading>Loading...</ngx-select-loading>
-    <ngx-select-empty>Nothing found</ngx-select-empty>
-    <ng-container *ngxSelectClear>Clear</ng-container>
-  </ngx-select>
+<ngx-select [config]="multiConfig" [(ngModel)]="multiSelectValue" (ngModelChange)="onMultiSelectValueChange($event)"
+  name="multi-select-value" placeholder="Select some value!">
+  <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
+  <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
+  <ngx-select-loading>Loading...</ngx-select-loading>
+  <ngx-select-empty>Nothing found</ngx-select-empty>
+  <ng-container *ngxSelectClear>Clear</ng-container>
+</ngx-select>
 
 <h2>Tabs</h2>
 <ngx-tabs [tabs]="tabs" [index]="activeTabIndex">
@@ -83,15 +85,22 @@
 <button *ngxCollapsibleExpand>Expand</button>
 <div *ngxCollapsible>Collapsible content</div>
 <h2>Table</h2>
-<ngx-table [data]="options" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)" (rowClick)="onRowClick($event)">
+<ngx-table [data]="options" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)"
+  (rowClick)="onRowClick($event)">
   <ngx-table-empty>No data to be displayed</ngx-table-empty>
   <ng-container ngxColumnDefinition="Header1">
-    <ngx-table-header sortable="true" *ngxHeaderDefinition>Header 1</ngx-table-header>
-    <ngx-table-cell *ngxCellDefinition="let item">{{ item }}</ngx-table-cell>
+    <th class="ngx-table-header" sortable="true" *ngxHeaderDefinition>Header 1</th>
+    <td class="ngx-table-cell" *ngxCellDefinition="let item">{{ item }}</td>
   </ng-container>
   <ng-container ngxColumnDefinition="Header2">
-    <ngx-table-header sortable="true" *ngxHeaderDefinition>Header 2</ngx-table-header>
-    <ngx-table-cell *ngxCellDefinition="let item">{{ item }}</ngx-table-cell>
+    <th class="ngx-table-header" sortable="true" *ngxHeaderDefinition>Header 2</th>
+    <td class="ngx-table-cell" *ngxCellDefinition="let item">{{ item }}</td>
+  </ng-container>
+
+  <ng-container *ngxExpansionDefinition="let item">
+    <ng-container *ngIf="item === 'Frodo'">
+      <td colspan="2">Expanded {{ item }}</td>
+    </ng-container>
   </ng-container>
 </ngx-table>
 <h2>Card</h2>

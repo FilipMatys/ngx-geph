@@ -10,10 +10,7 @@ import { CONFIG } from "./symbols/config.token";
 
 // Components
 import { TableComponent } from "./table.component";
-import { TableRowComponent } from "./components/row/row.component";
-import { TableCellComponent } from "./components/cell/cell.component";
 import { TableHeaderComponent } from "./components/header/header.component";
-import { TableFooterComponent } from "./components/footer/footer.component";
 import { TableEmptyComponent } from "./components/empty/empty.component";
 
 // Directives
@@ -21,6 +18,7 @@ import { TableColumnDefinitionDirective } from "./directives/column/column-defin
 import { TableCellDefinitionDirective } from "./directives/cell/cell-definition.directive";
 import { TableHeaderDefinitionDirective } from "./directives/header/header-definition.directive";
 import { TableFooterDefinitionDirective } from "./directives/footer/footer-definition.directive";
+import { TableExpansionDefinitionDirective } from "./directives/expansion/expansion-definition.directive";
 
 @NgModule({
 	imports: [
@@ -28,26 +26,23 @@ import { TableFooterDefinitionDirective } from "./directives/footer/footer-defin
 	],
 	declarations: [
 		TableComponent,
-		TableRowComponent,
-		TableCellComponent,
 		TableHeaderComponent,
-		TableFooterComponent,
 		TableEmptyComponent,
 		TableColumnDefinitionDirective,
 		TableCellDefinitionDirective,
 		TableHeaderDefinitionDirective,
-		TableFooterDefinitionDirective
+		TableFooterDefinitionDirective,
+		TableExpansionDefinitionDirective
 	],
 	exports: [
 		TableComponent,
-		TableCellComponent,
 		TableHeaderComponent,
-		TableFooterComponent,
 		TableEmptyComponent,
 		TableColumnDefinitionDirective,
 		TableCellDefinitionDirective,
 		TableHeaderDefinitionDirective,
-		TableFooterDefinitionDirective
+		TableFooterDefinitionDirective,
+		TableExpansionDefinitionDirective
 	]
 })
 export class TableModule {

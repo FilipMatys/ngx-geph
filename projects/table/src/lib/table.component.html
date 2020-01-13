@@ -1,27 +1,39 @@
-<ngx-table-row class="header">
-    <ng-container *ngFor="let cDef of outputColumnDefinitions">
-        <ng-container *ngTemplateOutlet="cDef.header"></ng-container>
-    </ng-container>
-</ngx-table-row>
+<thead>
+    <tr class="header ngx-table-row">
+        <ng-container *ngFor="let cDef of outputColumnDefinitions">
+            <ng-container *ngTemplateOutlet="cDef.header"></ng-container>
+        </ng-container>
+    </tr>
+</thead>
 <ng-container *ngIf="(data || []).length; else empty">
-    <ngx-table-row class="data" *ngFor="let item of data; let idx = index; trackBy:config.trackRecordBy" (click)="onRowClick($event, item, idx)">
-        <ng-container *ngFor="let cDef of outputColumnDefinitions">
-            <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx }"></ng-container>
+    <tbody>
+        <ng-container *ngFor="let item of data; let idx = index; trackBy:config.trackRecordBy">
+            <tr class="data ngx-table-row" (click)="onRowClick($event, item, idx)">
+                <ng-container *ngFor="let cDef of outputColumnDefinitions">
+                    <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx }">
+                    </ng-container>
+                </ng-container>
+            </tr>
+            <tr *ngIf="expansionDefinition" class="ngx-table-row expansion">
+                <ng-container *ngTemplateOutlet="expansionDefinition; context: { $implicit: item, index: idx }"></ng-container>
+            </tr>
         </ng-container>
-    </ngx-table-row>
-    <ngx-table-row class="footer">
-        <ng-container *ngFor="let cDef of outputColumnDefinitions">
-            <ng-container *ngIf="cDef.footer; else defaultFooterTemplate">
-                <ng-container *ngTemplateOutlet="cDef.footer"></ng-container>
+    </tbody>
+    <tfoot>
+        <tr class="footer ngx-table-row">
+            <ng-container *ngFor="let cDef of outputColumnDefinitions">
+                <ng-container *ngIf="cDef.footer; else defaultFooterTemplate">
+                    <ng-container *ngTemplateOutlet="cDef.footer"></ng-container>
+                </ng-container>
+                <ng-template #defaultFooterTemplate>
+                    <td class="ngx-table-footer"></td>
+                </ng-template>
             </ng-container>
-            <ng-template #defaultFooterTemplate>
-                <ngx-table-footer></ngx-table-footer>
-            </ng-template>
-        </ng-container>
-    </ngx-table-row>
+        </tr>
+    </tfoot>
 </ng-container>
 <ng-template #empty>
-    <ngx-table-row class="empty">
+    <tr class="empty ngx-table-row">
         <ng-content select="ngx-table-empty"></ng-content>
-    </ngx-table-row>
+    </tr>
 </ng-template>

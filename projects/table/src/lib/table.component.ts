@@ -1,5 +1,5 @@
 // External modules
-import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector } from '@angular/core';
+import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector, TemplateRef, ContentChild } from '@angular/core';
 
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
@@ -16,6 +16,7 @@ import { tableSortDefault } from "./defaults/sort.default";
 
 // Directives
 import { TableColumnDefinitionDirective } from "./directives/column/column-definition.directive";
+import { TableExpansionDefinitionDirective } from "./directives/expansion/expansion-definition.directive";
 
 // Components
 import { TableHeaderComponent } from './components/header/header.component';
@@ -92,6 +93,10 @@ export class TableComponent implements AfterContentChecked {
 	// List of column definitions
 	@ContentChildren(TableColumnDefinitionDirective)
 	public columnDefinitions: QueryList<TableColumnDefinitionDirective>;
+
+	// Expansion definition
+	@ContentChild(TableExpansionDefinitionDirective, { read: TemplateRef })
+	public expansionDefinition: TemplateRef<TableExpansionDefinitionDirective>;
 
 	// List of output column definitions
 	// This is created from definitions based on columns array
