@@ -96,9 +96,15 @@
     <th class="ngx-table-header" sortable="true" *ngxHeaderDefinition>Header 2</th>
     <td class="ngx-table-cell" *ngxCellDefinition="let item">{{ item }}</td>
   </ng-container>
+  <ng-container ngxColumnDefinition="Actions">
+    <th class="ngx-table-header" sortable="false" *ngxHeaderDefinition></th>
+    <td class="ngx-table-cell" *ngxCellDefinition="let item; let idx = index">
+      <button *ngxCollapsibleToggle="'Item' + idx">Toggle</button>
+    </td>
+  </ng-container>
 
-  <ng-container *ngxExpansionDefinition="let item">
-    <ng-container *ngIf="item === 'Frodo'">
+  <ng-container *ngxExpansionDefinition="let item; let idx = index">
+    <ng-container *ngxCollapsible="'Item' + idx; isCollapsedAsDefault:true">
       <td colspan="2">Expanded {{ item }}</td>
     </ng-container>
   </ng-container>

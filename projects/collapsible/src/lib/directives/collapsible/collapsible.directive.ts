@@ -22,6 +22,10 @@ export class CollapsibleDirective implements OnInit, OnDestroy {
     @Input("ngxCollapsible")
     public identifier: string = "default";
 
+    // Init collapsible as collapsed
+    @Input("ngxCollapsibleIsCollapsedAsDefault")
+    public isCollapsedAsDefault: boolean = false;
+
     /**
      * Constructor
      * @param collapsibeService 
@@ -32,15 +36,18 @@ export class CollapsibleDirective implements OnInit, OnDestroy {
         private collapsibeService: CollapsibleService,
         private templateRef: TemplateRef<any>,
         private viewContainerRef: ViewContainerRef
-    ) { 
-        // Create view
-        this.viewContainerRef.createEmbeddedView(this.templateRef);
-    }
+    ) { }
 
     /**
      * On init hook
      */
     public ngOnInit() {
+        // Check default collapsible state
+        if (!this.isCollapsedAsDefault) {
+            // Create view
+            this.viewContainerRef.createEmbeddedView(this.templateRef);
+        }
+
         // Subscribe to collapse
         this.collapseSubscription = this.collapsibeService.collapse$
             .pipe(filter(identifier => identifier === this.identifier))
