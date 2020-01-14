@@ -1,6 +1,6 @@
 {
 	"name": "@calf/ngx-table",
-	"version": "0.0.6",
+	"version": "0.1.0",
 	"description": "Calf framework Table component",
 	"peerDependencies": {
 		"@angular/common": "^6.0.0",
