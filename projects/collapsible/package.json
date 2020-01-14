@@ -1,6 +1,6 @@
 {
   "name": "@calf/ngx-collapsible",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Calf framework Collapsible component",
   "peerDependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
