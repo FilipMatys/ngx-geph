@@ -14,9 +14,10 @@
                     </ng-container>
                 </ng-container>
             </tr>
-            <tr *ngIf="expansionDefinition" class="ngx-table-row expansion">
-                <ng-container *ngTemplateOutlet="expansionDefinition; context: { $implicit: item, index: idx }"></ng-container>
-            </tr>
+            <ng-container *ngIf="expansionDefinition">
+                <ng-container *ngTemplateOutlet="expansionDefinition; context: { $implicit: item, index: idx }">
+                </ng-container>
+            </ng-container>
         </ng-container>
     </tbody>
     <tfoot>

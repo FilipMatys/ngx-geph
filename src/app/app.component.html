@@ -105,7 +105,12 @@
 
   <ng-container *ngxExpansionDefinition="let item; let idx = index">
     <ng-container *ngxCollapsible="'Item' + idx; isCollapsedAsDefault:true">
-      <td colspan="2">Expanded {{ item }}</td>
+      <tr class="ngx-table-row">
+        <td colspan="3">Expanded {{ item }} row1</td>
+      </tr>
+      <tr class="ngx-table-row">
+        <td colspan="3">Expanded {{ item }} row2</td>
+      </tr>
     </ng-container>
   </ng-container>
 </ngx-table>
