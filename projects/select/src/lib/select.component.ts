@@ -178,19 +178,19 @@ export class SelectComponent {
 	}
 
 	// Option template
-	@ContentChild(SelectOptionDirective, { read: TemplateRef })
+	@ContentChild(SelectOptionDirective, { read: TemplateRef, static: false })
 	public selectOptionTemplate: TemplateRef<ISelectOptionContext<any>>;
 
 	// Value template
-	@ContentChild(SelectValueDirective, { read: TemplateRef })
+	@ContentChild(SelectValueDirective, { read: TemplateRef, static: false })
 	public selectValueTemplate: TemplateRef<ISelectValueContext<any>>;
 
 	// Clear template
-	@ContentChild(SelectClearDirective, { read: TemplateRef })
+	@ContentChild(SelectClearDirective, { read: TemplateRef, static: false })
 	public selectClearTemplate: TemplateRef<ISelectClearContext<any>>;
 
 	// Search input
-	@ViewChild('searchInput')
+	@ViewChild('searchInput', { static: false })
 	public searchInput: ElementRef;
 
 	/**

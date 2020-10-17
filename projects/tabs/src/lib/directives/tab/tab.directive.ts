@@ -14,9 +14,9 @@ export class TabDirective {
     @Input("ngxTab")
     public name: string;
 
-    @ContentChild(TabLabelDirective, { read: TemplateRef })
+    @ContentChild(TabLabelDirective, { read: TemplateRef, static: false })
     public label: TemplateRef<any>;
 
-    @ContentChild(TabContentDirective, { read: TemplateRef })
+    @ContentChild(TabContentDirective, { read: TemplateRef, static: false })
     public content: TemplateRef<any>;
 }

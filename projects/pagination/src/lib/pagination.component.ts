@@ -56,19 +56,19 @@ export class PaginationComponent implements OnChanges, AfterContentInit {
 	public pageChange: EventEmitter<IPageChangeEvent> = new EventEmitter<IPageChangeEvent>();
 
 	// First button
-	@ContentChild(PaginationFirstComponent)
+	@ContentChild(PaginationFirstComponent, { static: true })
 	public first: PaginationFirstComponent;
 
 	// Last button
-	@ContentChild(PaginationLastComponent)
+	@ContentChild(PaginationLastComponent, { static: true })
 	public last: PaginationLastComponent;
 
 	// Prev button
-	@ContentChild(PaginationPrevComponent)
+	@ContentChild(PaginationPrevComponent, { static: true })
 	public prev: PaginationPrevComponent;
 
 	// Next button
-	@ContentChild(PaginationNextComponent)
+	@ContentChild(PaginationNextComponent, { static: true })
 	public next: PaginationNextComponent;
 
 	/**

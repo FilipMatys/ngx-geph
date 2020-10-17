@@ -14,7 +14,6 @@ import { TableModule } from "table";
 import { CardModule } from "card";
 import { InputModule } from "input";
 import { LayoutModule } from "layout";
-//import { CalendarModule } from "calendar";
 
 import { AppComponent } from './app.component';
 

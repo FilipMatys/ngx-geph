@@ -95,7 +95,7 @@ export class TableComponent implements AfterContentChecked {
 	public columnDefinitions: QueryList<TableColumnDefinitionDirective>;
 
 	// Expansion definition
-	@ContentChild(TableExpansionDefinitionDirective, { read: TemplateRef })
+	@ContentChild(TableExpansionDefinitionDirective, { read: TemplateRef, static: false })
 	public expansionDefinition: TemplateRef<TableExpansionDefinitionDirective>;
 
 	// List of output column definitions

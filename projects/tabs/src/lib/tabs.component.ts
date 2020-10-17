@@ -45,7 +45,7 @@ export class TabsComponent implements AfterContentInit {
   private _activeIndex: number = 0;
 
   // Content outlet
-  @ViewChild(TabsContentOutlet)
+  @ViewChild(TabsContentOutlet, { static: true })
   public contentOutlet: TabsContentOutlet;
 
   // List of tab definitions
