@@ -1,5 +1,5 @@
 // External modules
-import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef, AfterContentInit, Renderer2 } from "@angular/core";
+import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
@@ -196,12 +196,8 @@ export class SelectComponent {
 	/**
 	 * Select constructor
 	 * @param element 
-	 * @param renderer
 	 */
-	constructor(
-		private element: ElementRef,
-		private renderer: Renderer2
-	) { }
+	constructor(private element: ElementRef) { }
 
     /**
      * Write value

@@ -11,7 +11,7 @@ export class ExpandDirective {
 
     @Input("ngxCollapsibleExpand")
     public identifier: string = "default";
-    
+
     /**
      * Constructor
      * @param collapsibeService 
@@ -24,13 +24,12 @@ export class ExpandDirective {
         private templateRef: TemplateRef<any>,
         private viewContainerRef: ViewContainerRef,
         private renderer: Renderer2
-    ) { 
+    ) {
         // Create view
-        let element = this.viewContainerRef.createEmbeddedView(this.templateRef).rootNodes[0];
+        const element = this.viewContainerRef.createEmbeddedView(this.templateRef).rootNodes[0];
 
         // Listen to click event
-        // Listen to click event
-this.renderer.listen(element, "click", (e) => this.onClick(e));
+        this.renderer.listen(element, "click", (e) => this.onClick(e));
     }
 
     /**

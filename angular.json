@@ -142,9 +142,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/select/ng-package.prod.json"
-            ,              "tsConfig": "projects/select/tsconfig.lib.prod.json"
-}
+              "project": "projects/select/ng-package.prod.json",
+              "tsConfig": "projects/select/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -183,9 +183,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/tabs/ng-package.prod.json"
-            ,              "tsConfig": "projects/tabs/tsconfig.lib.prod.json"
-}
+              "project": "projects/tabs/ng-package.prod.json",
+              "tsConfig": "projects/tabs/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -224,9 +224,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/accordion/ng-package.prod.json"
-            ,              "tsConfig": "projects/accordion/tsconfig.lib.prod.json"
-}
+              "project": "projects/accordion/ng-package.prod.json",
+              "tsConfig": "projects/accordion/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -265,9 +265,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/pagination/ng-package.prod.json"
-            ,              "tsConfig": "projects/pagination/tsconfig.lib.prod.json"
-}
+              "project": "projects/pagination/ng-package.prod.json",
+              "tsConfig": "projects/pagination/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -306,9 +306,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/list/ng-package.prod.json"
-            ,              "tsConfig": "projects/list/tsconfig.lib.prod.json"
-}
+              "project": "projects/list/ng-package.prod.json",
+              "tsConfig": "projects/list/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -347,9 +347,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/icon/ng-package.prod.json"
-            ,              "tsConfig": "projects/icon/tsconfig.lib.prod.json"
-}
+              "project": "projects/icon/ng-package.prod.json",
+              "tsConfig": "projects/icon/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -388,9 +388,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/collapsible/ng-package.prod.json"
-            ,              "tsConfig": "projects/collapsible/tsconfig.lib.prod.json"
-}
+              "project": "projects/collapsible/ng-package.prod.json",
+              "tsConfig": "projects/collapsible/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -429,9 +429,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/table/ng-package.prod.json"
-            ,              "tsConfig": "projects/table/tsconfig.lib.prod.json"
-}
+              "project": "projects/table/ng-package.prod.json",
+              "tsConfig": "projects/table/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -470,9 +470,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/card/ng-package.prod.json"
-            ,              "tsConfig": "projects/card/tsconfig.lib.prod.json"
-}
+              "project": "projects/card/ng-package.prod.json",
+              "tsConfig": "projects/card/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -511,9 +511,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/input/ng-package.prod.json"
-            ,              "tsConfig": "projects/input/tsconfig.lib.prod.json"
-}
+              "project": "projects/input/ng-package.prod.json",
+              "tsConfig": "projects/input/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -552,9 +552,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/calendar/ng-package.prod.json"
-            ,              "tsConfig": "projects/calendar/tsconfig.lib.prod.json"
-}
+              "project": "projects/calendar/ng-package.prod.json",
+              "tsConfig": "projects/calendar/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -593,9 +593,9 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/layout/ng-package.prod.json"
-            ,              "tsConfig": "projects/layout/tsconfig.lib.prod.json"
-}
+              "project": "projects/layout/ng-package.prod.json",
+              "tsConfig": "projects/layout/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
@@ -621,5 +621,8 @@
       }
     }
   },
-  "defaultProject": "geph"
+  "defaultProject": "geph",
+  "cli": {
+    "analytics": "fdb817ce-c90a-4c52-aed9-24bed0cdf190"
+  }
 }
