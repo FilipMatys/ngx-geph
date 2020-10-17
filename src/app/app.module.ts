@@ -14,33 +14,35 @@ import { TableModule } from "table";
 import { CardModule } from "card";
 import { InputModule } from "input";
 import { LayoutModule } from "layout";
+import { SpreadsheetModule } from "spreadsheet";
 
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    SelectModule,
-    InputModule,
-    TabsModule,
-    FormsModule,
-    LayoutModule,
-    AccordionModule,
-    PaginationModule,
-    TableModule.forRoot({
-      allowRowClick: false,
-      sort: {
-        allow: true
-      }
-    }),
-    ListModule,
-    CardModule,
-    CollapsibleModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent
+	],
+	imports: [
+		BrowserModule,
+		SelectModule,
+		InputModule,
+		TabsModule,
+		FormsModule,
+		LayoutModule,
+		AccordionModule,
+		PaginationModule,
+		SpreadsheetModule,
+		TableModule.forRoot({
+			allowRowClick: false,
+			sort: {
+				allow: true
+			}
+		}),
+		ListModule,
+		CardModule,
+		CollapsibleModule
+	],
+	providers: [],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

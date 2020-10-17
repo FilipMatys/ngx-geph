@@ -1,0 +1,41 @@
+.ngx-spreadsheet-table {
+    border-collapse: collapse;
+    width: 100%;
+    position: relative;
+
+    .ngx-spreadsheet-row {
+        &--head {
+            th.ngx-spreadsheet-column {
+                background-color: var(--ngx-spreadsheet-header-background-color, #e6e6e6);
+
+                &--hover {
+                    background-color: var(--ngx-spreadsheet-header-background-color--hover, #d2d2d2);
+                }
+            }
+        }
+
+        &--body {
+            td.ngx-spreadsheet-cell {
+                &--first {
+                    background-color: var(--ngx-spreadsheet-row-name-background-color, #e6e6e6);;
+                }
+            }
+        }
+
+        &--hover {
+            td.ngx-spreadsheet-cell {
+                &--first {
+                    background-color: var(--ngx-spreadsheet-row-name-background-color--hover, #d2d2d2);;
+                }
+
+                &--hover {
+                    background-color: var(--ngx-spreadsheet-cell-background-color--hover, #f8f8f8);
+                }
+            }
+        }
+    }
+
+    &, th, td {
+        border: solid 1px var(--ngx-spreadsheet-border-color, #d4d4d4);
+    }
+}

@@ -1,0 +1,25 @@
+<table class="ngx-spreadsheet-table">
+    <thead class="ngx-spreadsheet-table__head">
+        <tr class="ngx-spreadsheet-row ngx-spreadsheet-row--head">
+            <th class="ngx-spreadsheet-column ngx-spreadsheet-column--first"></th>
+            <th *ngFor="let column of columns; let columnIndex = index" class="ngx-spreadsheet-column"
+                [class.ngx-spreadsheet-column--hover]="columnIndex === hoveredColumnIndex">
+                {{ column.label }}</th>
+        </tr>
+    </thead>
+    <tbody class="ngx-spreadsheet-table__body">
+        <tr *ngFor="let row of [1, 2, 3, 4, 5, 6, 7, 8, 9 , 10]; let rowIndex = index"
+            class="ngx-spreadsheet-row ngx-spreadsheet-row--body"
+            [class.ngx-spreadsheet-row--hover]="rowIndex === hoveredRowIndex">
+            <td class="ngx-spreadsheet-cell ngx-spreadsheet-cell--first">{{ row }}</td>
+            <td *ngFor="let column of columns; let columnIndex = index"
+                (click)="onCellClick($event, rowIndex, columnIndex)"
+                (mouseenter)="onCellMouseEnter($event, rowIndex, columnIndex)"
+                (mouseleave)="onCellMouseLeave($event, rowIndex, columnIndex)" class="ngx-spreadsheet-cell"
+                [class.ngx-spreadsheet-cell--hover]="columnIndex === hoveredColumnIndex && rowIndex === hoveredRowIndex">
+            </td>
+        </tr>
+    </tbody>
+
+    <ngx-spreadsheet-selected [cell]="selectedCell"></ngx-spreadsheet-selected>
+</table>

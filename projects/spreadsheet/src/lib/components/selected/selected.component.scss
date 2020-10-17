@@ -1,0 +1,5 @@
+:host {
+    position: absolute;
+    box-sizing: border-box;
+    box-shadow: inset 0 0 0 2px var(--ngx-spreadsheet-selected-border-color, #000000);
+}

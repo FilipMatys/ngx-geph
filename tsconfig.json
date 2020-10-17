@@ -54,6 +54,10 @@
       ],
       "layout": [
         "dist/layout"
+      ],
+      "spreadsheet": [
+        "dist/spreadsheet/spreadsheet",
+        "dist/spreadsheet"
       ]
     }
   }
