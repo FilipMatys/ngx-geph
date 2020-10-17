@@ -10,13 +10,14 @@
       "prefix": "ngx",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist/geph",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -33,6 +34,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -136,7 +143,8 @@
           "configurations": {
             "production": {
               "project": "projects/select/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/select/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -176,7 +184,8 @@
           "configurations": {
             "production": {
               "project": "projects/tabs/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/tabs/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -216,7 +225,8 @@
           "configurations": {
             "production": {
               "project": "projects/accordion/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/accordion/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -256,7 +266,8 @@
           "configurations": {
             "production": {
               "project": "projects/pagination/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/pagination/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -296,7 +307,8 @@
           "configurations": {
             "production": {
               "project": "projects/list/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/list/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -336,7 +348,8 @@
           "configurations": {
             "production": {
               "project": "projects/icon/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/icon/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -376,7 +389,8 @@
           "configurations": {
             "production": {
               "project": "projects/collapsible/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/collapsible/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -416,7 +430,8 @@
           "configurations": {
             "production": {
               "project": "projects/table/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/table/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -456,7 +471,8 @@
           "configurations": {
             "production": {
               "project": "projects/card/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/card/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -496,7 +512,8 @@
           "configurations": {
             "production": {
               "project": "projects/input/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/input/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -536,7 +553,8 @@
           "configurations": {
             "production": {
               "project": "projects/calendar/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/calendar/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {
@@ -576,7 +594,8 @@
           "configurations": {
             "production": {
               "project": "projects/layout/ng-package.prod.json"
-            }
+            ,              "tsConfig": "projects/layout/tsconfig.lib.prod.json"
+}
           }
         },
         "test": {

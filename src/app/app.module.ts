@@ -28,7 +28,6 @@ import { AppComponent } from './app.component';
     TabsModule,
     FormsModule,
     LayoutModule,
-    //CalendarModule,
     AccordionModule,
     PaginationModule,
     TableModule.forRoot({

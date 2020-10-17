@@ -1,5 +1,5 @@
 // External modules
-import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, Renderer, forwardRef, AfterContentInit } from "@angular/core";
+import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef, AfterContentInit, Renderer2 } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
@@ -178,19 +178,19 @@ export class SelectComponent {
 	}
 
 	// Option template
-	@ContentChild(SelectOptionDirective, { read: TemplateRef, static: false })
+	@ContentChild(SelectOptionDirective, { read: TemplateRef })
 	public selectOptionTemplate: TemplateRef<ISelectOptionContext<any>>;
 
 	// Value template
-	@ContentChild(SelectValueDirective, { read: TemplateRef, static: false })
+	@ContentChild(SelectValueDirective, { read: TemplateRef })
 	public selectValueTemplate: TemplateRef<ISelectValueContext<any>>;
 
 	// Clear template
-	@ContentChild(SelectClearDirective, { read: TemplateRef, static: false })
+	@ContentChild(SelectClearDirective, { read: TemplateRef })
 	public selectClearTemplate: TemplateRef<ISelectClearContext<any>>;
 
 	// Search input
-	@ViewChild('searchInput', { static: false })
+	@ViewChild('searchInput')
 	public searchInput: ElementRef;
 
 	/**
@@ -200,7 +200,7 @@ export class SelectComponent {
 	 */
 	constructor(
 		private element: ElementRef,
-		private renderer: Renderer
+		private renderer: Renderer2
 	) { }
 
     /**
@@ -365,7 +365,7 @@ export class SelectComponent {
 	 * Set focus on search input
 	 */
 	private setFocusOnSearchInput() {
-		setTimeout(() => this.renderer.invokeElementMethod(this.searchInput.nativeElement, "focus"));
+		setTimeout(() => this.searchInput.nativeElement.focus());
 	}
 
 	/**

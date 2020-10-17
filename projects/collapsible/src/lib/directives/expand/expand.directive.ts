@@ -1,5 +1,5 @@
 // External modules
-import { Directive, TemplateRef, ViewContainerRef, Input, Renderer } from "@angular/core";
+import { Directive, TemplateRef, ViewContainerRef, Input, Renderer2 } from "@angular/core";
 
 // Services
 import { CollapsibleService } from "../../collapsible.service";
@@ -23,13 +23,14 @@ export class ExpandDirective {
         private collapsibeService: CollapsibleService,
         private templateRef: TemplateRef<any>,
         private viewContainerRef: ViewContainerRef,
-        private renderer: Renderer
+        private renderer: Renderer2
     ) { 
         // Create view
         let element = this.viewContainerRef.createEmbeddedView(this.templateRef).rootNodes[0];
 
         // Listen to click event
-        this.renderer.listen(element, "click", (e) => this.onClick(e));
+        // Listen to click event
+this.renderer.listen(element, "click", (e) => this.onClick(e));
     }
 
     /**

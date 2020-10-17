@@ -22,7 +22,7 @@ export class IconModule {
    * Configure module
    * @param config 
    */
-  public static configure(config: IIconModuleConfig): ModuleWithProviders {
+  public static configure(config: IIconModuleConfig): ModuleWithProviders<IconModule> {
     return {
       ngModule: IconModule,
       providers: [

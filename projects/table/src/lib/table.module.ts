@@ -51,7 +51,7 @@ export class TableModule {
 	 * Import module with configuration
 	 * @param config 
 	 */
-	public static forRoot(config: ITableConfig<any>): ModuleWithProviders {
+	public static forRoot(config: ITableConfig<any>): ModuleWithProviders<TableModule> {
 		return {
 			ngModule: TableModule,
 			providers: [

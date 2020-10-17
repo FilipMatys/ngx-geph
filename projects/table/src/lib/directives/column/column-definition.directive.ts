@@ -16,14 +16,14 @@ export class TableColumnDefinitionDirective {
     public identifier: string;
 
     // Header definition
-    @ContentChild(TableHeaderDefinitionDirective, { read: TemplateRef, static: false })
+    @ContentChild(TableHeaderDefinitionDirective, { read: TemplateRef })
     public header: TemplateRef<any>;
 
     // Cell definition
-    @ContentChild(TableCellDefinitionDirective, { read: TemplateRef, static: false })
+    @ContentChild(TableCellDefinitionDirective, { read: TemplateRef })
     public cell: TemplateRef<any>;
 
     // Footer definition
-    @ContentChild(TableFooterDefinitionDirective, { read: TemplateRef, static: false })
+    @ContentChild(TableFooterDefinitionDirective, { read: TemplateRef })
     public footer: TemplateRef<any>;
 }
