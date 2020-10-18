@@ -4,10 +4,14 @@ import { Component, HostListener } from "@angular/core";
 // Interfaces
 import { ISpreadsheetColumns } from "./interfaces/columns.interface";
 
+// Services
+import { SpreadsheetService } from "./services/spreadsheet.service";
+
 @Component({
 	selector: "ngx-spreadsheet",
 	templateUrl: "./spreadsheet.component.html",
-	styleUrls: ["./spreadsheet.component.scss"]
+	styleUrls: ["./spreadsheet.component.scss"],
+	providers: [SpreadsheetService]
 })
 export class SpreadsheetComponent {
 
@@ -63,9 +67,20 @@ export class SpreadsheetComponent {
 		return this._selectedCell;
 	}
 
-	@HostListener("window:keydown.ArrowLeft", ["$event"])
-	public onKeydownArrowLeft(event: Event): void {
-		console.log("Pressed left", event);
+	@HostListener("window:keydown", ["$event"])
+	public onKeydown(event: KeyboardEvent): void {
+		// Check key
+		switch (event.key) {
+			case "ArrowLeft":
+			case "ArrowRight":
+			case "ArrowDown":
+			case "ArrowUp":
+				// Process arrow key event
+				this.processArrowKeyEvent(event);
+
+				// Do nothing else
+				break;
+		}
 	}
 
 	// Hovered indexes
@@ -81,7 +96,11 @@ export class SpreadsheetComponent {
 	// Selected cell
 	private _selectedCell: HTMLElement;
 
-	constructor() { }
+	/**
+	 * Constructor
+	 * @param service 
+	 */
+	constructor(private service: SpreadsheetService) { }
 
 	/**
 	 * On cell mouse enter
@@ -159,5 +178,71 @@ export class SpreadsheetComponent {
 
 		// Assign selected cell
 		this._selectedCell = target as HTMLElement;
+	}
+
+	/**
+	 * Process arrow key event
+	 * @param event
+	 */
+	private async processArrowKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Check if any cell is selected
+		if (!this._selectedCell) {
+			// Do nothing
+			return;
+		}
+
+		// Get selected indexes
+		let rowIndex = this._selectedRowIndex;
+		let columnIndex = this._selectedColumnIndex;
+
+		// Check for specific key
+		switch (event.key) {
+			// Arrow left
+			case "ArrowLeft":
+				columnIndex--;
+				break;
+
+			// Arrow right
+			case "ArrowRight":
+				columnIndex++;
+				break;
+
+			// Arrow down
+			case "ArrowDown":
+				rowIndex++;
+				break;
+
+			// Arrow up
+			case "ArrowUp":
+				rowIndex--;
+				break;
+		}
+
+		// Check boundaries of row index
+		if (rowIndex < 0) {
+			// Do nothing
+			return;
+		}
+
+		// Check boundaries of column index
+		if (columnIndex < 0 || columnIndex > (this.columns.length - 1)) {
+			// Do nothing
+			return;
+		}
+
+		// Prevent event default
+		event.preventDefault();
+
+		// Get cell based on row and column index
+		const cell = await this.service.getCell({ rowIndex, columnIndex });
+
+		// Check if any cell was found
+		if (!cell) {
+			// Do nothing
+			return;
+		}
+
+		// Select cell
+		await this.selectCell(rowIndex, columnIndex, cell.getNativeElement());
 	}
 }

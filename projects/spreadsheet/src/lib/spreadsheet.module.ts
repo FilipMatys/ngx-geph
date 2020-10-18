@@ -4,9 +4,7 @@ import { CommonModule } from "@angular/common";
 
 // Components
 import { SpreadsheetComponent } from "./spreadsheet.component";
-
-// Services
-import { SpreadsheetService } from "./services/spreadsheet.service";
+import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 import { SpreadsheetSelectedComponent } from "./components/selected/selected.component";
 
 @NgModule({
@@ -15,9 +13,9 @@ import { SpreadsheetSelectedComponent } from "./components/selected/selected.com
 	],
 	declarations: [
 		SpreadsheetComponent,
+		SpreadsheetCellComponent,
 		SpreadsheetSelectedComponent
 	],
-	exports: [SpreadsheetComponent],
-	providers: [SpreadsheetService]
+	exports: [SpreadsheetComponent]
 })
 export class SpreadsheetModule { }
