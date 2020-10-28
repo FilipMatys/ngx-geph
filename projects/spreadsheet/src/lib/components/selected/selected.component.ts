@@ -1,6 +1,9 @@
 // External modules
 import { Component, HostBinding, Input } from "@angular/core";
 
+// Components
+import { SpreadsheetCellComponent } from "../cell/cell.component";
+
 @Component({
     selector: "ngx-spreadsheet-selected",
     templateUrl: "./selected.component.html",
@@ -9,7 +12,7 @@ import { Component, HostBinding, Input } from "@angular/core";
 export class SpreadsheetSelectedComponent {
 
     @Input("cell")
-    private _cell: HTMLElement;
+    private _cell: SpreadsheetCellComponent;
 
     /**
      * Width
@@ -23,7 +26,7 @@ export class SpreadsheetSelectedComponent {
         }
 
         // Get cell width
-        return this._cell.offsetWidth + 1;
+        return this._cell.getNativeElement().offsetWidth + 1;
     }
 
     /**
@@ -38,7 +41,7 @@ export class SpreadsheetSelectedComponent {
         }
 
         // Get cell height
-        return this._cell.offsetHeight;
+        return this._cell.getNativeElement().offsetHeight;
     }
 
     /**
@@ -53,7 +56,7 @@ export class SpreadsheetSelectedComponent {
         }
 
         // Get cell position x
-        return this._cell.offsetLeft - 1;
+        return this._cell.getNativeElement().offsetLeft - 1;
     }
 
     /**
@@ -68,6 +71,6 @@ export class SpreadsheetSelectedComponent {
         }
 
         // Get cell position y
-        return this._cell.offsetTop - 1;
+        return this._cell.getNativeElement().offsetTop - 1;
     }
 }

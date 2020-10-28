@@ -1,5 +1,6 @@
 // External modules
 import { Component, HostListener } from "@angular/core";
+import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 
 // Interfaces
 import { ISpreadsheetColumns } from "./interfaces/columns.interface";
@@ -63,7 +64,7 @@ export class SpreadsheetComponent {
 	 * Selected cell
 	 * @description Selected cell getter
 	 */
-	public get selectedCell(): HTMLElement {
+	public get selectedCell(): SpreadsheetCellComponent {
 		return this._selectedCell;
 	}
 
@@ -94,7 +95,7 @@ export class SpreadsheetComponent {
 	private _selectedColumnsIndexes: number[] = [];
 
 	// Selected cell
-	private _selectedCell: HTMLElement;
+	private _selectedCell: SpreadsheetCellComponent;
 
 	/**
 	 * Constructor
@@ -141,7 +142,7 @@ export class SpreadsheetComponent {
 		event.stopPropagation();
 
 		// Select cell
-		this.selectCell(rowIndex, columnIndex, event.target);
+		this.selectCell(rowIndex, columnIndex);
 	}
 
 	/**
@@ -168,16 +169,19 @@ export class SpreadsheetComponent {
 	 * @param rowIndex 
 	 * @param columnIndex 
 	 * @param target
+	 * @param cell
 	 */
-	private async selectCell(rowIndex: number, columnIndex: number, target: EventTarget): Promise<void> {
+	private async selectCell(rowIndex: number, columnIndex: number, cell?: SpreadsheetCellComponent): Promise<void> {
 		// Set selected indexes
 		this._selectedRowIndex = rowIndex;
 		this._selectedColumnIndex = columnIndex;
 		this._selectedRowsIndexes = [rowIndex];
 		this._selectedColumnsIndexes = [columnIndex];
 
+		cell = cell || await this.service.getCell({ rowIndex, columnIndex });
+
 		// Assign selected cell
-		this._selectedCell = target as HTMLElement;
+		this._selectedCell = cell;
 	}
 
 	/**
@@ -243,6 +247,6 @@ export class SpreadsheetComponent {
 		}
 
 		// Select cell
-		await this.selectCell(rowIndex, columnIndex, cell.getNativeElement());
+		await this.selectCell(rowIndex, columnIndex, cell);
 	}
 }
