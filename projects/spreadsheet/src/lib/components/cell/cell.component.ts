@@ -11,7 +11,7 @@ import { ISpreadsheetCoordinates } from "../../interfaces/coordinates.interface"
 import { SpreadsheetService } from "../../services/spreadsheet.service";
 
 @Component({
-    selector: ".ngx-spreadsheet-cell",
+    selector: "[ngxSpreadsheetCell]",
     templateUrl: "./cell.component.html",
     styleUrls: ["./cell.component.scss"]
 })

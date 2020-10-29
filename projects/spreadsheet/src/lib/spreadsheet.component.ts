@@ -1,12 +1,14 @@
 // External modules
-import { Component, HostListener } from "@angular/core";
-import { SpreadsheetCellComponent } from "./components/cell/cell.component";
+import { Component, HostListener, QueryList, ViewChildren } from "@angular/core";
 
 // Interfaces
 import { ISpreadsheetColumns } from "./interfaces/columns.interface";
 
 // Services
 import { SpreadsheetService } from "./services/spreadsheet.service";
+
+// Components
+import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 
 @Component({
 	selector: "ngx-spreadsheet",
@@ -15,6 +17,10 @@ import { SpreadsheetService } from "./services/spreadsheet.service";
 	providers: [SpreadsheetService]
 })
 export class SpreadsheetComponent {
+
+	// List of cells
+	@ViewChildren(SpreadsheetCellComponent)
+	public cells: QueryList<SpreadsheetCellComponent>;
 
 	// List of spreadsheet columns
 	public columns: ISpreadsheetColumns = [
@@ -184,20 +190,19 @@ export class SpreadsheetComponent {
 	 * Select cell
 	 * @param rowIndex 
 	 * @param columnIndex 
-	 * @param target
-	 * @param cell
 	 */
-	private async selectCell(rowIndex: number, columnIndex: number, cell?: SpreadsheetCellComponent): Promise<void> {
+	private async selectCell(rowIndex: number, columnIndex: number): Promise<void> {
 		// Set selected indexes
 		this._selectedRowIndex = rowIndex;
 		this._selectedColumnIndex = columnIndex;
 		this._selectedRowsIndexes = [rowIndex];
 		this._selectedColumnsIndexes = [columnIndex];
 
-		cell = cell || await this.service.getCell({ rowIndex, columnIndex });
+		// Get index within list of cells
+		const index = (rowIndex * this.columns.length) + columnIndex;
 
 		// Assign selected cell
-		this._selectedCell = cell;
+		this._selectedCell = this.cells.find((_, idx) => idx === index);
 	}
 
 	/**
@@ -253,16 +258,7 @@ export class SpreadsheetComponent {
 		// Prevent event default
 		event.preventDefault();
 
-		// Get cell based on row and column index
-		const cell = await this.service.getCell({ rowIndex, columnIndex });
-
-		// Check if any cell was found
-		if (!cell) {
-			// Do nothing
-			return;
-		}
-
 		// Select cell
-		await this.selectCell(rowIndex, columnIndex, cell);
+		await this.selectCell(rowIndex, columnIndex);
 	}
 }
