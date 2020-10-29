@@ -61,6 +61,22 @@ export class SpreadsheetComponent {
 	}
 
 	/**
+	 * Selected row index
+	 * @description Selected row index getter
+	 */
+	public get selectedRowIndex(): number {
+		return this._selectedRowIndex;
+	}
+
+	/**
+	 * Selected column index
+	 * @description Selected column index getter
+	 */
+	public get selectedColumnIndex(): number {
+		return this._selectedColumnIndex;
+	}
+
+	/**
 	 * Selected cell
 	 * @description Selected cell getter
 	 */
