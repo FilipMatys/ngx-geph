@@ -25,5 +25,7 @@
         </tr>
     </tbody>
 
-    <ngx-spreadsheet-selected [cell]="selectedCell"></ngx-spreadsheet-selected>
+    <ngx-spreadsheet-selected *ngIf="selectedCell" [cell]="selectedCell">
+        <input #selectedInput (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value" class="ngx-spreadsheet-input" type="text">
+    </ngx-spreadsheet-selected>
 </table>

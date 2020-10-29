@@ -53,3 +53,12 @@
         border: solid 1px var(--ngx-spreadsheet-border-color, #d4d4d4);
     }
 }
+
+.ngx-spreadsheet-input {
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 2px;
+    border: solid 2px var(--ngx-spreadsheet-selected-border-color, #000000);
+    height: 100%;
+}

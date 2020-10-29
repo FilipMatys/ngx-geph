@@ -1,5 +1,5 @@
 // External modules
-import { Component, ElementRef, HostListener, Input, QueryList, ViewChildren } from "@angular/core";
+import { Component, ElementRef, HostListener, Input, QueryList, ViewChild, ViewChildren } from "@angular/core";
 
 // Interfaces
 import { ISpreadsheetData } from "./interfaces/data.interface";
@@ -18,6 +18,13 @@ export class SpreadsheetComponent {
 	// List of cells
 	@ViewChildren(SpreadsheetCellComponent)
 	public cells: QueryList<SpreadsheetCellComponent>;
+
+	// Selected input
+	@ViewChild('selectedInput')
+	public selectedInput: ElementRef;
+
+	// Selected input focus flag
+	private _hasSelectedInputFocus: boolean = false;
 
 	// Spreadsheet data
 	@Input("data")
@@ -134,6 +141,8 @@ export class SpreadsheetComponent {
 			return;
 		}
 
+		console.log(event.key);
+
 		// Check key
 		switch (event.key) {
 			case "ArrowLeft":
@@ -149,6 +158,27 @@ export class SpreadsheetComponent {
 			case "Delete":
 				// Process delete key event
 				this.processDeleteKeyEvent(event);
+
+				// Do nothing else
+				break;
+
+			case "Escape":
+				// Process escape key event
+				this.processEscapeKeyEvent(event);
+
+				// Do nothing else
+				break;
+
+			case "Enter":
+				// Process enter key event
+				this.processEnterEvent(event);
+
+				// Do nothing else
+				break;
+
+			case "Tab":
+				// Process tab key event
+				this.processTabKeyEvent(event);
 
 				// Do nothing else
 				break;
@@ -173,6 +203,24 @@ export class SpreadsheetComponent {
 	 * @param element
 	 */
 	constructor(private element: ElementRef) { }
+
+	/**
+	 * On selected input focus
+	 * @param event 
+	 */
+	public onSelectedInputFocus(event: Event): void {
+		// Set flag
+		this._hasSelectedInputFocus = true;
+	}
+
+	/**
+	 * On selected input blur
+	 * @param event 
+	 */
+	public onSelectedInputBlur(event: Event): void {
+		// Set flag
+		this._hasSelectedInputFocus = false;
+	}
 
 	/**
 	 * On cell mouse enter
@@ -257,6 +305,18 @@ export class SpreadsheetComponent {
 	 * @param columnIndex 
 	 */
 	private async selectCell(rowIndex: number, columnIndex: number): Promise<void> {
+		// Before selecting new cell, check for selected input
+		if (this._selectedCell) {
+			// Assign value
+			await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value);
+
+			// Blur input
+			this.selectedInput.nativeElement.blur();
+
+			// Reset value
+			this.selectedInput.nativeElement.value = "";
+		}
+
 		// Set selected indexes
 		this._selectedRowIndex = rowIndex;
 		this._selectedColumnIndex = columnIndex;
@@ -271,20 +331,115 @@ export class SpreadsheetComponent {
 	}
 
 	/**
+	 * Process tab key event
+	 * @param event 
+	 */
+	private async processTabKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Prevent default
+		event.preventDefault();
+
+		// Init selected indexes
+		let selectedRowIndex = this._selectedRowIndex;
+		let selectedColumnIndex = this._selectedColumnIndex;
+
+		// Check column index
+		if (selectedColumnIndex >= (this.columns.length - 1)) {
+			// Select first column of the next row
+			await this.selectCell(selectedRowIndex + 1, 0);
+		}
+		else {
+			// Select next column of current row
+			await this.selectCell(selectedRowIndex, selectedColumnIndex + 1);
+		}
+	}
+
+	/**
 	 * Process delete key event
 	 * @param event 
 	 */
 	private async processDeleteKeyEvent(event: KeyboardEvent): Promise<void> {
 		// Check if data are set for selected row
-		if (!this.data[this._selectedRowIndex]) {
+		if (!this.data[this._selectedRowIndex] || this._hasSelectedInputFocus) {
 			return;
 		}
+
+		// Prevent default
+		event.preventDefault();
 
 		// Get column
 		const column = this.columns[this._selectedColumnIndex];
 
 		// Reset value of given record
 		this.data[this._selectedRowIndex][column.identifier || column.label] = null;
+	}
+
+	/**
+	 * Assign value to selected cell
+	 * @param value 
+	 */
+	private async assignValueToSelectedCell(value: any): Promise<void> {
+		// Get record (or default as empty)
+		const record = this.data[this._selectedRowIndex] || {};
+
+		// Get column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Get value
+		record[column.identifier || column.label] = value;
+
+		// Assign record (in case new was created)
+		this.data[this._selectedRowIndex] = record;
+	}
+
+	/**
+	 * Process enter event
+	 * @param event 
+	 */
+	private async processEnterEvent(event: KeyboardEvent): Promise<void> {
+		// Check for selected input
+		if (!this.selectedInput || !this.selectedInput.nativeElement) {
+			// Do nothing
+			return;
+		}
+
+		// Prevent default
+		event.preventDefault();
+
+		// Check focus
+		if (!this._hasSelectedInputFocus) {
+			// Set focus
+			this.selectedInput.nativeElement.focus();
+
+			// Do nothing else
+			return;
+		}
+
+		// Assign value
+		await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value);
+
+		// Blur input
+		this.selectedInput.nativeElement.blur();
+	}
+
+	/**
+	 * Process escape key event
+	 * @param event 
+	 */
+	private async processEscapeKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Check for selected input
+		if (!this.selectedInput || !this.selectedInput.nativeElement) {
+			// Do nothing
+			return;
+		}
+
+		// Prevent default
+		event.preventDefault();
+
+		// Reset value
+		this.selectedInput.nativeElement.value = this._selectedCell.value;
+
+		// Blur
+		this.selectedInput.nativeElement.blur();
 	}
 
 	/**
@@ -300,11 +455,23 @@ export class SpreadsheetComponent {
 		switch (event.key) {
 			// Arrow left
 			case "ArrowLeft":
+				// Check for focus
+				if (this._hasSelectedInputFocus) {
+					// Do nothing as input has focus
+					return;
+				}
+
 				columnIndex--;
 				break;
 
 			// Arrow right
 			case "ArrowRight":
+				// Check for focus
+				if (this._hasSelectedInputFocus) {
+					// Do nothing as input has focus
+					return;
+				}
+
 				columnIndex++;
 				break;
 
