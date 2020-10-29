@@ -1,11 +1,9 @@
 // External modules
-import { Component, HostListener, QueryList, ViewChildren } from "@angular/core";
+import { Component, HostListener, Input, QueryList, ViewChildren } from "@angular/core";
 
 // Interfaces
+import { ISpreadsheetData } from "./interfaces/data.interface";
 import { ISpreadsheetColumns } from "./interfaces/columns.interface";
-
-// Services
-import { SpreadsheetService } from "./services/spreadsheet.service";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
@@ -13,8 +11,7 @@ import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 @Component({
 	selector: "ngx-spreadsheet",
 	templateUrl: "./spreadsheet.component.html",
-	styleUrls: ["./spreadsheet.component.scss"],
-	providers: [SpreadsheetService]
+	styleUrls: ["./spreadsheet.component.scss"]
 })
 export class SpreadsheetComponent {
 
@@ -22,7 +19,12 @@ export class SpreadsheetComponent {
 	@ViewChildren(SpreadsheetCellComponent)
 	public cells: QueryList<SpreadsheetCellComponent>;
 
+	// Spreadsheet data
+	@Input("data")
+	public data: ISpreadsheetData;
+
 	// List of spreadsheet columns
+	@Input("columns")
 	public columns: ISpreadsheetColumns = [
 		{ label: "A" },
 		{ label: "B" },
@@ -118,12 +120,6 @@ export class SpreadsheetComponent {
 
 	// Selected cell
 	private _selectedCell: SpreadsheetCellComponent;
-
-	/**
-	 * Constructor
-	 * @param service 
-	 */
-	constructor(private service: SpreadsheetService) { }
 
 	/**
 	 * On cell mouse enter
