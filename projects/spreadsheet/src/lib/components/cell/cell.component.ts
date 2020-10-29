@@ -4,15 +4,12 @@ import { Component, ElementRef, Input } from "@angular/core";
 // Interfaces
 import { ISpreadsheetColumn } from "../../interfaces/column.interface";
 
-// Services
-import { SpreadsheetService } from "../../services/spreadsheet.service";
-
 @Component({
     selector: "[ngxSpreadsheetCell]",
     templateUrl: "./cell.component.html",
     styleUrls: ["./cell.component.scss"]
 })
-export class SpreadsheetCellComponent {
+export class SpreadsheetCellComponent<TRecord = any> {
 
     @Input("rowIndex")
     private _rowIndex: number;
@@ -23,23 +20,33 @@ export class SpreadsheetCellComponent {
     @Input("column")
     private _column: ISpreadsheetColumn;
 
+    @Input("record")
+    private _record: TRecord;
+
     /**
      * Value
      * @description Cell value getter
      */
     public get value(): any {
-        return null;
+        // Check if record is defined
+        if (!this._record) {
+            return null;
+        }
+
+        // Check if column value is defined
+        if (!(this._column.identifier in this._record)) {
+            return null;
+        }
+
+        // Otherwise return value
+        return this._record[this._column.identifier || this._column.label];
     }
 
     /**
      * Constructor
      * @param elementRef
-     * @param service
      */
-    constructor(
-        private elementRef: ElementRef,
-        private service: SpreadsheetService
-    ) { }
+    constructor(private elementRef: ElementRef) { }
 
     /**
      * Get native element

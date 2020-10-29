@@ -21,7 +21,7 @@ export class SpreadsheetComponent {
 
 	// Spreadsheet data
 	@Input("data")
-	public data: ISpreadsheetData;
+	public data: ISpreadsheetData<any> = [];
 
 	// List of spreadsheet columns
 	@Input("columns")

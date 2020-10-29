@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
-import { ITableSort } from 'projects/table/src/public_api';
+import { ISpreadsheetColumns, ISpreadsheetData } from "spreadsheet";
 
 @Component({
   selector: 'ngx-root',
@@ -10,6 +10,33 @@ import { ITableSort } from 'projects/table/src/public_api';
 })
 export class AppComponent {
   title = 'ngx';
+
+  public spreadsheetColumns: ISpreadsheetColumns = [
+    {
+      label: "A",
+      identifier: "a"
+    },
+    {
+      label: "B",
+      identifier: "b"
+    },
+    {
+      label: "C",
+      identifier: "c"
+    }
+  ];
+
+  public spreadsheetData: ISpreadsheetData<any> = [
+    {
+      a: 25,
+      b: "458",
+      c: 47
+    },
+    {
+      a: 29,
+      c: 11
+    }
+  ]
 
   public options: string[] = ['Hello', 'Mr', 'Frodo'];
 

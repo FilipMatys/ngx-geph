@@ -16,7 +16,7 @@
             >
             <td class="ngx-spreadsheet-cell ngx-spreadsheet-cell--first">{{ row }}</td>
             <td ngxSpreadsheetCell *ngFor="let column of columns; let columnIndex = index" [rowIndex]="rowIndex"
-                [columnIndex]="columnIndex" [column]="columns[columnIndex]"
+                [columnIndex]="columnIndex" [column]="columns[columnIndex]" [record]="data[rowIndex]"
                 (click)="onCellClick($event, rowIndex, columnIndex)"
                 (mouseenter)="onCellMouseEnter($event, rowIndex, columnIndex)"
                 (mouseleave)="onCellMouseLeave($event, rowIndex, columnIndex)" class="ngx-spreadsheet-cell"
