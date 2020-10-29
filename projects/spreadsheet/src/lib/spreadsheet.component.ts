@@ -141,8 +141,6 @@ export class SpreadsheetComponent {
 			return;
 		}
 
-		console.log(event.key);
-
 		// Check key
 		switch (event.key) {
 			case "ArrowLeft":
@@ -359,6 +357,9 @@ export class SpreadsheetComponent {
 
 		// Assign selected cell
 		this._selectedCell = this.cells.find((_, idx) => idx === index);
+
+		// Also make sure value is assigned
+		setTimeout(() => this.selectedInput.nativeElement.value = this._selectedCell.value || "");
 	}
 
 	/**
