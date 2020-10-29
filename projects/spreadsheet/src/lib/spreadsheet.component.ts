@@ -90,7 +90,7 @@ export class SpreadsheetComponent {
 			// Do nothing
 			return;
 		}
-		
+
 
 		// Reset select
 		this.resetSelect();
@@ -172,7 +172,7 @@ export class SpreadsheetComponent {
 	 * Constructor
 	 * @param element
 	 */
-	constructor (private element: ElementRef) {}
+	constructor(private element: ElementRef) { }
 
 	/**
 	 * On cell mouse enter
@@ -209,9 +209,13 @@ export class SpreadsheetComponent {
 	 * @param columnIndex 
 	 */
 	public onCellClick(event: Event, rowIndex: number, columnIndex: number): void {
-		// Do not prevent event propagation as we want to support multiple 
+		// Prevent event propagation
+		event.stopPropagation();
+
+		// Dispatch click event on the component as we want to support multiple 
 		// spreadsheets within page and clicking on a cell of another spreadsheet
-		// has to bubble out to 
+		// has to bubble out 
+		this.element.nativeElement.dispatchEvent(new Event("click", { bubbles: true }));
 
 		// Select cell
 		this.selectCell(rowIndex, columnIndex);
