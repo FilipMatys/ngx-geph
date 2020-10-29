@@ -1,5 +1,5 @@
 // External modules
-import { Component, HostBinding, Input } from "@angular/core";
+import { Component, HostBinding, HostListener, Input } from "@angular/core";
 
 // Components
 import { SpreadsheetCellComponent } from "../cell/cell.component";

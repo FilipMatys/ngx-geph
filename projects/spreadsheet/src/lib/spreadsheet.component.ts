@@ -25,16 +25,7 @@ export class SpreadsheetComponent {
 
 	// List of spreadsheet columns
 	@Input("columns")
-	public columns: ISpreadsheetColumns = [
-		{ label: "A" },
-		{ label: "B" },
-		{ label: "C" },
-		{ label: "D" },
-		{ label: "E" },
-		{ label: "F" },
-		{ label: "G" },
-		{ label: "H" },
-	];
+	public columns: ISpreadsheetColumns = [];
 
 	/**
 	 * Hovered row index
@@ -92,8 +83,34 @@ export class SpreadsheetComponent {
 		return this._selectedCell;
 	}
 
-	@HostListener("window:keydown", ["$event"])
+	@HostListener("paste", ["$event"])
+	public onPaste(event: ClipboardEvent): void {
+		// Check if any cell is selected
+		if (!this._selectedCell) {
+			// Do nothing
+			return;
+		}
+
+		// Process paste event
+		this.processPasteEvent(event);
+	}
+
+	@HostListener("document:keydown", ["$event"])
 	public onKeydown(event: KeyboardEvent): void {
+		// Check if any cell is selected
+		if (!this._selectedCell) {
+			// Do nothing
+			return;
+		}
+
+		// Check for ctrl key
+		if (event.ctrlKey) {
+			// Do nothing
+			return;
+		}
+
+		console.log("Processing key");
+
 		// Check key
 		switch (event.key) {
 			case "ArrowLeft":
@@ -206,12 +223,6 @@ export class SpreadsheetComponent {
 	 * @param event
 	 */
 	private async processArrowKeyEvent(event: KeyboardEvent): Promise<void> {
-		// Check if any cell is selected
-		if (!this._selectedCell) {
-			// Do nothing
-			return;
-		}
-
 		// Get selected indexes
 		let rowIndex = this._selectedRowIndex;
 		let columnIndex = this._selectedColumnIndex;
@@ -256,5 +267,50 @@ export class SpreadsheetComponent {
 
 		// Select cell
 		await this.selectCell(rowIndex, columnIndex);
+	}
+
+	/**
+	 * Process paste event
+	 * @param event 
+	 */
+	private async processPasteEvent(event: ClipboardEvent): Promise<void> {
+		// First get data
+		const data = event.clipboardData.getData("text");
+		
+		// Check data
+		if (typeof data === "undefined") {
+			// Do nothing
+			return;
+		}
+
+		// Otherwise split data into lines
+		const lines = data.split(/\r?\n/).filter((line) => line.length);
+
+		// Now process each line
+		for (let index = 0, rowIndex = this._selectedRowIndex; index < lines.length; index++, rowIndex++) {
+			// Get line
+			const line = lines[index];
+
+			// Split line into values
+			const values = line.split("\t");
+			
+			// Get record data for given row or init default
+			const record = this.data[rowIndex] || {};
+
+			// Now it is time to process the values
+			for (let vIndex = 0, columnIndex = this._selectedColumnIndex; vIndex < values.length, columnIndex < this.columns.length; vIndex++, columnIndex++) {
+				// Get value
+				const value = values[vIndex];
+
+				// Get column
+				const column = this.columns[columnIndex];
+
+				// Assign value to record
+				record[column.identifier || column.label] = value;
+			}
+
+			// Assign record
+			this.data[rowIndex] = record;
+		}
 	}
 }
