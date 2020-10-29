@@ -83,6 +83,18 @@ export class SpreadsheetComponent {
 		return this._selectedCell;
 	}
 
+	@HostListener("copy", ["$event"])
+	public onCopy(event: ClipboardEvent): void {
+		// Check if any cell is selected
+		if (!this._selectedCell) {
+			// Do nothing
+			return;
+		}
+
+		// Process copy event
+		this.processCopyEvent(event);
+	}
+
 	@HostListener("paste", ["$event"])
 	public onPaste(event: ClipboardEvent): void {
 		// Check if any cell is selected
@@ -292,13 +304,34 @@ export class SpreadsheetComponent {
 	}
 
 	/**
+	 * Process copy event
+	 * @param event
+	 */
+	private async processCopyEvent(event: ClipboardEvent): Promise<void> {
+		// Get record (or default as empty)
+		const record = this.data[this._selectedRowIndex] || {};
+
+		// Get column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Get value
+		const value = record[column.identifier || column.label] || "";
+
+		// Set clipboard data from the cell
+		event.clipboardData.setData("text", `${value}`);
+
+		// Prevent default
+		event.preventDefault();
+	}
+
+	/**
 	 * Process paste event
 	 * @param event 
 	 */
 	private async processPasteEvent(event: ClipboardEvent): Promise<void> {
 		// First get data
 		const data = event.clipboardData.getData("text");
-		
+
 		// Check data
 		if (typeof data === "undefined") {
 			// Do nothing
@@ -315,12 +348,12 @@ export class SpreadsheetComponent {
 
 			// Split line into values
 			const values = line.split("\t");
-			
+
 			// Get record data for given row or init default
 			const record = this.data[rowIndex] || {};
 
 			// Now it is time to process the values
-			for (let vIndex = 0, columnIndex = this._selectedColumnIndex; vIndex < values.length, columnIndex < this.columns.length; vIndex++, columnIndex++) {
+			for (let vIndex = 0, columnIndex = this._selectedColumnIndex; vIndex < values.length && columnIndex < this.columns.length; vIndex++, columnIndex++) {
 				// Get value
 				const value = values[vIndex];
 
