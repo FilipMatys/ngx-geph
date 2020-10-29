@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
-import { ISpreadsheetColumns, ISpreadsheetData } from "spreadsheet";
+import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, SpreadsheetVerticalAlign } from "spreadsheet";
 
 @Component({
   selector: 'ngx-root',
@@ -22,7 +22,11 @@ export class AppComponent {
     },
     {
       label: "C",
-      identifier: "c"
+      identifier: "c",
+      style: {
+        fontWeight: SpreadsheetFontWeight.BOLDER,
+        textAlign: SpreadsheetTextAlign.CENTER
+      }
     }
   ];
 

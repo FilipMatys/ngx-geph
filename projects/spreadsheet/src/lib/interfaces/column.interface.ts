@@ -1,3 +1,6 @@
+// Interfaces
+import { ISpreadsheetStyle } from "./style.interface";
+
 /**
  * Spreadsheet column
  * @description Interface for spreadsheet
@@ -8,4 +11,5 @@ export interface ISpreadsheetColumn {
     identifier?: string;
     isReadonly?: boolean;
     isDisabled?: boolean;
+    style?: ISpreadsheetStyle;
 }

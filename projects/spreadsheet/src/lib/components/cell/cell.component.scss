@@ -1,0 +1,61 @@
+:host {
+    &.ngx-spreadsheet-cell {
+        &--text-align {
+            &-start {
+                text-align: start;
+            }
+
+            &-end {
+                text-align: end;
+            }
+
+            &-left {
+                text-align: left;
+            }
+
+            &-right {
+                text-align: right;
+            }
+
+            &-center {
+                text-align: center;
+            }
+        }
+
+        &--font-weight {
+            &-lighter {
+                font-weight: lighter;
+            }
+
+            &-normal {
+                font-weight: normal;
+            }
+
+            &-bold {
+                font-weight: bold;
+            }
+
+            &-bolder {
+                font-weight: bolder;
+            }
+        }
+
+        &--vertical-align {
+            &-middle {
+                vertical-align: middle;
+            }
+
+            &-baseline {
+                vertical-align: baseline;
+            }
+
+            &-bottom {
+                vertical-align: bottom;
+            }
+
+            &-top {
+                vertical-align: top;
+            }
+        }
+    }
+}
