@@ -135,8 +135,8 @@ export class SpreadsheetComponent {
 			return;
 		}
 
-		// Check for ctrl key
-		if (event.ctrlKey) {
+		// Check for ctrl and meta key
+		if (event.ctrlKey || event.metaKey) {
 			// Do nothing
 			return;
 		}
@@ -153,36 +153,52 @@ export class SpreadsheetComponent {
 				this.processArrowKeyEvent(event);
 
 				// Do nothing else
-				break;
+				return;
+
+			case "Backspace":
+				// Process backspace key event
+				this.processBackspaceKeyEvent(event);
+
+				// Do nothing else
+				return;
 
 			case "Delete":
 				// Process delete key event
 				this.processDeleteKeyEvent(event);
 
 				// Do nothing else
-				break;
+				return;
 
 			case "Escape":
 				// Process escape key event
 				this.processEscapeKeyEvent(event);
 
 				// Do nothing else
-				break;
+				return;
 
 			case "Enter":
 				// Process enter key event
 				this.processEnterEvent(event);
 
 				// Do nothing else
-				break;
+				return;
 
 			case "Tab":
 				// Process tab key event
 				this.processTabKeyEvent(event);
 
 				// Do nothing else
-				break;
+				return;
+
+			default:
+				// Process default
+				this.processDefaultKeyEvent(event);
+
+				// Do nothing else
+				return;
 		}
+
+
 	}
 
 	// Hovered indexes
@@ -312,8 +328,23 @@ export class SpreadsheetComponent {
 
 			// Blur input
 			this.selectedInput.nativeElement.blur();
+		}
 
-			// Reset value
+		// Check boundaries of row index
+		if (rowIndex < 0) {
+			// Do nothing
+			return;
+		}
+
+		// Check boundaries of column index
+		if (columnIndex < 0 || columnIndex > (this.columns.length - 1)) {
+			// Do nothing
+			return;
+		}
+
+		// Check for selected cell
+		if (this._selectedCell) {
+			// Reset value as we are going to change it
 			this.selectedInput.nativeElement.value = "";
 		}
 
@@ -331,6 +362,27 @@ export class SpreadsheetComponent {
 	}
 
 	/**
+	 * Process backspace key event
+	 * @param event 
+	 */
+	private async processBackspaceKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Check for input focus
+		if (this._hasSelectedInputFocus) {
+			// Do nothing
+			return;
+		}
+
+		// Prevent default
+		event.preventDefault();
+
+		// Reset input value
+		this.selectedInput.nativeElement.value = "";
+
+		// Set focus
+		this.selectedInput.nativeElement.focus();
+	}
+
+	/**
 	 * Process tab key event
 	 * @param event 
 	 */
@@ -342,14 +394,28 @@ export class SpreadsheetComponent {
 		let selectedRowIndex = this._selectedRowIndex;
 		let selectedColumnIndex = this._selectedColumnIndex;
 
-		// Check column index
-		if (selectedColumnIndex >= (this.columns.length - 1)) {
-			// Select first column of the next row
-			await this.selectCell(selectedRowIndex + 1, 0);
+		// Check for shift
+		if (event.shiftKey) {
+			// Check column index
+			if (selectedColumnIndex === 0) {
+				// Select last column of the previous row
+				await this.selectCell(selectedRowIndex - 1, this.columns.length - 1);
+			}
+			else {
+				// Select previous column of current row
+				await this.selectCell(selectedRowIndex, selectedColumnIndex - 1);
+			}
 		}
 		else {
-			// Select next column of current row
-			await this.selectCell(selectedRowIndex, selectedColumnIndex + 1);
+			// Check column index
+			if (selectedColumnIndex >= (this.columns.length - 1)) {
+				// Select first column of the next row
+				await this.selectCell(selectedRowIndex + 1, 0);
+			}
+			else {
+				// Select next column of current row
+				await this.selectCell(selectedRowIndex, selectedColumnIndex + 1);
+			}
 		}
 	}
 
@@ -447,6 +513,9 @@ export class SpreadsheetComponent {
 	 * @param event
 	 */
 	private async processArrowKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Prevent event default
+		event.preventDefault();
+
 		// Get selected indexes
 		let rowIndex = this._selectedRowIndex;
 		let columnIndex = this._selectedColumnIndex;
@@ -486,21 +555,6 @@ export class SpreadsheetComponent {
 				break;
 		}
 
-		// Check boundaries of row index
-		if (rowIndex < 0) {
-			// Do nothing
-			return;
-		}
-
-		// Check boundaries of column index
-		if (columnIndex < 0 || columnIndex > (this.columns.length - 1)) {
-			// Do nothing
-			return;
-		}
-
-		// Prevent event default
-		event.preventDefault();
-
 		// Select cell
 		await this.selectCell(rowIndex, columnIndex);
 	}
@@ -524,6 +578,36 @@ export class SpreadsheetComponent {
 
 		// Prevent default
 		event.preventDefault();
+	}
+
+	/**
+	 * Process default key event
+	 * @param event 
+	 */
+	private async processDefaultKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Check for input focus
+		if (this._hasSelectedInputFocus) {
+			// Do nothing
+			return;
+		}
+
+		// Create character check function
+		const isCharacterKeyEvent = (event: KeyboardEvent): boolean => /^.$/u.test(event.key);
+
+
+		// Check if event was raised by character key
+		if (!isCharacterKeyEvent(event)) {
+			// Do nothing
+			return;
+		}
+
+		// Prevent default
+		event.preventDefault();
+
+		// Assign key to input
+		this.selectedInput.nativeElement.value = event.key;
+		// Set focus
+		this.selectedInput.nativeElement.focus();
 	}
 
 	/**
