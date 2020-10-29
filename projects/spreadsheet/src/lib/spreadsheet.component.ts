@@ -1,5 +1,5 @@
 // External modules
-import { Component, HostListener, Input, QueryList, ViewChildren } from "@angular/core";
+import { Component, ElementRef, HostListener, Input, QueryList, ViewChildren } from "@angular/core";
 
 // Interfaces
 import { ISpreadsheetData } from "./interfaces/data.interface";
@@ -83,6 +83,19 @@ export class SpreadsheetComponent {
 		return this._selectedCell;
 	}
 
+	@HostListener("document:click", ["$event"])
+	public onClick(event: Event): void {
+		// Check click target
+		if (!this.element || this.element.nativeElement.contains(event.target)) {
+			// Do nothing
+			return;
+		}
+		
+
+		// Reset select
+		this.resetSelect();
+	}
+
 	@HostListener("copy", ["$event"])
 	public onCopy(event: ClipboardEvent): void {
 		// Check if any cell is selected
@@ -156,6 +169,12 @@ export class SpreadsheetComponent {
 	private _selectedCell: SpreadsheetCellComponent;
 
 	/**
+	 * Constructor
+	 * @param element
+	 */
+	constructor (private element: ElementRef) {}
+
+	/**
 	 * On cell mouse enter
 	 * @param event 
 	 * @param rowIndex 
@@ -190,8 +209,9 @@ export class SpreadsheetComponent {
 	 * @param columnIndex 
 	 */
 	public onCellClick(event: Event, rowIndex: number, columnIndex: number): void {
-		// Prevent event propagation
-		event.stopPropagation();
+		// Do not prevent event propagation as we want to support multiple 
+		// spreadsheets within page and clicking on a cell of another spreadsheet
+		// has to bubble out to 
 
 		// Select cell
 		this.selectCell(rowIndex, columnIndex);
@@ -214,6 +234,17 @@ export class SpreadsheetComponent {
 	private async resetHoveredIndexes(): Promise<void> {
 		// Reset indexes
 		this._hoveredColumnIndex = this._hoveredRowIndex = undefined;
+	}
+
+	/**
+	 * Reset select
+	 */
+	private async resetSelect(): Promise<void> {
+		// Reset indexes
+		this._selectedColumnIndex = this._selectedRowIndex = undefined;
+
+		// Reset cell
+		this._selectedCell = null;
 	}
 
 	/**
