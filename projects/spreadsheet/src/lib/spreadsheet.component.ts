@@ -109,8 +109,6 @@ export class SpreadsheetComponent {
 			return;
 		}
 
-		console.log("Processing key");
-
 		// Check key
 		switch (event.key) {
 			case "ArrowLeft":
@@ -119,6 +117,13 @@ export class SpreadsheetComponent {
 			case "ArrowUp":
 				// Process arrow key event
 				this.processArrowKeyEvent(event);
+
+				// Do nothing else
+				break;
+
+			case "Delete":
+				// Process delete key event
+				this.processDeleteKeyEvent(event);
 
 				// Do nothing else
 				break;
@@ -216,6 +221,23 @@ export class SpreadsheetComponent {
 
 		// Assign selected cell
 		this._selectedCell = this.cells.find((_, idx) => idx === index);
+	}
+
+	/**
+	 * Process delete key event
+	 * @param event 
+	 */
+	private async processDeleteKeyEvent(event: KeyboardEvent): Promise<void> {
+		// Check if data are set for selected row
+		if (!this.data[this._selectedRowIndex]) {
+			return;
+		}
+
+		// Get column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Reset value of given record
+		this.data[this._selectedRowIndex][column.identifier || column.label] = null;
 	}
 
 	/**
