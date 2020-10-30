@@ -114,12 +114,12 @@ export class SpreadsheetCellComponent<TRecord = any> {
     public get value(): any {
         // Check if record is defined
         if (!this._record) {
-            return null;
+            return "";
         }
 
         // Check if column value is defined
         if (!(this._column.identifier in this._record)) {
-            return null;
+            return "";
         }
 
         // Otherwise return value

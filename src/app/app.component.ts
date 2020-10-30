@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
-import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, SpreadsheetVerticalAlign } from "spreadsheet";
+import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, ISpreadsheetRows, SpreadsheetRowsMode } from "spreadsheet";
 
 @Component({
   selector: 'ngx-root',
@@ -44,6 +44,10 @@ export class AppComponent {
     }
   ]
 
+  public spreadsheetRows: ISpreadsheetRows = {
+    mode: SpreadsheetRowsMode.DYNAMIC
+  }
+
   public options: string[] = ['Hello', 'Mr', 'Frodo'];
 
   public selectValue: string = 'Hello';
@@ -69,7 +73,7 @@ export class AppComponent {
   public selectBooleanConfig: ISelectConfig<boolean> = {
     allowClear: true,
     allowSearch: false,
-    getOptions: async () => [true, false] 
+    getOptions: async () => [true, false]
   }
 
   public multiConfig: ISelectConfig<string> = {

@@ -4,6 +4,11 @@ import { Component, ElementRef, HostListener, Input, QueryList, ViewChild, ViewC
 // Interfaces
 import { ISpreadsheetData } from "./interfaces/data.interface";
 import { ISpreadsheetColumns } from "./interfaces/columns.interface";
+import { ISpreadsheetRows } from "./interfaces/rows.interface";
+import { ISpreadsheetRow } from "./interfaces/row.interface";
+
+// Enums
+import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
@@ -26,6 +31,9 @@ export class SpreadsheetComponent {
 	// Selected input focus flag
 	private _hasSelectedInputFocus: boolean = false;
 
+	// Rows mode
+	private _rowsMode?: number = SpreadsheetRowsMode.DYNAMIC;
+
 	// Spreadsheet data
 	@Input("data")
 	public data: ISpreadsheetData<any> = [];
@@ -33,6 +41,39 @@ export class SpreadsheetComponent {
 	// List of spreadsheet columns
 	@Input("columns")
 	public columns: ISpreadsheetColumns = [];
+
+	// Rows definition
+	@Input("rows")
+	public set rowsDefinition(value: ISpreadsheetRows) {
+		// Check if mode is defined
+		if (typeof value.mode !== "undefined") {
+			// Assign mode
+			this._rowsMode = value.mode;
+		}
+
+		// Check for rows
+		if (value.rows) {
+			// Assign custom rows
+			this._rows = value.rows || [];
+
+			// Do nothing else
+			return;
+		}
+
+		// Init rows with the number provided (or default)
+		const numberOfRows = value.numberOfRows || 10;
+
+		// Generate rows
+		this._rows = Array.from({ length: numberOfRows }, () => { return {} });
+	};
+
+	/**
+	 * Rows
+	 * @description Rows getter
+	 */
+	public get rows(): ISpreadsheetRow[] {
+		return this._rows;
+	}
 
 	/**
 	 * Hovered row index
@@ -212,6 +253,9 @@ export class SpreadsheetComponent {
 	// Selected cell
 	private _selectedCell: SpreadsheetCellComponent;
 
+	// List of rows
+	private _rows: ISpreadsheetRow[] = [];
+
 	/**
 	 * Constructor
 	 * @param element
@@ -340,6 +384,18 @@ export class SpreadsheetComponent {
 			return;
 		}
 
+		// Check bottom boundaries of row index
+		if (rowIndex > (this._rows.length - 1)) {
+			// Check for mode
+			if (this._rowsMode !== SpreadsheetRowsMode.DYNAMIC) {
+				// Do nothing
+				return;
+			}
+
+			// Otherwise add new row
+			this._rows.push({});
+		}
+
 		// Check for selected cell
 		if (this._selectedCell) {
 			// Reset value as we are going to change it
@@ -356,7 +412,48 @@ export class SpreadsheetComponent {
 		const index = (rowIndex * this.columns.length) + columnIndex;
 
 		// Assign selected cell
-		this._selectedCell = this.cells.find((_, idx) => idx === index);
+		const selectedCell = this.cells.find((_, idx) => idx === index);
+
+		// Check if cell was found
+		if (selectedCell) {
+			// Assign cell
+			return this.assignSelectedCell(selectedCell);
+		}
+
+		// Otherwise we need to wait for view children to update
+		const subscription = this.cells.changes.subscribe(async () => {
+			// Unsubscribe from cell changes
+			subscription.unsubscribe();
+
+			// Assign selected cell
+			await this.assignSelectedCell();
+		});
+	}
+
+	/**
+	 * Assign selected cell
+	 * @description This is a backup function to assign
+	 * selected cell in case the cell was not found before 
+	 */
+	private async assignSelectedCell(cell?: SpreadsheetCellComponent): Promise<void> {
+		// Check for cell
+		if (cell) {
+			// Assign passed cell
+			this._selectedCell = cell;
+		}
+		else {
+			// Get index within list of cells
+			const index = (this._selectedRowIndex * this.columns.length) + this._selectedColumnIndex;
+
+			// Assign selected cell
+			this._selectedCell = this.cells.find((_, idx) => idx === index);
+		}
+
+		// Check if selected cell is set
+		if (!this._selectedCell) {
+			// Do nothing else
+			return;
+		}
 
 		// Also make sure value is assigned
 		setTimeout(() => this.selectedInput.nativeElement.value = this._selectedCell.value || "");
