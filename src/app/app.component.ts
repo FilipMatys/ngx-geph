@@ -14,11 +14,13 @@ export class AppComponent {
   public spreadsheetColumns: ISpreadsheetColumns = [
     {
       label: "A",
-      identifier: "a"
+      identifier: "a",
+      isReadonly: true
     },
     {
       label: "B",
-      identifier: "b"
+      identifier: "b",
+      isDisabled: true
     },
     {
       label: "C",

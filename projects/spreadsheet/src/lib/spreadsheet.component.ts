@@ -376,6 +376,15 @@ export class SpreadsheetComponent {
 		// Prevent default
 		event.preventDefault();
 
+		// Get selected column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Check if column is disabled
+		if (column.isDisabled || column.isReadonly) {
+			// Do nothing
+			return;
+		}
+
 		// Reset input value
 		this.selectedInput.nativeElement.value = "";
 
@@ -436,6 +445,12 @@ export class SpreadsheetComponent {
 		// Get column
 		const column = this.columns[this._selectedColumnIndex];
 
+		// Check if column is disabled
+		if (column.isDisabled || column.isReadonly) {
+			// Do nothing
+			return;
+		}
+
 		// Reset value of given record
 		this.data[this._selectedRowIndex][column.identifier || column.label] = null;
 	}
@@ -472,6 +487,15 @@ export class SpreadsheetComponent {
 		// Prevent default
 		event.preventDefault();
 
+		// Get column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Check if column is disabled
+		if (column.isDisabled || column.isReadonly) {
+			// Do nothing
+			return;
+		}
+
 		// Check focus
 		if (!this._hasSelectedInputFocus) {
 			// Set focus
@@ -501,6 +525,15 @@ export class SpreadsheetComponent {
 
 		// Prevent default
 		event.preventDefault();
+
+		// Get selected column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Check if column is disabled
+		if (column.isDisabled || column.isReadonly) {
+			// Do nothing
+			return;
+		}
 
 		// Reset value
 		this.selectedInput.nativeElement.value = this._selectedCell.value;
@@ -571,6 +604,12 @@ export class SpreadsheetComponent {
 		// Get column
 		const column = this.columns[this._selectedColumnIndex];
 
+		// Check if column is disabled
+		if (column.isDisabled) {
+			// Do nothing
+			return;
+		}
+
 		// Get value
 		const value = record[column.identifier || column.label] || "";
 
@@ -588,6 +627,15 @@ export class SpreadsheetComponent {
 	private async processDefaultKeyEvent(event: KeyboardEvent): Promise<void> {
 		// Check for input focus
 		if (this._hasSelectedInputFocus) {
+			// Do nothing
+			return;
+		}
+
+		// Get selected column
+		const column = this.columns[this._selectedColumnIndex];
+
+		// Check if column is disabled
+		if (column.isDisabled || column.isReadonly) {
 			// Do nothing
 			return;
 		}
@@ -646,6 +694,12 @@ export class SpreadsheetComponent {
 
 				// Get column
 				const column = this.columns[columnIndex];
+
+				// Check if column is disabled
+				if (column.isDisabled || column.isReadonly) {
+					// Skip this column
+					continue;
+				}
 
 				// Assign value to record
 				record[column.identifier || column.label] = value;

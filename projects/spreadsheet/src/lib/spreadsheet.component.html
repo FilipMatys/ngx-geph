@@ -4,7 +4,9 @@
             <th class="ngx-spreadsheet-column ngx-spreadsheet-column--first"></th>
             <th *ngFor="let column of columns; let columnIndex = index" class="ngx-spreadsheet-column"
                 [class.ngx-spreadsheet-column--hover]="columnIndex === hoveredColumnIndex"
-                [class.ngx-spreadsheet-column--selected]="columnIndex === selectedColumnIndex">
+                [class.ngx-spreadsheet-column--selected]="columnIndex === selectedColumnIndex"
+                [class.ngx-spreadsheet-column--disabled]="column.isDisabled"
+                [class.ngx-spreadsheet-column--readonly]="column.isReadonly">
                 {{ column.label }}</th>
         </tr>
     </thead>
@@ -20,12 +22,14 @@
                 (click)="onCellClick($event, rowIndex, columnIndex)"
                 (mouseenter)="onCellMouseEnter($event, rowIndex, columnIndex)"
                 (mouseleave)="onCellMouseLeave($event, rowIndex, columnIndex)" class="ngx-spreadsheet-cell"
-                [class.ngx-spreadsheet-cell--hover]="columnIndex === hoveredColumnIndex && rowIndex === hoveredRowIndex">
+                [class.ngx-spreadsheet-cell--hover]="columnIndex === hoveredColumnIndex && rowIndex === hoveredRowIndex"
+                [class.ngx-spreadsheet-cell--disabled]="columns[columnIndex].isDisabled"
+                [class.ngx-spreadsheet-cell--readonly]="columns[columnIndex].isReadonly">
             </td>
         </tr>
     </tbody>
 
     <ngx-spreadsheet-selected *ngIf="selectedCell" [cell]="selectedCell">
-        <input #selectedInput (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value" class="ngx-spreadsheet-input" type="text">
+        <input #selectedInput [readonly]="columns[selectedColumnIndex].isReadonly" [disabled]="columns[selectedColumnIndex].isDisabled" (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value" class="ngx-spreadsheet-input" type="text">
     </ngx-spreadsheet-selected>
 </table>
