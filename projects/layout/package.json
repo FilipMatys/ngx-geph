@@ -1,16 +1,13 @@
 {
   "name": "@calf/ngx-layout",
-  "version": "0.0.1",
-  "description": "Calf framework Input component",
+  "version": "0.3.0",
+  "description": "Calf framework Layout components",
   "peerDependencies": {
-    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
-    "@angular/core": "^6.0.0-rc.0 || ^6.0.0"
+    "@angular/common": "^10.1.6",
+    "@angular/core": "^10.1.6",
+    "@angular/forms": "^10.1.6"
   },
   "dependencies": {
     "tslib": "^2.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/FilipMatys/Calf-ngx.git"
   }
 }
