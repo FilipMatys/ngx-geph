@@ -90,7 +90,7 @@
 <h2>Table</h2>
 <ngx-table [data]="options" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)"
   (rowClick)="onRowClick($event)">
-  <ngx-table-empty>No data to be displayed</ngx-table-empty>
+  <td colspan="3" class="ngx-table-empty">No data to be displayed</td>
   <ng-container ngxColumnDefinition="Header1">
     <th class="ngx-table-header" sortable="true" *ngxHeaderDefinition>Header 1</th>
     <td class="ngx-table-cell" *ngxCellDefinition="let item">{{ item }}</td>

@@ -1,5 +1,5 @@
 <thead>
-    <tr class="header ngx-table-row">
+    <tr class="ngx-table-row ngx-table-row--header">
         <ng-container *ngFor="let cDef of outputColumnDefinitions">
             <ng-container *ngTemplateOutlet="cDef.header"></ng-container>
         </ng-container>
@@ -8,7 +8,7 @@
 <ng-container *ngIf="(data || []).length; else empty">
     <tbody>
         <ng-container *ngFor="let item of data; let idx = index; trackBy:config.trackRecordBy">
-            <tr class="data ngx-table-row" (click)="onRowClick($event, item, idx)">
+            <tr class="ngx-table-row ngx-table-row--data" (click)="onRowClick($event, item, idx)">
                 <ng-container *ngFor="let cDef of outputColumnDefinitions">
                     <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx }">
                     </ng-container>
@@ -21,7 +21,7 @@
         </ng-container>
     </tbody>
     <tfoot>
-        <tr class="footer ngx-table-row">
+        <tr class="ngx-table-row ngx-table-row--footer">
             <ng-container *ngFor="let cDef of outputColumnDefinitions">
                 <ng-container *ngIf="cDef.footer; else defaultFooterTemplate">
                     <ng-container *ngTemplateOutlet="cDef.footer"></ng-container>
@@ -34,7 +34,7 @@
     </tfoot>
 </ng-container>
 <ng-template #empty>
-    <tr class="empty ngx-table-row">
-        <ng-content select="ngx-table-empty"></ng-content>
+    <tr class="ngx-table-row ngx-table-row--empty">
+        <ng-content select=".ngx-table-empty"></ng-content>
     </tr>
 </ng-template>
