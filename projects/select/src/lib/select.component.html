@@ -1,4 +1,4 @@
-<div class="select-container">
+<div (click)="onSelectClick($event)" class="select-container">
     <ng-container *ngIf="config.multi && (!(value | isUndefined) && value.length)">
         <span class="select-value-multi" *ngFor="let item of value; let idx = index">
             <ngx-select-value>

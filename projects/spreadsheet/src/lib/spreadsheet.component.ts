@@ -9,10 +9,10 @@ import { ISpreadsheetRow } from "./interfaces/row.interface";
 
 // Enums
 import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
+import { SpreadsheetDataType } from "./enums/data-type.enum";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
-import { SpreadsheetDataType } from "./enums/data-type.enum";
 
 @Component({
 	selector: "ngx-spreadsheet",

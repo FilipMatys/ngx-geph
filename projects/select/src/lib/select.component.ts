@@ -144,25 +144,6 @@ export class SelectComponent {
 	public isSelectionOpen: boolean = false;
 
 	/**
-	 * On select click
-	 * @param event 
-	 */
-	@HostListener("click", ["$event"])
-	public onSelectClick(event: Event) {
-		// Stop event propagation
-		event.stopPropagation();
-
-		// Check disabled or readonly
-		if (this.disabled || this.readonly) {
-			// Do nothing
-			return;
-		}
-
-		// Open selection
-		this.openSelection();
-	}
-
-	/**
 	 * On document click
 	 * @param event 
 	 */
@@ -199,10 +180,10 @@ export class SelectComponent {
 	 */
 	constructor(private element: ElementRef) { }
 
-    /**
-     * Write value
-     * @param value 
-     */
+	/**
+	 * Write value
+	 * @param value 
+	 */
 	public writeValue(value: any) {
 		// Check if value is defined
 		if (value === undefined) {
@@ -216,16 +197,38 @@ export class SelectComponent {
 	/** Propagate change */
 	public propagateChange = (_: any) => { };
 
-    /**
-     * Register on change
-     * @param fn 
-     */
+	/**
+	 * Register on change
+	 * @param fn 
+	 */
 	public registerOnChange(fn) {
 		this.propagateChange = fn;
 	}
 
 	/** Register on touched */
 	public registerOnTouched() { }
+
+	/**
+	 * On select click
+	 * @param event 
+	 */
+	public onSelectClick(event: Event) {
+		// Prevent event propagation
+		event.stopPropagation();
+
+		// Dispatch click event on the component as we want to support multiple 
+		// selects within page and clicking on a select has to bubble out 
+		this.element.nativeElement.dispatchEvent(new Event("click", { bubbles: true }));
+
+		// Check disabled or readonly
+		if (this.disabled || this.readonly) {
+			// Do nothing
+			return;
+		}
+
+		// Toggle selection
+		this.toggleSelection();
+	}
 
 	/**
 	 * On clear click
@@ -286,6 +289,14 @@ export class SelectComponent {
 
 		// Close selection
 		this.closeSelection();
+	}
+
+	/**
+	 * Toggle selection
+	 */
+	private toggleSelection(): void {
+		// Toggle selection based on state
+		this.isSelectionOpen ? this.closeSelection() : this.openSelection();
 	}
 
 	/** 
