@@ -88,9 +88,8 @@
 <button *ngxCollapsibleExpand>Expand</button>
 <div *ngxCollapsible>Collapsible content</div>
 <h2>Table</h2>
-<ngx-table [data]="options" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)"
+<ngx-table [data]="[]" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)"
   (rowClick)="onRowClick($event)">
-  <td colspan="3" class="ngx-table-empty">No data to be displayed</td>
   <ng-container ngxColumnDefinition="Header1">
     <th class="ngx-table-header" sortable="true" *ngxHeaderDefinition>Header 1</th>
     <td class="ngx-table-cell" *ngxCellDefinition="let item">{{ item }}</td>
@@ -115,6 +114,12 @@
         <td colspan="3">Expanded {{ item }} row2</td>
       </tr>
     </ng-container>
+  </ng-container>
+
+  <ng-container *ngxEmptyDefinition="let colspan = numberOfColumns">
+    <tr class="ngx-table-row ngx-table-row--empty">
+      <td [attr.colspan]="colspan" class="ngx-table-empty">No data to be displayed</td>
+    </tr>
   </ng-container>
 </ngx-table>
 <h2>Card</h2>

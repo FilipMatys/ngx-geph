@@ -11,7 +11,6 @@ import { CONFIG } from "./symbols/config.token";
 // Components
 import { TableComponent } from "./table.component";
 import { TableHeaderComponent } from "./components/header/header.component";
-import { TableEmptyComponent } from "./components/empty/empty.component";
 
 // Directives
 import { TableColumnDefinitionDirective } from "./directives/column/column-definition.directive";
@@ -19,6 +18,7 @@ import { TableCellDefinitionDirective } from "./directives/cell/cell-definition.
 import { TableHeaderDefinitionDirective } from "./directives/header/header-definition.directive";
 import { TableFooterDefinitionDirective } from "./directives/footer/footer-definition.directive";
 import { TableExpansionDefinitionDirective } from "./directives/expansion/expansion-definition.directive";
+import { TableEmptyDefinitionDirective } from "./directives/empty/empty-definition.directive";
 
 @NgModule({
 	imports: [
@@ -27,22 +27,22 @@ import { TableExpansionDefinitionDirective } from "./directives/expansion/expans
 	declarations: [
 		TableComponent,
 		TableHeaderComponent,
-		TableEmptyComponent,
 		TableColumnDefinitionDirective,
 		TableCellDefinitionDirective,
 		TableHeaderDefinitionDirective,
 		TableFooterDefinitionDirective,
-		TableExpansionDefinitionDirective
+		TableExpansionDefinitionDirective,
+		TableEmptyDefinitionDirective
 	],
 	exports: [
 		TableComponent,
 		TableHeaderComponent,
-		TableEmptyComponent,
 		TableColumnDefinitionDirective,
 		TableCellDefinitionDirective,
 		TableHeaderDefinitionDirective,
 		TableFooterDefinitionDirective,
-		TableExpansionDefinitionDirective
+		TableExpansionDefinitionDirective,
+		TableEmptyDefinitionDirective
 	]
 })
 export class TableModule {

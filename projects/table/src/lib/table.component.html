@@ -34,7 +34,9 @@
     </tfoot>
 </ng-container>
 <ng-template #empty>
-    <tr class="ngx-table-row ngx-table-row--empty">
-        <ng-content select=".ngx-table-empty"></ng-content>
-    </tr>
+    <tbody>
+        <ng-container *ngIf="emptyDefinition">
+            <ng-container *ngTemplateOutlet="emptyDefinition; context: { numberOfColumns: outputColumnDefinitions.length }"></ng-container>
+        </ng-container>
+    </tbody>
 </ng-template>

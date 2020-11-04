@@ -17,6 +17,7 @@ import { tableSortDefault } from "./defaults/sort.default";
 // Directives
 import { TableColumnDefinitionDirective } from "./directives/column/column-definition.directive";
 import { TableExpansionDefinitionDirective } from "./directives/expansion/expansion-definition.directive";
+import { TableEmptyDefinitionDirective } from "./directives/empty/empty-definition.directive";
 
 // Components
 import { TableHeaderComponent } from './components/header/header.component';
@@ -62,11 +63,11 @@ export class TableComponent implements AfterContentChecked {
 	@Input("config")
 	public set config(value: ITableConfig<any>) {
 		// First make sure config is set
-		let config = Object.assign(tableConfigDefault, value);
+		const config = Object.assign(tableConfigDefault, value);
 		// Also make sure sort is set
 		config.sort = Object.assign(tableSortDefault, config.sort);
 
-		// Finally assign confit
+		// Finally assign config
 		this._config = config;
 	};
 
@@ -98,6 +99,10 @@ export class TableComponent implements AfterContentChecked {
 	@ContentChild(TableExpansionDefinitionDirective, { read: TemplateRef })
 	public expansionDefinition: TemplateRef<TableExpansionDefinitionDirective>;
 
+	// Empty definition
+	@ContentChild(TableEmptyDefinitionDirective, { read: TemplateRef })
+	public emptyDefinition: TemplateRef<TableEmptyDefinitionDirective>
+
 	// List of output column definitions
 	// This is created from definitions based on columns array
 	public outputColumnDefinitions: TableColumnDefinitionDirective[] = [];
@@ -113,11 +118,11 @@ export class TableComponent implements AfterContentChecked {
 		// Get module configuration
 		try {
 			// Get config
-			let config = Object.assign(tableConfigDefault, this.injector.get(CONFIG));
+			const config = Object.assign(tableConfigDefault, this.injector.get(CONFIG));
 			// Also make sure sort is set
 			config.sort = Object.assign(tableSortDefault, config.sort);
 
-			// Finally assign confit
+			// Finally assign config
 			this._config = config;
 		}
 		catch (e) { }
