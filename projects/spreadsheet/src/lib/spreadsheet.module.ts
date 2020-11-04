@@ -7,6 +7,9 @@ import { SpreadsheetComponent } from "./spreadsheet.component";
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 import { SpreadsheetSelectedComponent } from "./components/selected/selected.component";
 
+// Pipes
+import { SpreadsheetFormatterPipe } from "./pipes/formatter.pipe";
+
 @NgModule({
 	imports: [
 		CommonModule
@@ -14,7 +17,8 @@ import { SpreadsheetSelectedComponent } from "./components/selected/selected.com
 	declarations: [
 		SpreadsheetComponent,
 		SpreadsheetCellComponent,
-		SpreadsheetSelectedComponent
+		SpreadsheetSelectedComponent,
+		SpreadsheetFormatterPipe
 	],
 	exports: [SpreadsheetComponent]
 })

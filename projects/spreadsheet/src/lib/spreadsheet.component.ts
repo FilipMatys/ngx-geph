@@ -12,6 +12,7 @@ import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
+import { SpreadsheetDataType } from "./enums/data-type.enum";
 
 @Component({
 	selector: "ngx-spreadsheet",
@@ -563,8 +564,21 @@ export class SpreadsheetComponent {
 		// Get column
 		const column = this.columns[this._selectedColumnIndex];
 
-		// Get value
-		record[column.identifier || column.label] = value;
+		// Check column data type
+		switch (column.dataType) {
+			// NUMBER
+			case SpreadsheetDataType.NUMBER:
+				// Set value
+				record[column.identifier || column.label] = Number(value);
+				break;
+
+			// DEFAULT
+			default:
+				// Set value
+				record[column.identifier || column.label] = `${value}`;
+				break;
+
+		}
 
 		// Assign record (in case new was created)
 		this.data[this._selectedRowIndex] = record;
@@ -798,8 +812,21 @@ export class SpreadsheetComponent {
 					continue;
 				}
 
-				// Assign value to record
-				record[column.identifier || column.label] = value;
+				// Check column data type
+				switch (column.dataType) {
+					// NUMBER
+					case SpreadsheetDataType.NUMBER:
+						// Set value
+						record[column.identifier || column.label] = Number(value);
+						break;
+
+					// DEFAULT
+					default:
+						// Set value
+						record[column.identifier || column.label] = `${value}`;
+						break;
+
+				}
 			}
 
 			// Assign record

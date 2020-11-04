@@ -8,6 +8,7 @@ import { SpreadsheetVerticalAlign } from "../../enums/vertical-align.enum";
 
 // Interfaces
 import { ISpreadsheetColumn } from "../../interfaces/column.interface";
+import { ISpreadsheetFormatterFunction } from "../../interfaces/formatter-function.interface";
 import { ISpreadsheetStyle } from "../../interfaces/style.interface";
 
 @Component({
@@ -92,6 +93,14 @@ export class SpreadsheetCellComponent<TRecord = any> {
     @HostBinding("class.ngx-spreadsheet-cell--vertical-align-top")
     public get isVerticalAlignTop(): boolean {
         return this.style.verticalAlign === SpreadsheetVerticalAlign.TOP;
+    }
+
+    /**
+     * Formatter fn
+     * @description Formatter function getter
+     */
+    public get formatterFn(): ISpreadsheetFormatterFunction<any> {
+        return this._column.formatterFn;
     }
 
     /**

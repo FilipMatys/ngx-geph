@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
 import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, ISpreadsheetRows, SpreadsheetRowsMode } from "spreadsheet";
+import { DecimalPipe } from "@angular/common";
 
 @Component({
   selector: 'ngx-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  providers: [DecimalPipe]
 })
 export class AppComponent {
   title = 'ngx';
@@ -15,12 +17,17 @@ export class AppComponent {
     {
       label: "A",
       identifier: "a",
-      isReadonly: true
+      isReadonly: false,
+      formatterFn: (value) => this.decimal.transform(value, "1.2-2"),
+      style: {
+        textAlign: SpreadsheetTextAlign.RIGHT
+      }
     },
     {
       label: "B",
       identifier: "b",
-      isDisabled: true
+      isDisabled: false,
+      formatterFn: (value) => "-"
     },
     {
       label: "C",
@@ -100,6 +107,12 @@ export class AppComponent {
 
   // Input value
   public inputValue: string = "Some input value";
+
+  /**
+   * Constructor
+   * @param decimal 
+   */
+  constructor(private readonly decimal: DecimalPipe) {}
 
   public onTabIndexSelect(index) {
     this.activeTabIndex = index;

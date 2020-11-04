@@ -1,4 +1,5 @@
 // Interfaces
+import { ISpreadsheetFormatterFunction } from "./formatter-function.interface";
 import { ISpreadsheetStyle } from "./style.interface";
 
 /**
@@ -12,4 +13,6 @@ export interface ISpreadsheetColumn {
     isReadonly?: boolean;
     isDisabled?: boolean;
     style?: ISpreadsheetStyle;
+    dataType?: number;
+    formatterFn?: ISpreadsheetFormatterFunction<any>;
 }
