@@ -8,6 +8,6 @@ import { Component, HostBinding } from "@angular/core";
 })
 export class SelectEmptyComponent {
 
-    @HostBinding("class.select-empty")
+    @HostBinding("class.ngx-select-empty")
     public selectEmptyClass: boolean = true;
 }

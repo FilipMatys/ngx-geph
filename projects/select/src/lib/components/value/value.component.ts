@@ -9,6 +9,6 @@ import { Component, HostBinding } from "@angular/core";
 export class SelectValueComponent {
 
     // Bind select value class
-    @HostBinding("class.select-value")
+    @HostBinding("class.ngx-select-value")
     public selectValueClass: boolean = true;
 }

@@ -8,6 +8,6 @@ import { Component, HostBinding } from "@angular/core";
 })
 export class SelectLoadingComponent {
 
-    @HostBinding("class.select-loading")
+    @HostBinding("class.ngx-select-loading")
     public selectLoadingClass: boolean = true;
 }

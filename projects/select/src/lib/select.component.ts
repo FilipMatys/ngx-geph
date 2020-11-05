@@ -1,6 +1,6 @@
 // External modules
 import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef } from "@angular/core";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -24,7 +24,11 @@ import { SelectClearDirective, ISelectClearContext } from "./directives/clear.di
 		}
 	],
 })
-export class SelectComponent {
+export class SelectComponent implements ControlValueAccessor {
+
+	// Bind select class
+    @HostBinding("class.ngx-select")
+    public selectClass: boolean = true;
 
 	@Input("value")
 	private _value: any;
