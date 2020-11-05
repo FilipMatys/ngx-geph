@@ -1,6 +1,8 @@
 :host {
 
-    li.select-input.select-hidden {
-        display: none;
+    li.ngx-select-input {
+        &--hidden {
+            display: none;
+        }
     }
 }
