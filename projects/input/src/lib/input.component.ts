@@ -66,7 +66,7 @@ export class InputComponent implements ControlValueAccessor {
 	 */
 	public writeValue(value: any) {
 		if (value !== undefined) {
-			this.value = value;
+			this._value = value;
 		}
 	}
 

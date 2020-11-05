@@ -69,6 +69,10 @@ export class AppComponent {
 
   public tabs: string[] = ['tab1', 'tab2', 'tab3'];
 
+  public onSelectComponentModelChange(event): void {
+    console.log("onSelectComponentModelChange", event);
+  }
+
   public config: ISelectConfig<string> = {
     allowSearch: true,
     allowClear: true,

@@ -191,7 +191,7 @@ export class SelectComponent {
 		}
 
 		// Assign value
-		this.value = value;
+		this._value = value;
 	}
 
 	/** Propagate change */
