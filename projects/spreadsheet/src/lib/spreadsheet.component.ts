@@ -417,12 +417,6 @@ export class SpreadsheetComponent {
 			this._rows.push({});
 		}
 
-		// Check for selected cell
-		if (this._selectedCell) {
-			// Reset value as we are going to change it
-			this.selectedInput.nativeElement.value = "";
-		}
-
 		// Set selected indexes
 		this._selectedRowIndex = rowIndex;
 		this._selectedColumnIndex = columnIndex;
@@ -469,15 +463,6 @@ export class SpreadsheetComponent {
 			// Assign selected cell
 			this._selectedCell = this.cells.find((_, idx) => idx === index);
 		}
-
-		// Check if selected cell is set
-		if (!this._selectedCell) {
-			// Do nothing else
-			return;
-		}
-
-		// Also make sure value is assigned
-		setTimeout(() => this.selectedInput.nativeElement.value = this._selectedCell.value || "");
 	}
 
 	/**
