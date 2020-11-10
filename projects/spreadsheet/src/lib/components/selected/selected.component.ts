@@ -1,5 +1,5 @@
 // External modules
-import { Component, HostBinding, HostListener, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
 
 // Components
 import { SpreadsheetCellComponent } from "../cell/cell.component";
@@ -10,6 +10,13 @@ import { SpreadsheetCellComponent } from "../cell/cell.component";
     styleUrls: ["./selected.component.scss"]
 })
 export class SpreadsheetSelectedComponent {
+
+    /**
+     * ngxSpreadsheetSelected
+     * @description Class assignment
+     */
+    @HostBinding("class.ngx-spreadsheet-selected")
+    public ngxSpreadsheetSelected: boolean = true;
 
     @Input("cell")
     private _cell: SpreadsheetCellComponent;

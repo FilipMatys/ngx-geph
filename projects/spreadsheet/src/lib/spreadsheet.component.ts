@@ -1,5 +1,5 @@
 // External modules
-import { Component, ElementRef, EventEmitter, HostListener, Input, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
 
 // Interfaces
 import { ISpreadsheetData } from "./interfaces/data.interface";
@@ -7,6 +7,7 @@ import { ISpreadsheetColumns } from "./interfaces/columns.interface";
 import { ISpreadsheetRows } from "./interfaces/rows.interface";
 import { ISpreadsheetRow } from "./interfaces/row.interface";
 import { ISpreadsheetCellChangeEvent } from "./interfaces/cell-change-event.interface";
+import { ISpreadsheetColumn } from "./interfaces/column.interface";
 
 // Enums
 import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
@@ -15,7 +16,6 @@ import { SpreadsheetCellChangeEventOrigin } from "./enums/cell-change-event-orig
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
-import { ISpreadsheetColumn } from "./interfaces/column.interface";
 
 @Component({
 	selector: "ngx-spreadsheet",
@@ -23,6 +23,13 @@ import { ISpreadsheetColumn } from "./interfaces/column.interface";
 	styleUrls: ["./spreadsheet.component.scss"]
 })
 export class SpreadsheetComponent {
+
+	/**
+	 * ngxSpreadsheet
+	 * @description Class assignment
+	 */
+	@HostBinding("class.ngx-spreadsheet")
+	public ngxSpreadsheet: boolean = true;
 
 	// List of cells
 	@ViewChildren(SpreadsheetCellComponent)
