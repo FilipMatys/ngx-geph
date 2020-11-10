@@ -30,6 +30,6 @@
     </tbody>
 
     <ngx-spreadsheet-selected *ngIf="selectedCell" [cell]="selectedCell">
-        <input #selectedInput [readonly]="columns[selectedColumnIndex].isReadonly" [disabled]="columns[selectedColumnIndex].isDisabled" (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value" class="ngx-spreadsheet-input" type="text">
+        <input #selectedInput [readonly]="columns[selectedColumnIndex].isReadonly" [disabled]="columns[selectedColumnIndex].isDisabled" (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value || ''" class="ngx-spreadsheet-input" type="text">
     </ngx-spreadsheet-selected>
 </table>

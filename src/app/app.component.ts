@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
-import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, ISpreadsheetRows, SpreadsheetRowsMode } from "spreadsheet";
+import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, ISpreadsheetRows, SpreadsheetRowsMode, SpreadsheetDataType } from "spreadsheet";
 import { DecimalPipe } from "@angular/common";
 
 @Component({
@@ -18,6 +18,7 @@ export class AppComponent {
       label: "A",
       identifier: "a",
       isReadonly: false,
+      dataType: SpreadsheetDataType.NUMBER,
       formatterFn: (value) => this.decimal.transform(value, "1.2-2"),
       style: {
         textAlign: SpreadsheetTextAlign.RIGHT
@@ -141,6 +142,10 @@ export class AppComponent {
 
   public onInputLog(event: Event) {
     console.log(this.inputValue);
+  }
+
+  public onCellChange(event): void {
+    console.log(event);
   }
 
   /**

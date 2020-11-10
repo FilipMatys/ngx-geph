@@ -1,18 +1,21 @@
 // External modules
-import { Component, ElementRef, HostListener, Input, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
 
 // Interfaces
 import { ISpreadsheetData } from "./interfaces/data.interface";
 import { ISpreadsheetColumns } from "./interfaces/columns.interface";
 import { ISpreadsheetRows } from "./interfaces/rows.interface";
 import { ISpreadsheetRow } from "./interfaces/row.interface";
+import { ISpreadsheetCellChangeEvent } from "./interfaces/cell-change-event.interface";
 
 // Enums
 import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
 import { SpreadsheetDataType } from "./enums/data-type.enum";
+import { SpreadsheetCellChangeEventOrigin } from "./enums/cell-change-event-origin.enum";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
+import { ISpreadsheetColumn } from "./interfaces/column.interface";
 
 @Component({
 	selector: "ngx-spreadsheet",
@@ -31,6 +34,7 @@ export class SpreadsheetComponent {
 
 	// Selected input focus flag
 	private _hasSelectedInputFocus: boolean = false;
+	private _hasSelectedInputValueChanged: boolean = false;
 
 	// Rows mode
 	private _rowsMode?: number = SpreadsheetRowsMode.DYNAMIC;
@@ -67,6 +71,13 @@ export class SpreadsheetComponent {
 		// Generate rows
 		this._rows = Array.from({ length: numberOfRows }, () => { return {} });
 	};
+
+	/**
+	 * Cell change event
+	 * @description Event fired on cell change
+	 */
+	@Output("cellChange")
+	public cellChangeEvent: EventEmitter<ISpreadsheetCellChangeEvent> = new EventEmitter();
 
 	/**
 	 * Rows
@@ -366,11 +377,20 @@ export class SpreadsheetComponent {
 	private async selectCell(rowIndex: number, columnIndex: number): Promise<void> {
 		// Before selecting new cell, check for selected input
 		if (this._selectedCell) {
-			// Assign value
-			await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value);
+			// Check for change flag
+			if (this._hasSelectedInputValueChanged) {
+				// Assign value to selected cell
+				await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value, SpreadsheetCellChangeEventOrigin.EDIT);
 
-			// Blur input
-			this.selectedInput.nativeElement.blur();
+				// Reset flag
+				this._hasSelectedInputValueChanged = false;
+			}
+
+			// Check if input has focus
+			if (this._hasSelectedInputFocus) {
+				// Blur input
+				this.selectedInput.nativeElement.blur();
+			}
 		}
 
 		// Check boundaries of row index
@@ -549,39 +569,105 @@ export class SpreadsheetComponent {
 			return;
 		}
 
-		// Reset value of given record
-		this.data[this._selectedRowIndex][column.identifier || column.label] = null;
+		// Assign null value to selected cell
+		this.assignValueToSelectedCell(null, SpreadsheetCellChangeEventOrigin.EDIT);
+	}
+
+	/**
+	 * Parse value for column
+	 * @param value 
+	 * @param column 
+	 */
+	private async parseValueForColumn(value: any, column: ISpreadsheetColumn): Promise<any> {
+		// Check if value is set
+		if (typeof value === "undefined" || value === null) {
+			// Return undefined
+			return undefined;
+		}
+
+		// Otherwise parse value based on type
+		switch (column.dataType) {
+			// NUMBER
+			case SpreadsheetDataType.NUMBER:
+				// First check if value is number
+				if (isNaN(value) || value === "") {
+					// Return undefined
+					return undefined;
+				}
+
+				// Parse value as number
+				return Number(value);
+
+			// STRING, default
+			case SpreadsheetDataType.STRING:
+			default:
+				return `${value}`;
+		}
+	}
+
+	/**
+	 * Assign value to cell
+	 * @param value 
+	 * @param rowIndex 
+	 * @param columnIndex 
+	 * @param origin 
+	 */
+	private async assignValueToCell(value: any, rowIndex: number, columnIndex: number, origin: number): Promise<void> {
+		// Get record (default or empty)
+		const record = this.data[rowIndex] || {};
+
+		// Get column
+		const column = this.columns[columnIndex];
+
+		// Check if column is readonly or disabled
+		if (column.isReadonly || column.isDisabled) {
+			// Do nothing
+			return;
+		}
+
+		// Get key to value within record
+		const key = column.identifier || column.label;
+
+		// Get prev value
+		const prevValue = record[key];
+
+		// Get next value
+		const nextValue = await this.parseValueForColumn(value, column);
+
+		// Assign next value to record
+		record[key] = nextValue;
+
+		// Also assign record to data
+		this.data[rowIndex] = record;
+
+		// Now check values
+		if (prevValue === nextValue) {
+			// Do nothing else
+			return;
+		}
+
+		// Init cell change event
+		const cellChangeEvent: ISpreadsheetCellChangeEvent = {};
+
+		// Assign data
+		cellChangeEvent.column = column;
+		cellChangeEvent.row = { ...this.rows[rowIndex], index: rowIndex };
+		cellChangeEvent.prev = prevValue;
+		cellChangeEvent.current = nextValue;
+		cellChangeEvent.origin = origin;
+
+		// Emit cell change event
+		this.cellChangeEvent.emit(cellChangeEvent);
 	}
 
 	/**
 	 * Assign value to selected cell
 	 * @param value 
+	 * @param origin 
 	 */
-	private async assignValueToSelectedCell(value: any): Promise<void> {
-		// Get record (or default as empty)
-		const record = this.data[this._selectedRowIndex] || {};
-
-		// Get column
-		const column = this.columns[this._selectedColumnIndex];
-
-		// Check column data type
-		switch (column.dataType) {
-			// NUMBER
-			case SpreadsheetDataType.NUMBER:
-				// Set value
-				record[column.identifier || column.label] = Number(value);
-				break;
-
-			// DEFAULT
-			default:
-				// Set value
-				record[column.identifier || column.label] = `${value}`;
-				break;
-
-		}
-
-		// Assign record (in case new was created)
-		this.data[this._selectedRowIndex] = record;
+	private async assignValueToSelectedCell(value: any, origin: number): Promise<void> {
+		// Assign value to cell
+		return this.assignValueToCell(value, this._selectedRowIndex, this._selectedColumnIndex, origin);
 	}
 
 	/**
@@ -617,10 +703,13 @@ export class SpreadsheetComponent {
 		}
 
 		// Assign value
-		await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value);
+		await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value, SpreadsheetCellChangeEventOrigin.EDIT);
 
 		// Blur input
 		this.selectedInput.nativeElement.blur();
+
+		// Set changed flag
+		this._hasSelectedInputValueChanged = false;
 	}
 
 	/**
@@ -651,6 +740,9 @@ export class SpreadsheetComponent {
 
 		// Blur
 		this.selectedInput.nativeElement.blur();
+
+		// Reset changed flag
+		this._hasSelectedInputValueChanged = false;
 	}
 
 	/**
@@ -768,6 +860,9 @@ export class SpreadsheetComponent {
 		this.selectedInput.nativeElement.value = event.key;
 		// Set focus
 		this.selectedInput.nativeElement.focus();
+
+		// Set changed flag
+		this._hasSelectedInputValueChanged = true;
 	}
 
 	/**
@@ -795,42 +890,14 @@ export class SpreadsheetComponent {
 			// Split line into values
 			const values = line.split("\t");
 
-			// Get record data for given row or init default
-			const record = this.data[rowIndex] || {};
-
 			// Now it is time to process the values
 			for (let vIndex = 0, columnIndex = this._selectedColumnIndex; vIndex < values.length && columnIndex < this.columns.length; vIndex++, columnIndex++) {
 				// Get value
 				const value = values[vIndex];
 
-				// Get column
-				const column = this.columns[columnIndex];
-
-				// Check if column is disabled
-				if (column.isDisabled || column.isReadonly) {
-					// Skip this column
-					continue;
-				}
-
-				// Check column data type
-				switch (column.dataType) {
-					// NUMBER
-					case SpreadsheetDataType.NUMBER:
-						// Set value
-						record[column.identifier || column.label] = Number(value);
-						break;
-
-					// DEFAULT
-					default:
-						// Set value
-						record[column.identifier || column.label] = `${value}`;
-						break;
-
-				}
+				// Assign value to cell
+				await this.assignValueToCell(value, rowIndex, columnIndex, SpreadsheetCellChangeEventOrigin.CLIPBOARD);
 			}
-
-			// Assign record
-			this.data[rowIndex] = record;
 		}
 	}
 }

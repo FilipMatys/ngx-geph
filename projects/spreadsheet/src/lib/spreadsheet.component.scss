@@ -6,15 +6,15 @@
     .ngx-spreadsheet-row {
         &--head {
             th.ngx-spreadsheet-column {
-                background-color: var(--ngx-spreadsheet-header-background-color, #e6e6e6);
+                background-color: var(--ngx-spreadsheet-column-background-color, #e6e6e6);
 
                 &--hover {
-                    background-color: var(--ngx-spreadsheet-header-background-color--hover, #d2d2d2);
+                    background-color: var(--ngx-spreadsheet-column-background-color--hover, #d2d2d2);
                 }
 
                 &--selected {
-                    box-shadow: inset 0px -2px 0px 0px var(--ngx-spreadsheet-selected-border-color, #000000);
-                    border-bottom-color: var(--ngx-spreadsheet-selected-border-color, #000000);
+                    box-shadow: inset 0px -2px 0px 0px var(--ngx-spreadsheet-column-border-color--selected, #000000);
+                    border-bottom-color: var(--ngx-spreadsheet-column-border-color--selected, #000000);
                 }
             }
         }
@@ -22,7 +22,7 @@
         &--body {
             td.ngx-spreadsheet-cell {
                 &--first {
-                    background-color: var(--ngx-spreadsheet-row-name-background-color, #e6e6e6);;
+                    background-color: var(--ngx-spreadsheet-row-background-color, #e6e6e6);;
                 }
             }
         }
@@ -30,7 +30,7 @@
         &--hover {
             td.ngx-spreadsheet-cell {
                 &--first {
-                    background-color: var(--ngx-spreadsheet-row-name-background-color--hover, #d2d2d2);
+                    background-color: var(--ngx-spreadsheet-row-background-color--hover, #d2d2d2);
                 }
 
                 &--hover {
@@ -42,8 +42,8 @@
         &--selected {
             td.ngx-spreadsheet-cell {
                 &--first {
-                    box-shadow: inset -2px 0px 0px 0px var(--ngx-spreadsheet-selected-border-color, #000000);
-                    border-right-color: var(--ngx-spreadsheet-selected-border-color, #000000);
+                    box-shadow: inset -2px 0px 0px 0px var(--ngx-spreadsheet-row-border-color--selected, #000000);
+                    border-right-color: var(--ngx-spreadsheet-row-border-color--selected, #000000);
                 }
             }
         }
@@ -59,6 +59,7 @@
     width: 100%;
     box-sizing: border-box;
     padding: 0 2px;
-    border: solid 2px var(--ngx-spreadsheet-selected-border-color, #000000);
+    border: solid 2px var(--ngx-spreadsheet-input-border-color, #000000);
+    background-color: var(--ngx-spreadsheet-input-background-color, #ffffff);
     height: 100%;
 }

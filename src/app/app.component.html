@@ -1,5 +1,5 @@
 <h2>Spreadsheet</h2>
-<ngx-spreadsheet [columns]="spreadsheetColumns" [rows]="spreadsheetRows" [data]="spreadsheetData"></ngx-spreadsheet>
+<ngx-spreadsheet (cellChange)="onCellChange($event)" [columns]="spreadsheetColumns" [rows]="spreadsheetRows" [data]="spreadsheetData"></ngx-spreadsheet>
 
 <h2>Select component</h2>
 <ngx-select [config]="config" [(ngModel)]="selectValue" (ngModelChange)="onSelectComponentModelChange($event)" name="select-value" placeholder="Select some value!">
