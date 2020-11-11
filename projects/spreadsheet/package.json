@@ -1,5 +1,5 @@
 {
-  "name": "@calf/spreadsheet",
+  "name": "@calf/ngx-spreadsheet",
   "version": "0.0.1-alpha",
   "peerDependencies": {
     "@angular/common": "^10.1.6",
