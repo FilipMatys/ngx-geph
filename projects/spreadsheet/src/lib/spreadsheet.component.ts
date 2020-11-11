@@ -183,6 +183,12 @@ export class SpreadsheetComponent {
 			return;
 		}
 
+		// Check for focus
+		if (this._hasSelectedInputFocus) {
+			// Do nothing
+			return;
+		}
+
 		// Process paste event
 		this.processPasteEvent(event);
 	}
@@ -236,7 +242,7 @@ export class SpreadsheetComponent {
 
 			case "Enter":
 				// Process enter key event
-				this.processEnterEvent(event);
+				this.processEnterKeyEvent(event);
 
 				// Do nothing else
 				return;
@@ -288,6 +294,7 @@ export class SpreadsheetComponent {
 	public onSelectedInputFocus(event: Event): void {
 		// Set flag
 		this._hasSelectedInputFocus = true;
+		this._hasSelectedInputValueChanged = true;
 	}
 
 	/**
@@ -424,6 +431,12 @@ export class SpreadsheetComponent {
 			this._rows.push({});
 		}
 
+		// Check for selected cell
+		if (this._selectedCell) {
+			// Reset value as we are going to change it
+			this.selectedInput.nativeElement.value = "";
+		}
+
 		// Set selected indexes
 		this._selectedRowIndex = rowIndex;
 		this._selectedColumnIndex = columnIndex;
@@ -466,9 +479,9 @@ export class SpreadsheetComponent {
 		else {
 			// Get index within list of cells
 			const index = (this._selectedRowIndex * this.columns.length) + this._selectedColumnIndex;
-
+			
 			// Assign selected cell
-			this._selectedCell = this.cells.find((_, idx) => idx === index);
+			Promise.resolve(null).then(() => this._selectedCell = this.cells.find((_, idx) => idx === index))
 		}
 	}
 
@@ -666,7 +679,7 @@ export class SpreadsheetComponent {
 	 * Process enter event
 	 * @param event 
 	 */
-	private async processEnterEvent(event: KeyboardEvent): Promise<void> {
+	private async processEnterKeyEvent(event: KeyboardEvent): Promise<void> {
 		// Check for selected input
 		if (!this.selectedInput || !this.selectedInput.nativeElement) {
 			// Do nothing
@@ -690,12 +703,18 @@ export class SpreadsheetComponent {
 			// Set focus
 			this.selectedInput.nativeElement.focus();
 
+			// Set changed flag
+			this._hasSelectedInputValueChanged = true;
+
 			// Do nothing else
 			return;
 		}
 
-		// Assign value
-		await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value, SpreadsheetCellChangeEventOrigin.EDIT);
+		// Assign value only when not undefined
+		if (typeof this.selectedInput.nativeElement.value !== "undefined") {
+			// Assign value to selected cell
+			await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value, SpreadsheetCellChangeEventOrigin.EDIT);
+		}
 
 		// Blur input
 		this.selectedInput.nativeElement.blur();

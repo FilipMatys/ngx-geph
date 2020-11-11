@@ -16,7 +16,6 @@ export class AppComponent {
   public spreadsheetColumns: ISpreadsheetColumns = [
     {
       label: "A",
-      identifier: "a",
       isReadonly: false,
       dataType: SpreadsheetDataType.NUMBER,
       formatterFn: (value) => this.decimal.transform(value, "1.2-2"),
@@ -26,13 +25,11 @@ export class AppComponent {
     },
     {
       label: "B",
-      identifier: "b",
       isDisabled: false,
       formatterFn: (value) => "-"
     },
     {
       label: "C",
-      identifier: "c",
       style: {
         fontWeight: SpreadsheetFontWeight.BOLDER,
         textAlign: SpreadsheetTextAlign.CENTER

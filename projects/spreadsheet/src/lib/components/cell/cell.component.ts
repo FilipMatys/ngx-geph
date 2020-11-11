@@ -127,12 +127,20 @@ export class SpreadsheetCellComponent<TRecord = any> {
         }
 
         // Check if column value is defined
-        if (!(this._column.identifier in this._record)) {
+        if (!(this._column.identifier in this._record) && !(this._column.label in this._record)) {
             return "";
         }
 
-        // Otherwise return value
-        return this._record[this._column.identifier || this._column.label];
+        // Try to get value
+        const value = this._record[this._column.identifier || this._column.label];
+
+        // Check for undefined
+        if (typeof value === "undefined") {
+            return "";
+        }
+
+        // Return value
+        return value;
     }
 
     /**
