@@ -163,7 +163,7 @@ export class SpreadsheetComponent {
 		this.resetSelect();
 	}
 
-	@HostListener("copy", ["$event"])
+	@HostListener("document:copy", ["$event"])
 	public onCopy(event: ClipboardEvent): void {
 		// Check if any cell is selected
 		if (!this._selectedCell) {
@@ -175,7 +175,7 @@ export class SpreadsheetComponent {
 		this.processCopyEvent(event);
 	}
 
-	@HostListener("paste", ["$event"])
+	@HostListener("document:paste", ["$event"])
 	public onPaste(event: ClipboardEvent): void {
 		// Check if any cell is selected
 		if (!this._selectedCell) {

@@ -15,42 +15,20 @@ export class AppComponent {
 
   public spreadsheetColumns: ISpreadsheetColumns = [
     {
-      label: "A",
-      isReadonly: false,
-      dataType: SpreadsheetDataType.NUMBER,
-      formatterFn: (value) => this.decimal.transform(value, "1.2-2"),
-      style: {
-        textAlign: SpreadsheetTextAlign.RIGHT
-      }
+      label: "A"
     },
     {
-      label: "B",
-      isDisabled: false,
-      formatterFn: (value) => "-"
+      label: "B"
     },
     {
-      label: "C",
-      style: {
-        fontWeight: SpreadsheetFontWeight.BOLDER,
-        textAlign: SpreadsheetTextAlign.CENTER
-      }
+      label: "C"
     }
   ];
 
-  public spreadsheetData: ISpreadsheetData<any> = [
-    {
-      a: 25,
-      b: "458",
-      c: 47
-    },
-    {
-      a: 29,
-      c: 11
-    }
-  ]
+  public spreadsheetData: ISpreadsheetData<any> = []
 
   public spreadsheetRows: ISpreadsheetRows = {
-    mode: SpreadsheetRowsMode.DYNAMIC
+    mode: SpreadsheetRowsMode.STATIC
   }
 
   public options: string[] = ['Hello', 'Mr', 'Frodo'];
