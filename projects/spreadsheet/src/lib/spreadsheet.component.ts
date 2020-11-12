@@ -761,9 +761,6 @@ export class SpreadsheetComponent {
 	 * @param event
 	 */
 	private async processArrowKeyEvent(event: KeyboardEvent): Promise<void> {
-		// Prevent event default
-		event.preventDefault();
-
 		// Get selected indexes
 		let rowIndex = this._selectedRowIndex;
 		let columnIndex = this._selectedColumnIndex;
@@ -802,6 +799,9 @@ export class SpreadsheetComponent {
 				rowIndex--;
 				break;
 		}
+
+		// Prevent event default
+		event.preventDefault();
 
 		// Select cell
 		await this.selectCell(rowIndex, columnIndex);
