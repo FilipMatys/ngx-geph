@@ -189,11 +189,6 @@ export class SelectComponent implements ControlValueAccessor {
 	 * @param value 
 	 */
 	public writeValue(value: any) {
-		// Check if value is defined
-		if (value === undefined) {
-			return;
-		}
-
 		// Assign value
 		this._value = value;
 	}
