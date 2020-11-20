@@ -376,8 +376,27 @@ export class SpreadsheetComponent {
 	 * Reset select
 	 */
 	private async resetSelect(): Promise<void> {
+		// Before resetting, check for updates to selected cell
+		if (this._selectedCell) {
+			// Check for change flag
+			if (this._hasSelectedInputValueChanged) {
+				// Assign value to selected cell
+				await this.assignValueToSelectedCell(this.selectedInput.nativeElement.value, SpreadsheetCellChangeEventOrigin.EDIT);
+
+				// Reset flag
+				this._hasSelectedInputValueChanged = false;
+			}
+
+			// Check if input has focus
+			if (this._hasSelectedInputFocus) {
+				// Blur input
+				this.selectedInput.nativeElement.blur();
+			}
+		}
+
 		// Reset indexes
 		this._selectedColumnIndex = this._selectedRowIndex = undefined;
+		this._selectedColumnsIndexes = this._selectedColumnsIndexes = [];
 
 		// Reset cell
 		this._selectedCell = null;
@@ -479,7 +498,7 @@ export class SpreadsheetComponent {
 		else {
 			// Get index within list of cells
 			const index = (this._selectedRowIndex * this.columns.length) + this._selectedColumnIndex;
-			
+
 			// Assign selected cell
 			Promise.resolve(null).then(() => this._selectedCell = this.cells.find((_, idx) => idx === index))
 		}
