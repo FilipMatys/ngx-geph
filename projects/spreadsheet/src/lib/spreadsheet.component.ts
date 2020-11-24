@@ -14,8 +14,12 @@ import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
 import { SpreadsheetDataType } from "./enums/data-type.enum";
 import { SpreadsheetCellChangeEventOrigin } from "./enums/cell-change-event-origin.enum";
 
+// Services
+import { SpreadsheetUtilityService } from "./services/utility.service";
+
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
+
 
 @Component({
 	selector: "ngx-spreadsheet",
@@ -284,8 +288,12 @@ export class SpreadsheetComponent {
 	/**
 	 * Constructor
 	 * @param element
+	 * @param service
 	 */
-	constructor(private element: ElementRef) { }
+	constructor(
+		private readonly element: ElementRef,
+		private readonly service: SpreadsheetUtilityService
+	) { }
 
 	/**
 	 * On selected input focus
@@ -613,14 +621,14 @@ export class SpreadsheetComponent {
 		switch (column.dataType) {
 			// NUMBER
 			case SpreadsheetDataType.NUMBER:
-				// First check if value is number
-				if (isNaN(value) || value === "") {
+				// First check if value set
+				if (value === "") {
 					// Return undefined
 					return undefined;
 				}
 
 				// Parse value as number
-				return Number(value);
+				return this.service.parseNumber(value);
 
 			// STRING, default
 			case SpreadsheetDataType.STRING:

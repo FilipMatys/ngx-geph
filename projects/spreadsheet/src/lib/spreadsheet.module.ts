@@ -10,6 +10,9 @@ import { SpreadsheetSelectedComponent } from "./components/selected/selected.com
 // Pipes
 import { SpreadsheetFormatterPipe } from "./pipes/formatter.pipe";
 
+// Services
+import { SpreadsheetUtilityService } from "./services/utility.service";
+
 @NgModule({
 	imports: [
 		CommonModule
@@ -20,6 +23,7 @@ import { SpreadsheetFormatterPipe } from "./pipes/formatter.pipe";
 		SpreadsheetSelectedComponent,
 		SpreadsheetFormatterPipe
 	],
-	exports: [SpreadsheetComponent]
+	exports: [SpreadsheetComponent],
+	providers: [SpreadsheetUtilityService]
 })
 export class SpreadsheetModule { }

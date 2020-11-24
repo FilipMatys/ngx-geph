@@ -15,7 +15,8 @@ export class AppComponent {
 
   public spreadsheetColumns: ISpreadsheetColumns = [
     {
-      label: "A"
+      label: "A",
+      dataType: SpreadsheetDataType.NUMBER
     },
     {
       label: "B"
