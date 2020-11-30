@@ -1,4 +1,4 @@
-<div (click)="onSelectClick($event)" class="ngx-select-container">
+<div class="ngx-select-container">
     <ng-container *ngIf="config.multi && (!(value | isUndefined) && value.length)">
         <span class="ngx-select-value-multi" *ngFor="let item of value; let idx = index">
             <ngx-select-value>
@@ -23,7 +23,7 @@
 </div>
 <ul *ngIf="isSelectionOpen" class="ngx-select-options">
     <li [class.ngx-select-input--hidden]="!config.allowSearch" class="ngx-select-input">
-        <input #searchInput type="text" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
+        <input (focus)="onSearchInputFocus($event)" #searchInput type="text" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
     </li>
     <ng-container *ngIf="isLoading">
         <ng-content select="ngx-select-loading"></ng-content>

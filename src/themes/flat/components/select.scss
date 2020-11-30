@@ -2,14 +2,14 @@ ngx-select {
     position: relative;
     display: block;
 
-    div.select-container {
+    div.ngx-select-container {
         padding: $padding-form-input;
         border: solid 2px $color-gray;
         color: $color-dark;
         transition: .3s;
         position: relative;
 
-        .select-placeholder {
+        .ngx-select-placeholder {
             color: $color-gray-dark;
         }
 
@@ -33,11 +33,11 @@ ngx-select {
         }
     }
 
-    &.open div.select-container {
+    &.open div.ngx-select-container {
         border-color: $color-primary;
     }
 
-    ul.select-options {
+    ul.ngx-select-options {
         position: absolute;
         width: 100%;
         z-index: 100;
@@ -47,7 +47,7 @@ ngx-select {
         margin: 0;
         padding: 0;
 
-        li.select-input {
+        li.ngx-select-input {
             input {
                 width: 100%;
                 box-sizing: border-box;
@@ -70,7 +70,7 @@ ngx-select {
             border-top: none;
         }
 
-        ngx-select-option.select-option {
+        ngx-select-option.ngx-select-option {
             padding: $padding-form-input;
             color: $color-dark;
             cursor: pointer;

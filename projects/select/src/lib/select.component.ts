@@ -28,7 +28,11 @@ export class SelectComponent implements ControlValueAccessor {
 
 	// Bind select class
     @HostBinding("class.ngx-select")
-    public selectClass: boolean = true;
+	public selectClass: boolean = true;
+	
+	@Input("tabIndex")
+	@HostBinding("attr.tabIndex")
+	public tabIndex?: number = 0;
 
 	@Input("value")
 	private _value: any;
@@ -162,6 +166,30 @@ export class SelectComponent implements ControlValueAccessor {
 		this.closeSelection();
 	}
 
+	/**
+	 * On activate
+	 * @description Via click or focus
+	 * @param event 
+	 */
+	@HostListener("click", ["$event"])
+	@HostListener("focus", ["$event"])
+	public onActivate(event: Event) {
+		// Check safety
+		if (this.checkSafetyActivationTimeout()) {
+			// Do nothing when safety is on
+			return;
+		}
+
+		// Check disabled or readonly
+		if (this.disabled || this.readonly) {
+			// Do nothing
+			return;
+		}
+
+		// Toggle selection
+		this.toggleSelection();
+	}
+
 	// Option template
 	@ContentChild(SelectOptionDirective, { read: TemplateRef })
 	public selectOptionTemplate: TemplateRef<ISelectOptionContext<any>>;
@@ -177,6 +205,9 @@ export class SelectComponent implements ControlValueAccessor {
 	// Search input
 	@ViewChild('searchInput')
 	public searchInput: ElementRef;
+
+	// Safety timeout
+	private safetyActivationTimeout: any;
 
 	/**
 	 * Select constructor
@@ -206,28 +237,6 @@ export class SelectComponent implements ControlValueAccessor {
 
 	/** Register on touched */
 	public registerOnTouched() { }
-
-	/**
-	 * On select click
-	 * @param event 
-	 */
-	public onSelectClick(event: Event) {
-		// Prevent event propagation
-		event.stopPropagation();
-
-		// Dispatch click event on the component as we want to support multiple 
-		// selects within page and clicking on a select has to bubble out 
-		this.element.nativeElement.dispatchEvent(new Event("click", { bubbles: true }));
-
-		// Check disabled or readonly
-		if (this.disabled || this.readonly) {
-			// Do nothing
-			return;
-		}
-
-		// Toggle selection
-		this.toggleSelection();
-	}
 
 	/**
 	 * On clear click
@@ -291,11 +300,43 @@ export class SelectComponent implements ControlValueAccessor {
 	}
 
 	/**
+	 * On search input focus
+	 * @param event 
+	 */
+	public onSearchInputFocus(event: Event): void {
+		console.log("On search input focus");
+		event.stopImmediatePropagation();
+	}
+
+	/**
 	 * Toggle selection
 	 */
 	private toggleSelection(): void {
 		// Toggle selection based on state
 		this.isSelectionOpen ? this.closeSelection() : this.openSelection();
+	}
+
+	/**
+	 * Check safety activation time out
+	 */
+	private checkSafetyActivationTimeout(): boolean {
+		// Check if time out is set
+		if (this.safetyActivationTimeout) {
+			// Time out is on
+			return true;
+		}
+
+		// Otherwise set timeout
+		this.safetyActivationTimeout = setTimeout(() => {
+			// Clear timeout
+			clearTimeout(this.safetyActivationTimeout);
+
+			// Reset variable
+			this.safetyActivationTimeout = undefined;
+		}, 100);
+
+		// Safety was not active
+		return false;
 	}
 
 	/** 
