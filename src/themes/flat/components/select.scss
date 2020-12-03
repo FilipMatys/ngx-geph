@@ -47,6 +47,12 @@ ngx-select {
         margin: 0;
         padding: 0;
 
+        .ngx-select-options-container {
+            max-height: 20rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
         li.ngx-select-input {
             input {
                 width: 100%;
@@ -76,6 +82,7 @@ ngx-select {
             cursor: pointer;
             transition: .3s;
 
+            &--focused,
             &:hover {
                 background: $color-gray-dark;
             }

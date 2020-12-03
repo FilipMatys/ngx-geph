@@ -32,7 +32,7 @@ export class AppComponent {
     mode: SpreadsheetRowsMode.STATIC
   }
 
-  public options: string[] = ['Hello', 'Mr', 'Frodo'];
+  public options: string[] = ['Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo'];
 
   public selectValue: string = 'Hello';
 

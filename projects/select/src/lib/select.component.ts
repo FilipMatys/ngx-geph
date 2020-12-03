@@ -1,16 +1,22 @@
 // External modules
-import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef } from "@angular/core";
+import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef, ViewChildren, QueryList } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { fromEvent } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
 
 // Interfaces
 import { ISelectConfig } from "./interfaces/select.interfaces";
+
+// Constants
+import { KEY_CODES } from "./constants/key-codes.const";
 
 // Directives
 import { SelectOptionDirective, ISelectOptionContext } from "./directives/option.directive";
 import { SelectValueDirective, ISelectValueContext } from "./directives/value.directive";
 import { SelectClearDirective, ISelectClearContext } from "./directives/clear.directive";
+
+// Components
+import { SelectOptionComponent } from "./components/option/option.component";
 
 @Component({
 	selector: "ngx-select",
@@ -151,10 +157,10 @@ export class SelectComponent implements ControlValueAccessor {
 	@HostBinding("class.ngx-select--open")
 	public isSelectionOpen: boolean = false;
 
-	@HostBinding("class.ngx-select--focused")
-	public get isFocused(): boolean {
-		return this.isComponentFocused || this.isSearchInputFocused;
-	}
+	// @HostBinding("class.ngx-select--focused")
+	// public get isFocused(): boolean {
+	// 	return this.isComponentFocused || this.isSearchInputFocused;
+	// }
 
 	// Is component focused flag
 	private isComponentFocused: boolean = false;
@@ -182,8 +188,6 @@ export class SelectComponent implements ControlValueAccessor {
 	 */
 	@HostListener("click", ["$event"])
 	public onClick(even: Event): void {
-		console.log("On click");
-
 		// Check disabled or readonly
 		if (this.disabled || this.readonly) {
 			// Do nothing
@@ -200,8 +204,6 @@ export class SelectComponent implements ControlValueAccessor {
 	 */
 	@HostListener("focus", ["$event"])
 	public onFocus(event: Event): void {
-		console.log("On focus");
-
 		// Check disabled or readonly
 		if (this.disabled || this.readonly) {
 			// Do nothing
@@ -225,6 +227,16 @@ export class SelectComponent implements ControlValueAccessor {
 		this.isComponentFocused = false;
 	}
 
+	/**
+	 * On keydown
+	 * @param event 
+	 */
+	@HostListener("keydown", ["$event"])
+	public onKeydown(event: KeyboardEvent): void {
+		// Handle keydown
+		this.handleKeydown(event);
+	}
+
 	// Option template
 	@ContentChild(SelectOptionDirective, { read: TemplateRef })
 	public selectOptionTemplate: TemplateRef<ISelectOptionContext<any>>;
@@ -239,7 +251,18 @@ export class SelectComponent implements ControlValueAccessor {
 
 	// Search input
 	@ViewChild('searchInput')
-	public searchInput: ElementRef;
+	public searchInputRef: ElementRef;
+
+	// Options container
+	@ViewChild("optionsContainer")
+	public optionsContainerRef: ElementRef<HTMLElement>;
+
+	// List of option references
+	@ViewChildren(SelectOptionComponent, { read: ElementRef })
+	public optionRefs: QueryList<ElementRef<HTMLElement>>;
+
+	// Focused option index
+	public focusedOptionIndex: number = undefined;
 
 	// Safety timeout
 	private safetyActivationTimeout: any;
@@ -453,6 +476,9 @@ export class SelectComponent implements ControlValueAccessor {
 
 		// Hide selection
 		this.isSelectionOpen = false;
+
+		// Reset focused option index
+		this.focusedOptionIndex = undefined;
 	}
 
 	/**
@@ -462,11 +488,34 @@ export class SelectComponent implements ControlValueAccessor {
 		// Set timeout to make sure search input is attached
 		setTimeout(() => {
 			// Create observable from typing event
-			fromEvent(this.searchInput.nativeElement, "keyup")
+			fromEvent(this.searchInputRef.nativeElement, "keyup")
+				.pipe(filter((event: KeyboardEvent) => {
+					// Check key value
+					if (event.shiftKey || event.ctrlKey || event.altKey) {
+						// Ignore control keys
+						return false;
+					}
+
+					// Get key
+					const key = event.key;
+
+					// Check key
+					switch (key) {
+						// Component control keys
+						case KEY_CODES.TAB:
+						case KEY_CODES.ARROW_DOWN:
+						case KEY_CODES.ARROW_UP:
+						case KEY_CODES.ENTER:
+							return false;
+					}
+
+					// Pass the key
+					return true;
+				}))
 				.pipe(debounceTime(this.config.searchInputDelay), distinctUntilChanged())
-				.subscribe((event: any) => {
+				.subscribe(async (event: KeyboardEvent) => {
 					// Get value
-					let value = event.target.value;
+					const value = (event.target as any).value;
 
 					// Emit
 					this.searchInputChange.emit(value);
@@ -477,7 +526,13 @@ export class SelectComponent implements ControlValueAccessor {
 					}
 
 					// Reload options
-					this.reloadOptions(value);
+					await this.reloadOptions(value);
+
+					// Check if there is focused option
+					if (typeof this.focusedOptionIndex !== "undefined") {
+						// Set proper focused option index
+						this.focusedOptionIndex = (this.options || []).length ? 0 : undefined;
+					}
 				});
 		});
 	}
@@ -486,7 +541,7 @@ export class SelectComponent implements ControlValueAccessor {
 	 * Set focus on search input
 	 */
 	private setFocusOnSearchInput() {
-		setTimeout(() => this.searchInput.nativeElement.focus());
+		setTimeout(() => this.searchInputRef.nativeElement.focus());
 	}
 
 	/**
@@ -500,7 +555,7 @@ export class SelectComponent implements ControlValueAccessor {
 
 		// Reset input if is allowed
 		if (this.config.allowSearch) {
-			this.searchInput.nativeElement.value = "";
+			this.searchInputRef.nativeElement.value = "";
 		}
 	}
 
@@ -508,28 +563,344 @@ export class SelectComponent implements ControlValueAccessor {
 	 * Reload options
 	 * @param term 
 	 */
-	private reloadOptions(term?: string) {
+	private async reloadOptions(term?: string): Promise<void> {
 		// Set loading
 		this.isLoading = true;
 
 		// Reset list of options
 		this.options = [];
 
-		// Get options
-		this.config.getOptions(term)
-			.then((options) => {
-				// Assign options
-				this.options = options;
+		try {
+			// Get and set options
+			this.options = await this.config.getOptions(term);
+		}
+		catch (err) {
+			// Emit error
+			this.getOptionsError.emit(err);
+		}
+		finally {
+			// Set is loading
+			this.isLoading = false;
+		}
+	}
 
-				// Set loading
-				this.isLoading = false;
-			})
-			.catch((err) => {
-				// Emit error
-				this.getOptionsError.emit(err);
+	/**
+	 * Handle key down
+	 * @param event 
+	 */
+	private handleKeydown(event: KeyboardEvent): void {
+		// Check readonly or disabled
+		if (this.readonly || this.disabled) {
+			// Do nothing
+			return;
+		}
 
-				// Set is loading
-				this.isLoading = false;
-			});
+		// Check if select is open
+		this.isSelectionOpen ? this.handleKeydownOpen(event) : this.handleKeydownClosed(event);
+	}
+
+	/**
+	 * Handle key down open
+	 * @param event 
+	 */
+	private handleKeydownOpen(event: KeyboardEvent): void {
+		// Get key
+		const key = event.key;
+
+		// Check key
+		switch (key) {
+			// Escape
+			case KEY_CODES.ESCAPE:
+				// Handle escape
+				this.handleEscapeKeydownOpen(event);
+				break;
+
+			// Enter
+			case KEY_CODES.ENTER:
+				// Handle enter
+				this.handleEnterKeydownOpen(event);
+				break;
+
+			// Arrow down
+			case KEY_CODES.ARROW_DOWN:
+				// Handle arrow down
+				this.handleArrowDownKeydownOpen(event);
+				break;
+
+			// Arrow up
+			case KEY_CODES.ARROW_UP:
+				// Handle arrow up
+				this.handleArrowUpKeydownOpen(event);
+				break;
+
+			// Tab
+			case KEY_CODES.TAB:
+				// Handle tab key
+				this.handleTabKeydownOpen(event);
+				break;
+		}
+	}
+
+	/**
+	 * Handle key down closed
+	 * @param event 
+	 */
+	private handleKeydownClosed(event: KeyboardEvent): void {
+		// Get key
+		const key = event.key;
+
+		// Check key
+		switch (key) {
+			// Enter
+			case KEY_CODES.ENTER:
+				// Handle enter
+				this.handleEnterKeydownClosed(event);
+				break;
+
+			// Arrow down
+			case KEY_CODES.ARROW_DOWN:
+				// Handle arrow down
+				this.handleArrowDownKeydownClosed(event);
+				break;
+		}
+	}
+	/**
+	 * Handle enter keydown closed
+	 * @param event 
+	 */
+	private handleEnterKeydownClosed(event: KeyboardEvent): void {
+		// Prevent default
+		event.preventDefault();
+
+		// Open selection
+		this.openSelection();
+	}
+
+	/**
+	 * Handle arrow down keydown closed
+	 * @param event 
+	 */
+	private handleArrowDownKeydownClosed(event: KeyboardEvent): void {
+		// Prevent default
+		event.preventDefault();
+
+		// Open selection
+		this.openSelection();
+
+		// Set focused option index
+		this.focusedOptionIndex = 0;
+	}
+
+	/**
+	 * Handle tab keydown open
+	 * @param event 
+	 */
+	private handleTabKeydownOpen(event: KeyboardEvent): void {
+		// Close selection
+		this.closeSelection();
+	}
+
+	/**
+	 * Handle keydown open
+	 * @param event 
+	 */
+	private handleEscapeKeydownOpen(event: KeyboardEvent): void {
+		// Prevent default
+		event.preventDefault();
+
+		// Close selection
+		this.closeSelection();
+	}
+
+	/**
+	 * Handle enter keydown open
+	 * @param even 
+	 */
+	private handleEnterKeydownOpen(event: KeyboardEvent): void {
+		// Prevent default
+		event.preventDefault();
+
+		// Check if is loading
+		if (this.isLoading) {
+			// Do nothing
+			return;
+		}
+
+		// Check options length
+		if (!(this.options || []).length) {
+			// Do nothing
+			return;
+		}
+
+		// Check if focused is defined
+		if (typeof this.focusedOptionIndex === "undefined") {
+			// Do nothing
+			return;
+		}
+
+		// Select option
+		this.selectOption(this.options[this.focusedOptionIndex]);
+
+		// Set focus on this component
+		setTimeout(() => this.element.nativeElement.focus());
+	}
+
+	/**
+	 * Handle arrow down keydown open
+	 * @param event 
+	 */
+	private handleArrowDownKeydownOpen(event: KeyboardEvent): void {
+		// Prevent default
+		event.preventDefault();
+
+		// Check if is loading
+		if (this.isLoading) {
+			// Do nothing
+			return;
+		}
+
+		// Check options length
+		if (!(this.options || []).length) {
+			// Do nothing
+			return;
+		}
+
+		// Increase focused option index
+		this.increaseFocusedOptionIndex();
+	}
+
+	/**
+	 * Handle arrow up keydown open
+	 * @param event 
+	 */
+	private handleArrowUpKeydownOpen(event: KeyboardEvent): void {
+		// Prevent default
+		event.preventDefault();
+
+		// Check if is loading
+		if (this.isLoading) {
+			// Do nothing
+			return;
+		}
+
+		// Check options length
+		if (!(this.options || []).length) {
+			// Do nothing
+			return;
+		}
+
+		// Decrease focused option index
+		this.decreaseFocusedOptionIndex();
+	}
+
+	/**
+	 * Increase focused option index
+	 */
+	private increaseFocusedOptionIndex(): void {
+		// Check if index is defined
+		if (typeof this.focusedOptionIndex === "undefined") {
+			// Define value
+			this.focusedOptionIndex = 0;
+
+			// Do nothing else
+			return;
+		}
+
+		// Get increased value
+		const value = this.focusedOptionIndex + 1;
+
+		// Assign normalized value
+		this.focusedOptionIndex = value % (this.options || []).length;
+
+		// Scroll container to focused option
+		this.scrollContainerToFocusedOption();
+	}
+
+	/**
+	 * Decrease focused option index
+	 */
+	private decreaseFocusedOptionIndex(): void {
+		// Check if index is defined
+		if (typeof this.focusedOptionIndex === "undefined") {
+			// Define value
+			this.focusedOptionIndex = 0;
+
+			// Do nothing else
+			return;
+		}
+
+		// Check for zero
+		if (this.focusedOptionIndex === 0) {
+			// Assign index if the last option
+			this.focusedOptionIndex = this.options.length - 1;
+		}
+		else {
+			// Get increased value
+			const value = this.focusedOptionIndex - 1;
+
+			// Assign normalized value
+			this.focusedOptionIndex = value % (this.options || []).length;
+		}
+
+		// Scroll container to focused option
+		this.scrollContainerToFocusedOption();
+	}
+
+	/**
+	 * Scroll to container to focused option
+	 */
+	private scrollContainerToFocusedOption(): void {
+		// Check if container is set
+		if (!this.optionsContainerRef) {
+			// Do nothing
+			return;
+		}
+
+		// Get scroll view height
+		const scrollViewHeight = this.optionsContainerRef.nativeElement.clientHeight;
+
+		// Get scroll top
+		const scrollTop = this.optionsContainerRef.nativeElement.scrollTop;
+
+		// Now get boundaries of the container based on scroll top value
+		const [bTop, bBottom] = [scrollTop, scrollTop + scrollViewHeight];
+
+		// Now we need to get position of the focused option to check whether its within boundaries 
+		// of the scroll container
+		const optionRef = this.optionRefs.find((_, idx) => idx === this.focusedOptionIndex);
+
+		// Check if option ref was found
+		if (!optionRef) {
+			// Do nothing
+			return;
+		}
+
+		// Get top and bottom position
+		const top = optionRef.nativeElement.offsetTop;
+		const bottom = optionRef.nativeElement.offsetHeight + top;
+
+		// Now it is time to check whether the option is within the boundaries
+		if (top >= bTop && bottom <= bTop) {
+			// Nothing to do
+			return;
+		}
+
+		// Now check if item is above the boundaries
+		if (top < bTop) {
+			// We need to move to the top of the item
+			this.optionsContainerRef.nativeElement.scrollTo(0, top);
+
+			// Do nothing else
+			return;
+		}
+
+		// Check if item is below the boundaries
+		if (bottom > bBottom) {
+			// We need to move the view to the bottom
+			this.optionsContainerRef.nativeElement.scrollTo(0, bottom - scrollViewHeight);
+
+			// Do nothing else
+			return;
+		}
 	}
 }

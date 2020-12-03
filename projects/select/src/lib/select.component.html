@@ -31,8 +31,8 @@
     <ng-container *ngIf="!isLoading && !options.length">
         <ng-content select="ngx-select-empty"></ng-content>
     </ng-container>
-    <div class="ngx-select-options-container">
-        <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)">
+    <div class="ngx-select-options-container" #optionsContainer>
+        <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)" [class.ngx-select-option--focused]="focusedOptionIndex === idx">
             <ng-container *ngTemplateOutlet="selectOptionTemplate; context: { $implicit: option, index: idx }">
             </ng-container>
         </ngx-select-option>
