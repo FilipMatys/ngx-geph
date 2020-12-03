@@ -27,9 +27,9 @@ import { SelectClearDirective, ISelectClearContext } from "./directives/clear.di
 export class SelectComponent implements ControlValueAccessor {
 
 	// Bind select class
-    @HostBinding("class.ngx-select")
+	@HostBinding("class.ngx-select")
 	public selectClass: boolean = true;
-	
+
 	@Input("tabIndex")
 	@HostBinding("attr.tabIndex")
 	public tabIndex?: number = 0;
@@ -127,12 +127,12 @@ export class SelectComponent implements ControlValueAccessor {
 
 	// Readonly flag
 	@Input("readonly")
-	@HostBinding("class.readonly")
+	@HostBinding("class.ngx-select--readonly")
 	public readonly: boolean = false;
 
 	// Disabled flag
 	@Input("disabled")
-	@HostBinding("class.disabled")
+	@HostBinding("class.ngx-select--disabled")
 	public disabled: boolean = false;
 
 	// Is loading flag
@@ -148,8 +148,18 @@ export class SelectComponent implements ControlValueAccessor {
 	public searchInputChange: EventEmitter<string> = new EventEmitter<string>();
 
 	// Is selection open flag
-	@HostBinding("class.open")
+	@HostBinding("class.ngx-select--open")
 	public isSelectionOpen: boolean = false;
+
+	@HostBinding("class.ngx-select--focused")
+	public get isFocused(): boolean {
+		return this.isComponentFocused || this.isSearchInputFocused;
+	}
+
+	// Is component focused flag
+	private isComponentFocused: boolean = false;
+	// Is search input focused flag
+	private isSearchInputFocused: boolean = false;
 
 	/**
 	 * On document click
@@ -167,18 +177,12 @@ export class SelectComponent implements ControlValueAccessor {
 	}
 
 	/**
-	 * On activate
-	 * @description Via click or focus
-	 * @param event 
+	 * On click
+	 * @param even 
 	 */
 	@HostListener("click", ["$event"])
-	@HostListener("focus", ["$event"])
-	public onActivate(event: Event) {
-		// Check safety
-		if (this.checkSafetyActivationTimeout()) {
-			// Do nothing when safety is on
-			return;
-		}
+	public onClick(even: Event): void {
+		console.log("On click");
 
 		// Check disabled or readonly
 		if (this.disabled || this.readonly) {
@@ -188,6 +192,37 @@ export class SelectComponent implements ControlValueAccessor {
 
 		// Toggle selection
 		this.toggleSelection();
+	}
+
+	/**
+	 * On focus
+	 * @param event 
+	 */
+	@HostListener("focus", ["$event"])
+	public onFocus(event: Event): void {
+		console.log("On focus");
+
+		// Check disabled or readonly
+		if (this.disabled || this.readonly) {
+			// Do nothing
+			return;
+		}
+
+		// Set that component is focused
+		this.isComponentFocused = true;
+
+		// Open selection
+		this.openSelection();
+	}
+
+	/**
+	 * On blur
+	 * @param event 
+	 */
+	@HostListener("blur", ["$event"])
+	public onBlur(event: Event): void {
+		// Reset focus flag
+		this.isComponentFocused = false;
 	}
 
 	// Option template
@@ -275,6 +310,50 @@ export class SelectComponent implements ControlValueAccessor {
 		// Stop event propagation
 		event.stopPropagation();
 
+		// Select option
+		this.selectOption(option);
+	}
+
+	/**
+	 * On search input focus
+	 * @param event 
+	 */
+	public onSearchInputFocus(event: Event): void {
+		// Set search input focus flag
+		this.isSearchInputFocused = true;
+	}
+
+	/**
+	 * On search input blur
+	 * @param event 
+	 */
+	public onSearchInputBlur(event: Event): void {
+		// Reset search input focus flag
+		this.isSearchInputFocused = false;
+	}
+
+	/**
+	 * On search input click
+	 * @param event 
+	 */
+	public onSearchInputClick(event: Event): void {
+		// Prevent event propagation
+		event.stopPropagation();
+	}
+
+	/**
+	 * Toggle selection
+	 */
+	private toggleSelection(): void {
+		// Toggle selection based on state
+		this.isSelectionOpen ? this.closeSelection() : this.openSelection();
+	}
+
+	/**
+	 * Select option
+	 * @param option 
+	 */
+	private selectOption(option: any): void {
 		// Check for multi
 		if (this.config.multi) {
 			// Check if value is set
@@ -297,23 +376,6 @@ export class SelectComponent implements ControlValueAccessor {
 
 		// Close selection
 		this.closeSelection();
-	}
-
-	/**
-	 * On search input focus
-	 * @param event 
-	 */
-	public onSearchInputFocus(event: Event): void {
-		console.log("On search input focus");
-		event.stopImmediatePropagation();
-	}
-
-	/**
-	 * Toggle selection
-	 */
-	private toggleSelection(): void {
-		// Toggle selection based on state
-		this.isSelectionOpen ? this.closeSelection() : this.openSelection();
 	}
 
 	/**
@@ -348,6 +410,12 @@ export class SelectComponent implements ControlValueAccessor {
 			return;
 		}
 
+		// Check safety
+		if (this.checkSafetyActivationTimeout()) {
+			// Do nothing when safety is on
+			return;
+		}
+
 		// Show selection
 		this.isSelectionOpen = true;
 
@@ -368,9 +436,15 @@ export class SelectComponent implements ControlValueAccessor {
 	/** 
 	 * Close selection 
 	 */
-	private closeSelection() {
+	private closeSelection(): void {
 		// Do not close when is not open
 		if (!this.isSelectionOpen) {
+			return;
+		}
+
+		// Check safety
+		if (this.checkSafetyActivationTimeout()) {
+			// Do nothing when safety is on
 			return;
 		}
 
