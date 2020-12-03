@@ -1,8 +1,8 @@
 // External modules
-import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef, ViewChildren, QueryList } from "@angular/core";
+import { Component, Input, Output, ContentChild, TemplateRef, HostBinding, HostListener, ElementRef, EventEmitter, ViewChild, forwardRef, ViewChildren, QueryList, OnInit } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
+import { fromEvent, Observable, Subject } from 'rxjs';
 
 // Interfaces
 import { ISelectConfig } from "./interfaces/select.interfaces";
@@ -30,7 +30,7 @@ import { SelectOptionComponent } from "./components/option/option.component";
 		}
 	],
 })
-export class SelectComponent implements ControlValueAccessor {
+export class SelectComponent implements ControlValueAccessor, OnInit {
 
 	// Bind select class
 	@HostBinding("class.ngx-select")
@@ -42,6 +42,10 @@ export class SelectComponent implements ControlValueAccessor {
 
 	@Input("value")
 	private _value: any;
+
+	// Focus change source
+	private readonly focusChangeSource: Subject<boolean> = new Subject<boolean>();
+	private readonly focusChange$: Observable<boolean> = this.focusChangeSource.asObservable();
 
 	// Value getter
 	public get value() { return this._value };
@@ -157,15 +161,9 @@ export class SelectComponent implements ControlValueAccessor {
 	@HostBinding("class.ngx-select--open")
 	public isSelectionOpen: boolean = false;
 
-	// @HostBinding("class.ngx-select--focused")
-	// public get isFocused(): boolean {
-	// 	return this.isComponentFocused || this.isSearchInputFocused;
-	// }
-
-	// Is component focused flag
-	private isComponentFocused: boolean = false;
-	// Is search input focused flag
-	private isSearchInputFocused: boolean = false;
+	// Focused flag
+	@HostBinding("class.ngx-select--focused")
+	public isFocused: boolean = false;
 
 	/**
 	 * On document click
@@ -211,7 +209,7 @@ export class SelectComponent implements ControlValueAccessor {
 		}
 
 		// Set that component is focused
-		this.isComponentFocused = true;
+		this.focusChangeSource.next(true);
 
 		// Open selection
 		this.openSelection();
@@ -224,7 +222,7 @@ export class SelectComponent implements ControlValueAccessor {
 	@HostListener("blur", ["$event"])
 	public onBlur(event: Event): void {
 		// Reset focus flag
-		this.isComponentFocused = false;
+		this.focusChangeSource.next(false);
 	}
 
 	/**
@@ -272,6 +270,14 @@ export class SelectComponent implements ControlValueAccessor {
 	 * @param element 
 	 */
 	constructor(private element: ElementRef) { }
+
+	/**
+	 * On init hook
+	 */
+	public ngOnInit(): void {
+		// Register to focus change
+		this.registerToFocusChange();
+	}
 
 	/**
 	 * Write value
@@ -343,7 +349,7 @@ export class SelectComponent implements ControlValueAccessor {
 	 */
 	public onSearchInputFocus(event: Event): void {
 		// Set search input focus flag
-		this.isSearchInputFocused = true;
+		this.focusChangeSource.next(true);
 	}
 
 	/**
@@ -352,7 +358,7 @@ export class SelectComponent implements ControlValueAccessor {
 	 */
 	public onSearchInputBlur(event: Event): void {
 		// Reset search input focus flag
-		this.isSearchInputFocused = false;
+		this.focusChangeSource.next(false);
 	}
 
 	/**
@@ -482,6 +488,16 @@ export class SelectComponent implements ControlValueAccessor {
 	}
 
 	/**
+	 * Register to focus change
+	 */
+	private registerToFocusChange(): void {
+		this.focusChange$
+			// Wait 50ms to get the most recent value 
+			.pipe((debounceTime(50)))
+			.subscribe((value) => this.isFocused = value);
+	}
+
+	/**
 	 * Listen to search input
 	 */
 	private listenToSearchInput() {
@@ -505,6 +521,8 @@ export class SelectComponent implements ControlValueAccessor {
 						case KEY_CODES.TAB:
 						case KEY_CODES.ARROW_DOWN:
 						case KEY_CODES.ARROW_UP:
+						case KEY_CODES.ARROW_LEFT:
+						case KEY_CODES.ARROW_RIGHT:
 						case KEY_CODES.ENTER:
 							return false;
 					}
