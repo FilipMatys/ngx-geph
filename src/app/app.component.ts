@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
-import { ISpreadsheetColumns, ISpreadsheetData, SpreadsheetFontWeight, SpreadsheetTextAlign, ISpreadsheetRows, SpreadsheetRowsMode, SpreadsheetDataType } from "spreadsheet";
+import { ISpreadsheetData, SpreadsheetRowsMode, SpreadsheetDataType, ISpreadsheetRowsDefinition, ISpreadsheetColumnsDefinition } from "spreadsheet";
 import { DecimalPipe } from "@angular/common";
 
 @Component({
@@ -13,22 +13,24 @@ import { DecimalPipe } from "@angular/common";
 export class AppComponent {
   title = 'ngx';
 
-  public spreadsheetColumns: ISpreadsheetColumns = [
-    {
-      label: "A",
-      dataType: SpreadsheetDataType.NUMBER
-    },
-    {
-      label: "B"
-    },
-    {
-      label: "C"
-    }
-  ];
+  public spreadsheetColumns: ISpreadsheetColumnsDefinition = {
+    columns: [
+      {
+        label: "A",
+        dataType: SpreadsheetDataType.NUMBER
+      },
+      {
+        label: "B"
+      },
+      {
+        label: "C"
+      }
+    ]
+  }
 
   public spreadsheetData: ISpreadsheetData<any> = []
 
-  public spreadsheetRows: ISpreadsheetRows = {
+  public spreadsheetRows: ISpreadsheetRowsDefinition = {
     mode: SpreadsheetRowsMode.STATIC
   }
 
@@ -93,7 +95,7 @@ export class AppComponent {
    * Constructor
    * @param decimal 
    */
-  constructor(private readonly decimal: DecimalPipe) {}
+  constructor(private readonly decimal: DecimalPipe) { }
 
   public onTabIndexSelect(index) {
     this.activeTabIndex = index;

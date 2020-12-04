@@ -728,6 +728,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Close selection
 		this.closeSelection();
+
+		// Set focus on this component
+		setTimeout(() => this.element.nativeElement.focus());
 	}
 
 	/**

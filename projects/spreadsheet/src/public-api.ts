@@ -11,6 +11,8 @@ export * from "./lib/interfaces/row.interface";
 export * from "./lib/interfaces/rows.interface";
 export * from "./lib/interfaces/style.interface";
 export * from "./lib/interfaces/cell-change-event.interface";
+export * from "./lib/interfaces/columns-definition.interface";
+export * from "./lib/interfaces/rows-definition.interface";
 export * from "./lib/enums/font-weight.enum";
 export * from "./lib/enums/text-align.enum";
 export * from "./lib/enums/vertical-align.enum";
