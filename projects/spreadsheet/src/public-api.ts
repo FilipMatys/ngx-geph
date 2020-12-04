@@ -16,6 +16,6 @@ export * from "./lib/interfaces/rows-definition.interface";
 export * from "./lib/enums/font-weight.enum";
 export * from "./lib/enums/text-align.enum";
 export * from "./lib/enums/vertical-align.enum";
-export * from "./lib/enums/rows-mode.enum";
+export * from "./lib/enums/mode.enum";
 export * from "./lib/enums/data-type.enum";
 export * from "./lib/enums/cell-change-event-origin.enum";

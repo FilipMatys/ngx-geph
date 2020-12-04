@@ -1,4 +1,5 @@
 // Interfaces
+import { ISpreadsheetRow } from "./row.interface";
 import { ISpreadsheetRows } from "./rows.interface";
 
 /**
@@ -16,10 +17,16 @@ export interface ISpreadsheetRowsDefinition {
     /**
      * Number of rows
      * @description Number of rows to
-     * start with unless CUSTOM mode 
-     * is set
+     * start with
      */
     numberOfRows?: number;
+
+    /**
+     * Row generator fn
+     * @description Custom function to generate
+     * row based on index
+     */
+    generateRowFn?: (index: number) => ISpreadsheetRow;
 
     /**
      * Rows

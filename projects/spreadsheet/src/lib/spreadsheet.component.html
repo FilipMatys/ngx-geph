@@ -7,7 +7,7 @@
                 [class.ngx-spreadsheet-column--selected]="columnIndex === selectedColumnIndex"
                 [class.ngx-spreadsheet-column--disabled]="column.isDisabled"
                 [class.ngx-spreadsheet-column--readonly]="column.isReadonly">
-                {{ column.label }}</th>
+                {{ column.label || (columnIndex + 1) }}</th>
         </tr>
     </thead>
     <tbody class="ngx-spreadsheet-table__body">

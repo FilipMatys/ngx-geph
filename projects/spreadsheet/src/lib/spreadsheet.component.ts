@@ -12,7 +12,7 @@ import { ISpreadsheetColumnsDefinition } from "./interfaces/columns-definition.i
 import { ISpreadsheetColumn } from "./interfaces/column.interface";
 
 // Enums
-import { SpreadsheetRowsMode } from "./enums/rows-mode.enum";
+import { SpreadsheetMode } from "./enums/mode.enum";
 import { SpreadsheetDataType } from "./enums/data-type.enum";
 import { SpreadsheetCellChangeEventOrigin } from "./enums/cell-change-event-origin.enum";
 
@@ -64,7 +64,9 @@ export class SpreadsheetComponent implements OnInit {
 	private _hasSelectedInputValueChanged: boolean = false;
 
 	// Rows mode
-	private _rowsMode?: number = SpreadsheetRowsMode.DYNAMIC;
+	private _rowsMode?: number = SpreadsheetMode.DYNAMIC;
+	// Columns mode
+	private _columnsMode?: number = SpreadsheetMode.STATIC;
 
 	// Spreadsheet data
 	@Input("data")
@@ -73,17 +75,38 @@ export class SpreadsheetComponent implements OnInit {
 	// Columns definition
 	@Input("columns")
 	public set columnsDefinition(value: ISpreadsheetColumnsDefinition) {
-		// Check for value and columns 
-		if (!value) {
-			// Set empty columns
-			this._columns = [];
+		// Check if mode is defined
+		if (typeof value.mode !== "undefined") {
+			// Assign mode
+			this._columnsMode = value.mode;
+		}
 
-			// Do nothing
+		// Check for columns
+		if (value.columns) {
+			// Assign custom columns
+			this._columns = value.columns || [];
+
+			// Do nothing else
 			return;
 		}
 
-		// Assign columns
-		this._columns = value.columns || [];
+		// Init number of columns with the number provided (or default)
+		const numberOfColumns = value.numberOfColumns || 10;
+
+		// Generate columns
+		this._columns = Array.from({ length: numberOfColumns }, (_, index) => {
+			// First get column using the default function
+			const column = this.service.generateColumn(index);
+
+			// Now check for custom function
+			if (value.generateColumnFn) {
+				// Generate column fn
+				return value.generateColumnFn(column, index);
+			}
+
+			// Return default column
+			return column;
+		});
 	}
 
 	// Rows definition
@@ -107,8 +130,11 @@ export class SpreadsheetComponent implements OnInit {
 		// Init rows with the number provided (or default)
 		const numberOfRows = value.numberOfRows || 10;
 
+		// Get generate function
+		const generateRowFn = value.generateRowFn || this.service.generateRow;
+
 		// Generate rows
-		this._rows = Array.from({ length: numberOfRows }, () => { return {} });
+		this._rows = Array.from({ length: numberOfRows }, (_, index) => generateRowFn(index));
 	};
 
 	/**
@@ -511,7 +537,7 @@ export class SpreadsheetComponent implements OnInit {
 		// Check bottom boundaries of row index
 		if (rowIndex > (this._rows.length - 1)) {
 			// Check for mode
-			if (this._rowsMode !== SpreadsheetRowsMode.DYNAMIC) {
+			if (this._rowsMode !== SpreadsheetMode.DYNAMIC) {
 				// Do nothing
 				return;
 			}

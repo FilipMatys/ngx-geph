@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ISelectConfig } from 'select';
 import { ITableConfig, TableSortDirection, ITableSortColumn } from "table";
-import { ISpreadsheetData, SpreadsheetRowsMode, SpreadsheetDataType, ISpreadsheetRowsDefinition, ISpreadsheetColumnsDefinition } from "spreadsheet";
+import { ISpreadsheetData, SpreadsheetMode, SpreadsheetDataType, ISpreadsheetRowsDefinition, ISpreadsheetColumnsDefinition } from "spreadsheet";
 import { DecimalPipe } from "@angular/common";
 
 @Component({
@@ -14,24 +14,19 @@ export class AppComponent {
   title = 'ngx';
 
   public spreadsheetColumns: ISpreadsheetColumnsDefinition = {
-    columns: [
-      {
-        label: "A",
-        dataType: SpreadsheetDataType.NUMBER
-      },
-      {
-        label: "B"
-      },
-      {
-        label: "C"
-      }
-    ]
+    mode: SpreadsheetMode.DYNAMIC,
+    numberOfColumns: 27,
+    generateColumnFn: (column, index) => {
+      this.log("Some text");
+      column.label = column.label + "*";
+      return column;
+    }
   }
 
   public spreadsheetData: ISpreadsheetData<any> = []
 
   public spreadsheetRows: ISpreadsheetRowsDefinition = {
-    mode: SpreadsheetRowsMode.STATIC
+    mode: SpreadsheetMode.DYNAMIC
   }
 
   public options: string[] = ['Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo'];
@@ -125,6 +120,10 @@ export class AppComponent {
   public onCellChange(event): void {
     console.log(event);
   }
+
+  public log(text: string): void {
+    console.log(text);
+  } 
 
   /**
    * On multi select value change
