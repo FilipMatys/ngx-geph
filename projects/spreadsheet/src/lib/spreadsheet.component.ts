@@ -1,5 +1,6 @@
 // External modules
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { Observable, Subject } from "rxjs";
 
 // Interfaces
 import { ISpreadsheetData } from "./interfaces/data.interface";
@@ -20,6 +21,7 @@ import { SpreadsheetUtilityService } from "./services/utility.service";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
+import { debounceTime } from "rxjs/operators";
 
 
 @Component({
@@ -27,7 +29,7 @@ import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 	templateUrl: "./spreadsheet.component.html",
 	styleUrls: ["./spreadsheet.component.scss"]
 })
-export class SpreadsheetComponent {
+export class SpreadsheetComponent implements OnInit {
 
 	/**
 	 * Spreadsheet class
@@ -37,6 +39,10 @@ export class SpreadsheetComponent {
 
 	@HostBinding("class.ngx-spreadsheet--focused")
 	public isFocused: boolean = false;
+
+	// Focus change observable
+	private readonly focusChangeSource: Subject<void> = new Subject<void>();
+	private readonly focusChange$: Observable<void> = this.focusChangeSource.asObservable();
 
 	@Input("tabIndex")
 	@HostBinding("attr.tabIndex")
@@ -188,12 +194,18 @@ export class SpreadsheetComponent {
 	public onFocus(event: Event): void {
 		// Set component focus flag
 		this._hasComponentFocus = true;
+
+		// Emit focus change
+		this.focusChangeSource.next();
 	}
 
 	@HostListener("blur", ["$event"])
 	public onBlur(event: Event): void {
 		// Reset component focus flag
 		this._hasComponentFocus = false;
+
+		// Emit focus change
+		this.focusChangeSource.next();
 	}
 
 	@HostListener("document:click", ["$event"])
@@ -332,6 +344,14 @@ export class SpreadsheetComponent {
 	) { }
 
 	/**
+	 * On init hook
+	 */
+	public ngOnInit(): void {
+		// Register to focus change
+		this.registerToFocusChange();
+	}
+
+	/**
 	 * On selected input focus
 	 * @param event 
 	 */
@@ -339,6 +359,9 @@ export class SpreadsheetComponent {
 		// Set flag
 		this._hasSelectedInputFocus = true;
 		this._hasSelectedInputValueChanged = true;
+
+		// Emit focus change
+		this.focusChangeSource.next();
 	}
 
 	/**
@@ -348,6 +371,9 @@ export class SpreadsheetComponent {
 	public onSelectedInputBlur(event: Event): void {
 		// Set flag
 		this._hasSelectedInputFocus = false;
+
+		// Emit focus change
+		this.focusChangeSource.next();
 	}
 
 	/**
@@ -625,6 +651,9 @@ export class SpreadsheetComponent {
 				await this.selectCell(selectedRowIndex, selectedColumnIndex + 1);
 			}
 		}
+
+		// Set focus back to this component
+		setTimeout(() => this.element.nativeElement.focus());
 	}
 
 	/**
@@ -817,6 +846,9 @@ export class SpreadsheetComponent {
 
 		// Set changed flag
 		this._hasSelectedInputValueChanged = false;
+
+		// Set focus back to this component
+		setTimeout(() => this.element.nativeElement.focus());
 	}
 
 	/**
@@ -862,6 +894,9 @@ export class SpreadsheetComponent {
 
 			// Blur
 			this.selectedInput.nativeElement.blur();
+
+			// Set focus back to this component
+			setTimeout(() => this.element.nativeElement.focus());
 		}
 	}
 
@@ -929,6 +964,9 @@ export class SpreadsheetComponent {
 
 		// Select cell
 		await this.selectCell(rowIndex, columnIndex);
+
+		// Set focus back to this component
+		setTimeout(() => this.element.nativeElement.focus());
 	}
 
 	/**
@@ -1040,5 +1078,15 @@ export class SpreadsheetComponent {
 				await this.assignValueToCell(value, rowIndex, columnIndex, SpreadsheetCellChangeEventOrigin.CLIPBOARD);
 			}
 		}
+	}
+
+	/**
+	 * Register to focus change
+	 */
+	private registerToFocusChange(): void {
+		this.focusChange$
+			// Wait 50ms to get the most recent value 
+			.pipe((debounceTime(50)))
+			.subscribe(() => this.isFocused = this._hasComponentFocus || this._hasSelectedInputFocus);
 	}
 }
