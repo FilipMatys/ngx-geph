@@ -26,7 +26,7 @@ export interface ISpreadsheetRowsDefinition {
      * @description Custom function to generate
      * row based on index
      */
-    generateRowFn?: (index: number) => ISpreadsheetRow;
+    generateRowFn?: (row: ISpreadsheetRow, index: number) => ISpreadsheetRow;
 
     /**
      * Rows

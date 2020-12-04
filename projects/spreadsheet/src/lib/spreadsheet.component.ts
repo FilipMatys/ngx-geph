@@ -130,11 +130,20 @@ export class SpreadsheetComponent implements OnInit {
 		// Init rows with the number provided (or default)
 		const numberOfRows = value.numberOfRows || 10;
 
-		// Get generate function
-		const generateRowFn = value.generateRowFn || this.service.generateRow;
-
 		// Generate rows
-		this._rows = Array.from({ length: numberOfRows }, (_, index) => generateRowFn(index));
+		this._rows = Array.from({ length: numberOfRows }, (_, index) => {
+			// First get row using the default function
+			const row = this.service.generateRow(index);
+
+			// Now check for custom function
+			if (value.generateRowFn) {
+				// Generate row fn
+				return value.generateRowFn(row, index);
+			}
+
+			// Return default row
+			return row;
+		});
 	};
 
 	/**
