@@ -20,7 +20,7 @@ export class TableHeaderComponent implements OnInit, OnDestroy {
     public isSortable: boolean = false;
 
     @HostBinding("class.ascending")
-    public get isAcending(): boolean {
+    public get isAscending(): boolean {
         return this.sortDirection === TableSortDirection.ASCENDING;
     }
 

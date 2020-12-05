@@ -181,9 +181,6 @@ export class TableComponent implements AfterContentChecked {
 	 * @param index 
 	 */
 	public onRowClick(event: Event, item: any, index: number): void {
-		// Stop event propagation
-		event.stopPropagation();
-
 		// Check if click events are allowed
 		if (!this._config.allowRowClick) {
 			// Do not emit row click event
