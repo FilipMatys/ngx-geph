@@ -166,21 +166,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	public isFocused: boolean = false;
 
 	/**
-	 * On document click
-	 * @param event 
-	 */
-	@HostListener('document:click', ['$event'])
-	public onDocumentClick(event: Event) {
-		// Check if target is within component
-		if (!this.element || this.element.nativeElement.contains(event.target)) {
-			return;
-		}
-
-		// Close selection
-		this.closeSelection();
-	}
-
-	/**
 	 * On click
 	 * @param even 
 	 */
@@ -494,7 +479,26 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		this.focusChange$
 			// Wait 50ms to get the most recent value 
 			.pipe((debounceTime(50)))
-			.subscribe((value) => this.isFocused = value);
+			// Subscribe to focus change
+			.subscribe((value) => this.handleFocusChange(value));
+	}
+
+	/**
+	 * Handle focus change
+	 * @param value 
+	 */
+	private async handleFocusChange(value: boolean): Promise<void> {
+		// Assign focused value
+		this.isFocused = value;
+
+		// Check if component is now focused
+		if (this.isFocused) {
+			// Do nothing
+			return;
+		}
+
+		// Close selection as the component received "blur" event
+		this.closeSelection();
 	}
 
 	/**
