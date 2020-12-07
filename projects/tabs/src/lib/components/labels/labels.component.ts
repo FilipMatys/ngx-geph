@@ -1,8 +1,13 @@
 // External module
-import { Component } from "@angular/core";
+import { Component, HostBinding } from "@angular/core";
 
 @Component({
     selector: "ngx-tabs-labels",
     template: "<ng-content select=\"ngx-tabs-label\"></ng-content>"
 })
-export class TabsLabelsComponent {}
+export class TabsLabelsComponent {
+
+    // Tabs labels
+    @HostBinding("class.ngx-tabs-labels")
+    public ngxTabsLabels: boolean = true;
+}

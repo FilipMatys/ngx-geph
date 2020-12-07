@@ -1,5 +1,5 @@
 // External modules
-import { Component, ContentChildren, QueryList, AfterContentInit, Input, ViewChild } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Input, ViewChild, HostBinding } from '@angular/core';
 
 // Directives
 import { TabDirective } from "./directives/tab/tab.directive";
@@ -8,127 +8,137 @@ import { TabDirective } from "./directives/tab/tab.directive";
 import { TabsContentOutlet } from "./outlets/content/content.outlet";
 
 @Component({
-  selector: 'ngx-tabs',
-  templateUrl: "./tabs.component.html"
+	selector: 'ngx-tabs',
+	templateUrl: "./tabs.component.html"
 })
 export class TabsComponent implements AfterContentInit {
 
-  @Input("tabs")
-  public set tabIdentifiers(tabs: string[]) {
-    // Set tabs
-    this._tabIdentifiers = tabs;
+	@HostBinding("class.ngx-tabs")
+	public ngxTabs: boolean = true;
 
-    // Rebuild
-    this.rebuild();
-  }
+	@Input("tabs")
+	public set tabIdentifiers(tabs: string[]) {
+		// Set tabs
+		this._tabIdentifiers = tabs;
 
-  // Tab identifiers
-  private _tabIdentifiers: string[];
+		// Rebuild
+		this.rebuild();
+	}
 
-  // Active index
-  @Input("index")
-  public set activeIndex(index: number) {
-    // Check if index changed
-    if (this._activeIndex === index) {
-      // There is nothing to be done
-      return;
-    }
+	// Tab identifiers
+	private _tabIdentifiers: string[];
 
-    // Set active index
-    this._activeIndex = index;
+	// Active index
+	@Input("index")
+	public set activeIndex(index: number) {
+		// Check if index changed
+		if (this._activeIndex === index) {
+			// There is nothing to be done
+			return;
+		}
 
-    // Rebuild
-    this.rebuild();
-  }
+		// Set active index
+		this._activeIndex = index;
 
-  // Active index
-  private _activeIndex: number = 0;
+		// Rebuild
+		this.rebuild();
+	}
 
-  // Content outlet
-  @ViewChild(TabsContentOutlet, { static: true })
-  public contentOutlet: TabsContentOutlet;
+	/**
+	 * Active index getter
+	 */
+	public get activeIndex(): number {
+		return this._activeIndex;
+	}
 
-  // List of tab definitions
-  @ContentChildren(TabDirective)
-  public tabDefinitions: QueryList<TabDirective>;
+	// Active index
+	private _activeIndex: number = 0;
 
-  // List of tabs
-  public tabs: TabDirective[] = [];
+	// Content outlet
+	@ViewChild(TabsContentOutlet, { static: true })
+	public contentOutlet: TabsContentOutlet;
 
-  /**
-   * After content init hook
-   */
-  public ngAfterContentInit() {
-    //Rebuild
-    this.rebuild();
-  }
+	// List of tab definitions
+	@ContentChildren(TabDirective)
+	public tabDefinitions: QueryList<TabDirective>;
 
-  /**
-   * On tab click
-   * @param event 
-   * @param tab 
-   * @param index 
-   */
-  public onTabClick(event: Event, tab: TabDirective, index: number) {
-    // Prevent event propagation
-    event.stopPropagation();
+	// List of tabs
+	public tabs: TabDirective[] = [];
 
-    // Check if selected index is the same 
-    if (this._activeIndex === index) {
-      // Do nothing
-      return;
-    }
+	/**
+	 * After content init hook
+	 */
+	public ngAfterContentInit() {
+		//Rebuild
+		this.rebuild();
+	}
 
-    // Set active index
-    this._activeIndex = index;
+	/**
+	 * On tab click
+	 * @param event 
+	 * @param tab 
+	 * @param index 
+	 */
+	public onTabClick(event: Event, tab: TabDirective, index: number) {
+		// Prevent event propagation
+		event.stopPropagation();
 
-    // Get content view ref
-    let cVRef = this.contentOutlet.viewContainerRef;
+		// Check if selected index is the same 
+		if (this._activeIndex === index) {
+			// Do nothing
+			return;
+		}
 
-    // Clear
-    cVRef.clear();
+		// Set active index
+		this._activeIndex = index;
 
-    // Create view
-    cVRef.createEmbeddedView(tab.content);
-  }
+		// Get content view ref
+		let cVRef = this.contentOutlet.viewContainerRef;
 
-  /**
-   * Rebuild tabs
-   */
-  private rebuild() {
-    // Check if tabs are defined
-    if (!this.tabDefinitions) {
-      return;
-    }
+		// Clear
+		cVRef.clear();
 
-    // Reset tabs
-    this.tabs = [];
+		// Create view
+		cVRef.createEmbeddedView(tab.content);
+	}
 
-    // Check if tab identifiers are set
-    if (this._tabIdentifiers) {
-      // Add tab definitions based on identifiers
-      this._tabIdentifiers.forEach((identifier) => {
-        // Add tab to list
-        this.tabs.push(this.tabDefinitions.find(td => td.name === identifier));
-      });
-    }
-    else {
-      // Assign tab definitions
-      this.tabs = this.tabDefinitions.toArray();
-    }
+	/**
+	 * Rebuild tabs
+	 */
+	private rebuild() {
+		// Check if tabs are defined
+		if (!this.tabDefinitions) {
+			return;
+		}
 
-    // Get content view ref
-    let cVRef = this.contentOutlet.viewContainerRef;
+		// Reset tabs
+		this.tabs = [];
 
-    // Create view
-    cVRef.clear();
+		// Check if tab identifiers are set
+		if (this._tabIdentifiers) {
+			// Add tab definitions based on identifiers
+			this._tabIdentifiers.forEach((identifier) => {
+				// Add tab to list
+				this.tabs.push(this.tabDefinitions.find(td => td.name === identifier));
+			});
+		}
+		else {
+			// Assign tab definitions
+			this.tabs = this.tabDefinitions.toArray();
+		}
 
-    // Check length of tabs
-    if (!this.tabs.length) {
-      return;
-    }
+		// Get content view ref
+		let cVRef = this.contentOutlet.viewContainerRef;
 
-    // Create view
-    cVRef.createEmbeddedView(this.tabs[this._activeIndex].content);
-  }
+		// Create view
+		cVRef.clear();
+
+		// Check length of tabs
+		if (!this.tabs.length) {
+			return;
+		}
+
+		// Create view
+		cVRef.createEmbeddedView(this.tabs[this._activeIndex].content);
+	}
 }

@@ -1,5 +1,5 @@
 // External modules
-import { Directive, Input, ContentChild, TemplateRef } from "@angular/core";
+import { Directive, Input, ContentChild, TemplateRef, HostBinding } from "@angular/core";
 
 // Directives
 import { TabLabelDirective } from "../label/label.directive";

@@ -1,5 +1,5 @@
 <ngx-tabs-labels>
-    <ngx-tabs-label *ngFor="let tab of tabs; let idx = index" (click)="onTabClick($event, tab, idx)">
+    <ngx-tabs-label [class.ngx-tabs-label--active]="activeIndex === idx" *ngFor="let tab of tabs; let idx = index" (click)="onTabClick($event, tab, idx)">
         <ng-container *ngTemplateOutlet="tab.label"></ng-container>
     </ngx-tabs-label>
 </ngx-tabs-labels>
