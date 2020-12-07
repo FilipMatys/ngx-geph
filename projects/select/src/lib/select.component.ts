@@ -44,8 +44,8 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	private _value: any;
 
 	// Focus change source
-	private readonly focusChangeSource: Subject<boolean> = new Subject<boolean>();
-	private readonly focusChange$: Observable<boolean> = this.focusChangeSource.asObservable();
+	private readonly focusChangeSource: Subject<void> = new Subject<void>();
+	private readonly focusChange$: Observable<void> = this.focusChangeSource.asObservable();
 
 	// Value getter
 	public get value() { return this._value };
@@ -170,14 +170,14 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	 * @param even 
 	 */
 	@HostListener("click", ["$event"])
-	public onClick(even: Event): void {
+	public onClick(event: Event): void {
 		// Check disabled or readonly
 		if (this.disabled || this.readonly) {
 			// Do nothing
 			return;
 		}
 
-		// Toggle selection
+		// Close selection
 		this.toggleSelection();
 	}
 
@@ -193,8 +193,11 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			return;
 		}
 
+		// Set component focus flag
+		this._hasComponentFocus = true;
+
 		// Set that component is focused
-		this.focusChangeSource.next(true);
+		this.focusChangeSource.next();
 
 		// Open selection
 		this.openSelection();
@@ -206,8 +209,11 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	 */
 	@HostListener("blur", ["$event"])
 	public onBlur(event: Event): void {
+		// Reset component focus flag
+		this._hasComponentFocus = false;
+
 		// Reset focus flag
-		this.focusChangeSource.next(false);
+		this.focusChangeSource.next();
 	}
 
 	/**
@@ -249,6 +255,10 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 	// Safety timeout
 	private safetyActivationTimeout: any;
+
+	// Component focus flag
+	private _hasComponentFocus: boolean = false;
+	private _hasSearchInputFocus: boolean = false;
 
 	/**
 	 * Select constructor
@@ -333,8 +343,11 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	 * @param event 
 	 */
 	public onSearchInputFocus(event: Event): void {
+		// Set input focus
+		this._hasSearchInputFocus = true;
+
 		// Set search input focus flag
-		this.focusChangeSource.next(true);
+		this.focusChangeSource.next();
 	}
 
 	/**
@@ -342,8 +355,11 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	 * @param event 
 	 */
 	public onSearchInputBlur(event: Event): void {
+		// Set input focus
+		this._hasSearchInputFocus = false;
+
 		// Reset search input focus flag
-		this.focusChangeSource.next(false);
+		this.focusChangeSource.next();
 	}
 
 	/**
@@ -478,9 +494,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	private registerToFocusChange(): void {
 		this.focusChange$
 			// Wait 50ms to get the most recent value 
-			.pipe((debounceTime(50)))
+			.pipe((debounceTime(100)))
 			// Subscribe to focus change
-			.subscribe((value) => this.handleFocusChange(value));
+			.subscribe(() => this.handleFocusChange(this._hasSearchInputFocus || this._hasComponentFocus));
 	}
 
 	/**
