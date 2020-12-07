@@ -198,9 +198,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Set that component is focused
 		this.focusChangeSource.next();
-
-		// Open selection
-		this.openSelection();
 	}
 
 	/**
@@ -252,9 +249,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 	// Focused option index
 	public focusedOptionIndex: number = undefined;
-
-	// Safety timeout
-	private safetyActivationTimeout: any;
 
 	// Component focus flag
 	private _hasComponentFocus: boolean = false;
@@ -408,41 +402,12 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		this.closeSelection();
 	}
 
-	/**
-	 * Check safety activation time out
-	 */
-	private checkSafetyActivationTimeout(): boolean {
-		// Check if time out is set
-		if (this.safetyActivationTimeout) {
-			// Time out is on
-			return true;
-		}
-
-		// Otherwise set timeout
-		this.safetyActivationTimeout = setTimeout(() => {
-			// Clear timeout
-			clearTimeout(this.safetyActivationTimeout);
-
-			// Reset variable
-			this.safetyActivationTimeout = undefined;
-		}, 100);
-
-		// Safety was not active
-		return false;
-	}
-
 	/** 
 	 * Open selection 
 	 */
 	private openSelection() {
 		// Check if selection is up
 		if (this.isSelectionOpen) {
-			return;
-		}
-
-		// Check safety
-		if (this.checkSafetyActivationTimeout()) {
-			// Do nothing when safety is on
 			return;
 		}
 
@@ -469,12 +434,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	private closeSelection(): void {
 		// Do not close when is not open
 		if (!this.isSelectionOpen) {
-			return;
-		}
-
-		// Check safety
-		if (this.checkSafetyActivationTimeout()) {
-			// Do nothing when safety is on
 			return;
 		}
 
