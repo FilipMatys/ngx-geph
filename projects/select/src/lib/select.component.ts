@@ -402,8 +402,8 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		this.closeSelection();
 	}
 
-	/** 
-	 * Open selection 
+	/**
+	 * Open selection
 	 */
 	private openSelection() {
 		// Check if selection is up
@@ -659,7 +659,40 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 				// Handle arrow down
 				this.handleArrowDownKeydownClosed(event);
 				break;
+
+			default:
+				// Handle default
+				this.handleDefaultKeydownClosed(event);
+				break;
+
 		}
+	}
+
+	/**
+	 * Handle default keydown closed
+	 * @param event 
+	 */
+	private handleDefaultKeydownClosed(event: KeyboardEvent): void {
+		// Check search
+		if (!this.config.allowSearch) {
+			// Do nothing
+			return;
+		}
+
+		// Create character check function
+		const isCharacterKeyEvent = (event: KeyboardEvent): boolean => /^.$/u.test(event.key);
+
+		// Check if event was raised by character key
+		if (!isCharacterKeyEvent(event)) {
+			// Do nothing
+			return;
+		}
+
+		// Open selection
+		this.openSelection();
+
+		// Assign value
+		setTimeout(() => this.searchInputRef.nativeElement.value = event.key);
 	}
 	/**
 	 * Handle enter keydown closed
