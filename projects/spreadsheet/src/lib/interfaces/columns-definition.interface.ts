@@ -1,6 +1,7 @@
 // Interfaces
 import { ISpreadsheetColumn } from "./column.interface";
 import { ISpreadsheetColumns } from "./columns.interface";
+import { ISpreadsheetGenerateColumnFn } from "./generate-column-fn.interface";
 
 /**
  * Spreadsheet columns definition
@@ -27,7 +28,7 @@ export interface ISpreadsheetColumnsDefinition {
      * @description Custom function to generate
      * column based on index
      */
-    generateColumnFn?: (column: ISpreadsheetColumn, index: number) => ISpreadsheetColumn;
+    generateColumnFn?: ISpreadsheetGenerateColumnFn;
 
     /**
      * Columns

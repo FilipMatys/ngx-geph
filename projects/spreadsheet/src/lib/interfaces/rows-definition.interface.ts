@@ -1,6 +1,7 @@
 // Interfaces
 import { ISpreadsheetRow } from "./row.interface";
 import { ISpreadsheetRows } from "./rows.interface";
+import { ISpreadsheetGenerateRowFn } from "./generate-row-fn.interface";
 
 /**
  * Spreadsheet rows definition
@@ -26,7 +27,7 @@ export interface ISpreadsheetRowsDefinition {
      * @description Custom function to generate
      * row based on index
      */
-    generateRowFn?: (row: ISpreadsheetRow, index: number) => ISpreadsheetRow;
+    generateRowFn?: ISpreadsheetGenerateRowFn;
 
     /**
      * Rows

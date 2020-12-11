@@ -1,15 +1,19 @@
 // External modules
 import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { debounceTime } from "rxjs/operators";
 import { Observable, Subject } from "rxjs";
 
 // Interfaces
-import { ISpreadsheetData } from "./interfaces/data.interface";
-import { ISpreadsheetColumns } from "./interfaces/columns.interface";
+import { ISpreadsheetRow } from "./interfaces/row.interface";
 import { ISpreadsheetRows } from "./interfaces/rows.interface";
+import { ISpreadsheetData } from "./interfaces/data.interface";
+import { ISpreadsheetColumn } from "./interfaces/column.interface";
+import { ISpreadsheetColumns } from "./interfaces/columns.interface";
 import { ISpreadsheetCellChangeEvent } from "./interfaces/cell-change-event.interface";
 import { ISpreadsheetRowsDefinition } from "./interfaces/rows-definition.interface";
 import { ISpreadsheetColumnsDefinition } from "./interfaces/columns-definition.interface";
-import { ISpreadsheetColumn } from "./interfaces/column.interface";
+import { ISpreadsheetGenerateColumnFn } from "./interfaces/generate-column-fn.interface";
+import { ISpreadsheetGenerateRowFn } from "./interfaces/generate-row-fn.interface";
 
 // Enums
 import { SpreadsheetMode } from "./enums/mode.enum";
@@ -21,7 +25,6 @@ import { SpreadsheetUtilityService } from "./services/utility.service";
 
 // Components
 import { SpreadsheetCellComponent } from "./components/cell/cell.component";
-import { debounceTime } from "rxjs/operators";
 
 
 @Component({
@@ -64,9 +67,14 @@ export class SpreadsheetComponent implements OnInit {
 	private _hasSelectedInputValueChanged: boolean = false;
 
 	// Rows mode
-	private _rowsMode?: number = SpreadsheetMode.DYNAMIC;
+	private _rowsMode: number = SpreadsheetMode.DYNAMIC;
 	// Columns mode
-	private _columnsMode?: number = SpreadsheetMode.STATIC;
+	private _columnsMode: number = SpreadsheetMode.STATIC;
+
+	// Generate row function
+	private _generateRowFn: ISpreadsheetGenerateRowFn;
+	// Generate column function
+	private _generateColumnFn: ISpreadsheetGenerateColumnFn;
 
 	// Spreadsheet data
 	@Input("data")
@@ -81,6 +89,9 @@ export class SpreadsheetComponent implements OnInit {
 			this._columnsMode = value.mode;
 		}
 
+		// Assign function
+		this._generateColumnFn = value.generateColumnFn;
+
 		// Check for columns
 		if (value.columns) {
 			// Assign custom columns
@@ -94,19 +105,7 @@ export class SpreadsheetComponent implements OnInit {
 		const numberOfColumns = value.numberOfColumns || 10;
 
 		// Generate columns
-		this._columns = Array.from({ length: numberOfColumns }, (_, index) => {
-			// First get column using the default function
-			const column = this.service.generateColumn(index);
-
-			// Now check for custom function
-			if (value.generateColumnFn) {
-				// Generate column fn
-				return value.generateColumnFn(column, index);
-			}
-
-			// Return default column
-			return column;
-		});
+		this._columns = Array.from({ length: numberOfColumns }, (_, index) => this.generateColumn(index));
 	}
 
 	// Rows definition
@@ -117,6 +116,9 @@ export class SpreadsheetComponent implements OnInit {
 			// Assign mode
 			this._rowsMode = value.mode;
 		}
+
+		// Assign function
+		this._generateRowFn = value.generateRowFn;
 
 		// Check for rows
 		if (value.rows) {
@@ -131,19 +133,7 @@ export class SpreadsheetComponent implements OnInit {
 		const numberOfRows = value.numberOfRows || 10;
 
 		// Generate rows
-		this._rows = Array.from({ length: numberOfRows }, (_, index) => {
-			// First get row using the default function
-			const row = this.service.generateRow(index);
-
-			// Now check for custom function
-			if (value.generateRowFn) {
-				// Generate row fn
-				return value.generateRowFn(row, index);
-			}
-
-			// Return default row
-			return row;
-		});
+		this._rows = Array.from({ length: numberOfRows }, (_, index) => this.generateRow(index));
 	};
 
 	/**
@@ -459,6 +449,42 @@ export class SpreadsheetComponent implements OnInit {
 	}
 
 	/**
+	 * Generate row
+	 * @param index 
+	 */
+	private generateRow(index: number): ISpreadsheetRow {
+		// First get row using the default function
+		const row = this.service.generateRow(index);
+
+		// Now check for custom function
+		if (this._generateRowFn) {
+			// Process row using custom function
+			return this._generateRowFn(row, index);
+		}
+
+		// Otherwise return default row
+		return row;
+	}
+
+	/**
+	 * Generate column
+	 * @param index 
+	 */
+	private generateColumn(index: number): ISpreadsheetColumn {
+		// First get column using the default function
+		const column = this.service.generateColumn(index);
+
+		// Now check for custom function
+		if (this._generateColumnFn) {
+			// Process column using custom function
+			return this._generateColumnFn(column, index);
+		}
+
+		// Otherwise return default column
+		return column;
+	}
+
+	/**
 	 * Set hovered indexes
 	 * @param rowIndex 
 	 * @param columnIndex 
@@ -513,6 +539,9 @@ export class SpreadsheetComponent implements OnInit {
 	 * @param columnIndex 
 	 */
 	private async selectCell(rowIndex: number, columnIndex: number): Promise<void> {
+		// Init spreadsheet modification flag
+		let isModified: boolean = false;
+
 		// Before selecting new cell, check for selected input
 		if (this._selectedCell) {
 			// Check for change flag
@@ -531,19 +560,34 @@ export class SpreadsheetComponent implements OnInit {
 			}
 		}
 
-		// Check boundaries of row index
+		// Check boundaries of row index (start)
 		if (rowIndex < 0) {
 			// Do nothing
 			return;
 		}
 
-		// Check boundaries of column index
-		if (columnIndex < 0 || columnIndex > (this.columns.length - 1)) {
+		// Check boundaries of column index (start)
+		if (columnIndex < 0) {
 			// Do nothing
 			return;
 		}
 
-		// Check bottom boundaries of row index
+		// Check boundaries of column index
+		if (columnIndex > (this.columns.length - 1)) {
+			// Check for mode
+			if (this._columnsMode !== SpreadsheetMode.DYNAMIC) {
+				// Do nothing
+				return;
+			}
+
+			// Otherwise add new column
+			this._columns.push(this.generateColumn(this._columns.length));
+
+			// Set is modified flag
+			isModified = true;
+		}
+
+		// Check bottom boundaries of row index (end)
 		if (rowIndex > (this._rows.length - 1)) {
 			// Check for mode
 			if (this._rowsMode !== SpreadsheetMode.DYNAMIC) {
@@ -552,7 +596,10 @@ export class SpreadsheetComponent implements OnInit {
 			}
 
 			// Otherwise add new row
-			this._rows.push({});
+			this._rows.push(this.generateRow((this._rows.length)));
+
+			// Set is modified flag
+			isModified = true;
 		}
 
 		// Check for selected cell
@@ -567,14 +614,14 @@ export class SpreadsheetComponent implements OnInit {
 		this._selectedRowsIndexes = [rowIndex];
 		this._selectedColumnsIndexes = [columnIndex];
 
-		// Get index within list of cells
-		const index = (rowIndex * this.columns.length) + columnIndex;
+		// Check modified status
+		if (!isModified) {
+			// Get index within list of cells
+			const index = (rowIndex * this.columns.length) + columnIndex;
 
-		// Assign selected cell
-		const selectedCell = this.cells.find((_, idx) => idx === index);
+			// Assign selected cell
+			const selectedCell = this.cells.find((_, idx) => idx === index);
 
-		// Check if cell was found
-		if (selectedCell) {
 			// Assign cell
 			return this.assignSelectedCell(selectedCell);
 		}
