@@ -248,7 +248,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	public optionRefs: QueryList<ElementRef<HTMLElement>>;
 
 	// Focused option index
-	public focusedOptionIndex: number = undefined;
+	public focusedOptionIndex: number = 0;
 
 	// Component focus flag
 	private _hasComponentFocus: boolean = false;
@@ -444,7 +444,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		this.isSelectionOpen = false;
 
 		// Reset focused option index
-		this.focusedOptionIndex = undefined;
+		this.focusedOptionIndex = 0;
 	}
 
 	/**
@@ -689,15 +689,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	}
 
 	/**
-	 * Handle tab keydown open
-	 * @param event 
-	 */
-	private handleTabKeydownOpen(event: KeyboardEvent): void {
-		// Close selection
-		this.closeSelection();
-	}
-
-	/**
 	 * Handle keydown open
 	 * @param event 
 	 */
@@ -710,6 +701,22 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Set focus on this component
 		setTimeout(() => this.element.nativeElement.focus());
+	}
+
+	/**
+	 * Handle tab keydown open
+	 * @param event 
+	 */
+	private handleTabKeydownOpen(event: KeyboardEvent): void {
+		// Check whether to select option
+		if (!this.isLoading && (this.options || []).length && (this.focusedOptionIndex in this.options)) {
+			// Select option
+			this.selectOption(this.options[this.focusedOptionIndex]);
+		}
+		else {
+			// Close selection
+			this.closeSelection();
+		}
 	}
 
 	/**
@@ -732,8 +739,8 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			return;
 		}
 
-		// Check if focused is defined
-		if (typeof this.focusedOptionIndex === "undefined") {
+		// Check if option exists
+		if (!(this.focusedOptionIndex in this.options)) {
 			// Do nothing
 			return;
 		}
