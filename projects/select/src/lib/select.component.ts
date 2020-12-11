@@ -404,8 +404,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 	/**
 	 * Open selection
+	 * @param config
 	 */
-	private openSelection() {
+	private openSelection(config: any = { waitForSearch: false }) {
 		// Check if selection is up
 		if (this.isSelectionOpen) {
 			return;
@@ -415,7 +416,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		this.isSelectionOpen = true;
 
 		// Reload options if get options is set
-		if (this.config.getOptions) {
+		if (this.config.getOptions && !config.waitForSearch) {
 			this.reloadOptions();
 		}
 
@@ -684,9 +685,12 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			// Do nothing
 			return;
 		}
+		
+		// Set loading flag
+		this.isLoading = true;
 
 		// Open selection
-		this.openSelection();
+		this.openSelection({ waitForSearch: true });
 
 		// Assign value
 		setTimeout(() => this.searchInputRef.nativeElement.value = event.key);
