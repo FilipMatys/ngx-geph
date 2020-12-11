@@ -525,11 +525,8 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 					// Reload options
 					await this.reloadOptions(value);
 
-					// Check if there is focused option
-					if (typeof this.focusedOptionIndex !== "undefined") {
-						// Set proper focused option index
-						this.focusedOptionIndex = (this.options || []).length ? 0 : undefined;
-					}
+					// Reset focused option
+					this.focusedOptionIndex = 0;
 				});
 		});
 	}
