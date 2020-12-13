@@ -9,7 +9,7 @@ import { ISpreadsheetStyle } from "./style.interface";
  */
 export interface ISpreadsheetColumn {
     label?: string;
-    identifier?: string;
+    identifier?: string | number;
     isReadonly?: boolean;
     isDisabled?: boolean;
     style?: ISpreadsheetStyle;
