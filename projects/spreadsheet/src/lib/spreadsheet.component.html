@@ -23,13 +23,13 @@
                 (mouseenter)="onCellMouseEnter($event, rowIndex, columnIndex)"
                 (mouseleave)="onCellMouseLeave($event, rowIndex, columnIndex)" class="ngx-spreadsheet-cell"
                 [class.ngx-spreadsheet-cell--hover]="columnIndex === hoveredColumnIndex && rowIndex === hoveredRowIndex"
-                [class.ngx-spreadsheet-cell--disabled]="columns[columnIndex].isDisabled"
-                [class.ngx-spreadsheet-cell--readonly]="columns[columnIndex].isReadonly">
+                [class.ngx-spreadsheet-cell--disabled]="columns[columnIndex].isDisabled || rows[rowIndex].isDisabled"
+                [class.ngx-spreadsheet-cell--readonly]="columns[columnIndex].isReadonly || rows[rowIndex].isReadonly">
             </td>
         </tr>
     </tbody>
 
     <ngx-spreadsheet-selected *ngIf="selectedCell" [cell]="selectedCell">
-        <input #selectedInput [readonly]="columns[selectedColumnIndex].isReadonly" [disabled]="columns[selectedColumnIndex].isDisabled" (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value" class="ngx-spreadsheet-input" type="text">
+        <input #selectedInput [readonly]="columns[selectedColumnIndex].isReadonly || rows[selectedRowIndex].isReadonly" [disabled]="columns[selectedColumnIndex].isDisabled || rows[selectedRowIndex].isDisabled" (focus)="onSelectedInputFocus($event)" (blur)="onSelectedInputBlur($event)" [value]="selectedCell.value" class="ngx-spreadsheet-input" type="text">
     </ngx-spreadsheet-selected>
 </table>

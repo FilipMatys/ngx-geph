@@ -26,7 +26,12 @@ export class AppComponent {
   public spreadsheetData: ISpreadsheetData<any> = []
 
   public spreadsheetRows: ISpreadsheetRowsDefinition = {
-    mode: SpreadsheetMode.DYNAMIC
+    mode: SpreadsheetMode.DYNAMIC,
+    rows: [
+      {
+        isReadonly: true
+      }
+    ]
   }
 
   public options: string[] = ['Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo', 'Hello', 'Mr', 'Frodo'];

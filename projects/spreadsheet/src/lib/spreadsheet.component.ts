@@ -678,9 +678,11 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Get selected column
 		const column = this.columns[this._selectedColumnIndex];
+		// Get selected row
+		const row = this.rows[this._selectedRowIndex];
 
-		// Check if column is disabled
-		if (column.isDisabled || column.isReadonly) {
+		// Check if column or row is disabled
+		if ((column.isDisabled || column.isReadonly) || (row.isDisabled || row.isReadonly)) {
 			// Do nothing
 			return;
 		}
@@ -759,9 +761,11 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Get column
 		const column = this.columns[this._selectedColumnIndex];
+		// Get row
+		const row = this.rows[this._selectedRowIndex];
 
-		// Check if column is disabled
-		if (column.isDisabled || column.isReadonly) {
+		// Check if column or row is disabled
+		if ((column.isDisabled || column.isReadonly) || (row.isDisabled || row.isReadonly)) {
 			// Do nothing
 			return;
 		}
@@ -815,15 +819,17 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Get column
 		const column = this.columns[columnIndex];
+		// Get row
+		const row = this.rows[rowIndex];
 
-		// Check if column is readonly or disabled
-		if (column.isReadonly || column.isDisabled) {
+		// Check if column or row is readonly or disabled
+		if ((column.isReadonly || column.isDisabled) || (row.isReadonly || row.isDisabled)) {
 			// Do nothing
 			return;
 		}
 
 		// Get key to value within record
-		const key = column.identifier || column.label;
+		const key = (typeof column.identifier === "undefined") ? column.label : column.identifier;
 
 		// Get prev value
 		const prevValue = record[key];
@@ -898,9 +904,11 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Get column
 		const column = this.columns[this._selectedColumnIndex];
+		// Get row
+		const row = this.rows[this._selectedRowIndex];
 
-		// Check if column is disabled
-		if (column.isDisabled || column.isReadonly) {
+		// Check if column or row is disabled
+		if ((column.isDisabled || column.isReadonly) || (row.isDisabled || row.isReadonly)) {
 			// Do nothing
 			return;
 		}
@@ -955,9 +963,11 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Get selected column
 		const column = this.columns[this._selectedColumnIndex];
+		// Get selected row
+		const row = this.rows[this._selectedRowIndex];
 
-		// Check if column is disabled
-		if (column.isDisabled || column.isReadonly) {
+		// Check if column or row is disabled
+		if ((column.isDisabled || column.isReadonly) || (row.isDisabled || row.isReadonly)) {
 			// Do nothing
 			return;
 		}
@@ -1069,7 +1079,7 @@ export class SpreadsheetComponent implements OnInit {
 		}
 
 		// Get value
-		const value = record[column.identifier || column.label] || "";
+		const value = record[(typeof column.identifier === "undefined") ? column.label : column.identifier] || "";
 
 		// Set clipboard data from the cell
 		event.clipboardData.setData("text", `${value}`);
@@ -1097,9 +1107,11 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Get selected column
 		const column = this.columns[this._selectedColumnIndex];
+		// Get selected row
+		const row = this.rows[this._selectedRowIndex];
 
-		// Check if column is disabled
-		if (column.isDisabled || column.isReadonly) {
+		// Check if column or row is disabled
+		if ((column.isDisabled || column.isReadonly) || (row.isDisabled || row.isReadonly)) {
 			// Do nothing
 			return;
 		}

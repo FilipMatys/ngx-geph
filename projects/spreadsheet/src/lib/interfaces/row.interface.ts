@@ -5,4 +5,6 @@
 export interface ISpreadsheetRow {
     label?: string;
     index?: number;
+    isReadonly?: boolean;
+    isDisabled?: boolean;
 }

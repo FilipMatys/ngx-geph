@@ -132,7 +132,7 @@ export class SpreadsheetCellComponent<TRecord = any> {
         }
 
         // Try to get value
-        const value = this._record[this._column.identifier || this._column.label];
+        const value = this._record[(typeof this._column.identifier === "undefined") ? this._column.label : this._column.identifier];
 
         // Check for undefined
         if (typeof value === "undefined") {
