@@ -590,6 +590,12 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			return;
 		}
 
+		// Check for control keys
+		if (event.ctrlKey || event.altKey) {
+			// Do nothing
+			return;
+		}
+
 		// Check if select is open
 		this.isSelectionOpen ? this.handleKeydownOpen(event) : this.handleKeydownClosed(event);
 	}
