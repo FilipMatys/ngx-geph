@@ -90,7 +90,7 @@
 <button *ngxCollapsibleExpand>Expand</button>
 <div *ngxCollapsible>Collapsible content</div>
 <h2>Table</h2>
-<ngx-table [data]="[]" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)"
+<ngx-table [data]="options" [config]="tableConfig" [sort]="tableSort" (sortChange)="onSortChange($event)"
   (rowClick)="onRowClick($event)">
   <ng-container ngxColumnDefinition="Header1">
     <th class="ngx-table-header" sortable="true" *ngxHeaderDefinition>Header 1</th>

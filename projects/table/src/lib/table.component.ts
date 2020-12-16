@@ -1,5 +1,5 @@
 // External modules
-import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector, TemplateRef, ContentChild } from '@angular/core';
+import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector, TemplateRef, ContentChild, OnInit } from '@angular/core';
 
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
@@ -27,7 +27,7 @@ import { TableHeaderComponent } from './components/header/header.component';
 	templateUrl: "./table.component.html",
 	styleUrls: ["./table.component.scss"]
 })
-export class TableComponent implements AfterContentChecked {
+export class TableComponent implements AfterContentChecked, OnInit {
 
 	// List of columns
 	@Input("columns")
@@ -114,7 +114,18 @@ export class TableComponent implements AfterContentChecked {
 	 * Constructor
 	 * @param injector 
 	 */
-	constructor(private injector: Injector) {
+	constructor(private injector: Injector) { }
+
+	/**
+	 * On init hook
+	 */
+	public ngOnInit(): void {
+		// Check for config
+		if (this._config) {
+			// Do nothing
+			return;
+		}
+
 		// Get module configuration
 		try {
 			// Get config
