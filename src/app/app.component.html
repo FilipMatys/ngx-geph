@@ -1,8 +1,10 @@
 <h2>Spreadsheet</h2>
-<ngx-spreadsheet (cellChange)="onCellChange($event)" [columns]="spreadsheetColumns" [rows]="spreadsheetRows" [data]="spreadsheetData"></ngx-spreadsheet>
+<ngx-spreadsheet (cellChange)="onCellChange($event)" [columns]="spreadsheetColumns" [rows]="spreadsheetRows"
+  [data]="spreadsheetData"></ngx-spreadsheet>
 
 <h2>Select component</h2>
-<ngx-select [config]="config" [(ngModel)]="selectValue" (ngModelChange)="onSelectComponentModelChange($event)" name="select-value" placeholder="Select some value!">
+<ngx-select [config]="config" [(ngModel)]="selectValue" (ngModelChange)="onSelectComponentModelChange($event)"
+  name="select-value" placeholder="Select some value!">
   <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
   <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
   <ngx-select-loading>Loading...</ngx-select-loading>
@@ -151,3 +153,9 @@
   <div>Content 1</div>
   <div>Content 2</div>
 </ngx-stack-layout>
+
+<h2>Toggle</h2>
+<ngx-toggle name="toggle" [(ngModel)]="toggleBooleanValue">
+  <ng-container *ngxToggleActive>Active</ng-container>
+  <ng-container *ngxToggleInactive>Inactive</ng-container>
+</ngx-toggle>

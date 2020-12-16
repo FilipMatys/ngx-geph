@@ -42,6 +42,8 @@ export class AppComponent {
 
   public multiSelectValue: string[];
 
+  public toggleBooleanValue: boolean = true;
+
   public activeTabIndex: number = 0;
 
   public currentPage: number = 3;

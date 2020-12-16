@@ -58,6 +58,10 @@
       "spreadsheet": [
         "dist/spreadsheet/spreadsheet",
         "dist/spreadsheet"
+      ],
+      "toggle": [
+        "dist/toggle/toggle",
+        "dist/toggle"
       ]
     }
   }

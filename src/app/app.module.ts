@@ -15,6 +15,7 @@ import { CardModule } from "card";
 import { InputModule } from "input";
 import { LayoutModule } from "layout";
 import { SpreadsheetModule } from "spreadsheet";
+import { ToggleModule } from "toggle";
 
 import { AppComponent } from './app.component';
 
@@ -32,6 +33,7 @@ import { AppComponent } from './app.component';
 		AccordionModule,
 		PaginationModule,
 		SpreadsheetModule,
+		ToggleModule,
 		TableModule.forRoot({
 			allowRowClick: false,
 			sort: {
