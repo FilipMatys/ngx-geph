@@ -63,9 +63,9 @@ export class TableComponent implements AfterContentChecked, OnInit {
 	@Input("config")
 	public set config(value: ITableConfig<any>) {
 		// First make sure config is set
-		const config = Object.assign(tableConfigDefault, value);
+		const config = Object.assign({}, tableConfigDefault, value);
 		// Also make sure sort is set
-		config.sort = Object.assign(tableSortDefault, config.sort);
+		config.sort = Object.assign({}, tableSortDefault, config.sort);
 
 		// Finally assign config
 		this._config = config;
@@ -129,9 +129,9 @@ export class TableComponent implements AfterContentChecked, OnInit {
 		// Get module configuration
 		try {
 			// Get config
-			const config = Object.assign(tableConfigDefault, this.injector.get(CONFIG));
+			const config = Object.assign({}, tableConfigDefault, this.injector.get(CONFIG));
 			// Also make sure sort is set
-			config.sort = Object.assign(tableSortDefault, config.sort);
+			config.sort = Object.assign({}, tableSortDefault, config.sort);
 
 			// Finally assign config
 			this._config = config;
