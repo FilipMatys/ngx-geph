@@ -23,7 +23,7 @@
 </div>
 <ul *ngIf="isSelectionOpen" class="ngx-select-options">
     <li [class.ngx-select-input--hidden]="!config.allowSearch" class="ngx-select-input">
-        <input (click)="onSearchInputClick($event)" (blur)="onSearchInputBlur($event)" (focus)="onSearchInputFocus($event)" #searchInput type="text" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
+        <input autocomplete="off" (click)="onSearchInputClick($event)" (blur)="onSearchInputBlur($event)" (focus)="onSearchInputFocus($event)" #searchInput type="search" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
     </li>
     <ng-container *ngIf="isLoading">
         <ng-content select="ngx-select-loading"></ng-content>
