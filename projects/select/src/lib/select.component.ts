@@ -658,12 +658,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 				this.handleEnterKeydownClosed(event);
 				break;
 
-			// Arrow down
-			case KEY_CODES.ARROW_DOWN:
-				// Handle arrow down
-				this.handleArrowDownKeydownClosed(event);
-				break;
-
+			// Default
 			default:
 				// Handle default
 				this.handleDefaultKeydownClosed(event);
@@ -711,21 +706,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Open selection
 		this.openSelection();
-	}
-
-	/**
-	 * Handle arrow down keydown closed
-	 * @param event 
-	 */
-	private handleArrowDownKeydownClosed(event: KeyboardEvent): void {
-		// Prevent default
-		event.preventDefault();
-
-		// Open selection
-		this.openSelection();
-
-		// Set focused option index
-		this.focusedOptionIndex = 0;
 	}
 
 	/**
@@ -800,6 +780,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		// Prevent default
 		event.preventDefault();
 
+		// Prevent event propagation
+		event.stopPropagation();
+
 		// Check if is loading
 		if (this.isLoading) {
 			// Do nothing
@@ -823,6 +806,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	private handleArrowUpKeydownOpen(event: KeyboardEvent): void {
 		// Prevent default
 		event.preventDefault();
+
+		// Prevent event propagation
+		event.stopPropagation();
 
 		// Check if is loading
 		if (this.isLoading) {
