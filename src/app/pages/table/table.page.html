@@ -1,0 +1,28 @@
+<header>
+    <h1>Table</h1>
+    <p>Data table component</p>
+</header>
+<main #container>
+    <div #spacer></div>
+    <ngx-table [data]="items" [config]="tableConfig" [scrollContainer]="container" [scrollSpacer]="spacer">
+        <ng-container ngxColumnDefinition="name">
+            <th class="ngx-table-header" *ngxHeaderDefinition>Name</th>
+            <td class="ngx-table-cell" *ngxCellDefinition="let item; let idx = index">
+                {{ item.name }}
+            </td>
+            <td class="ngx-table-footer" *ngxFooterDefinition>
+                Footer1
+            </td>
+        </ng-container>
+
+        <ng-container ngxColumnDefinition="age">
+            <th class="ngx-table-header" *ngxHeaderDefinition>Age</th>
+            <td class="ngx-table-cell" *ngxCellDefinition="let item; let idx = index">
+                {{ item.age }}
+            </td>
+            <td class="ngx-table-footer" *ngxFooterDefinition>
+                Footer2
+            </td>
+        </ng-container>
+    </ngx-table>
+</main>

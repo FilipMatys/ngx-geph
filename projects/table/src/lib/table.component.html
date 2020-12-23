@@ -1,26 +1,26 @@
-<thead>
+<thead #head>
     <tr class="ngx-table-row ngx-table-row--header">
         <ng-container *ngFor="let cDef of outputColumnDefinitions">
             <ng-container *ngTemplateOutlet="cDef.header"></ng-container>
         </ng-container>
     </tr>
 </thead>
-<ng-container *ngIf="(data || []).length; else empty">
+<ng-container *ngIf="(items || []).length; else empty">
     <tbody>
-        <ng-container *ngFor="let item of data; let idx = index; trackBy:config.trackRecordBy">
-            <tr class="ngx-table-row ngx-table-row--data" (click)="onRowClick($event, item, idx)">
+        <ng-container *ngFor="let item of items; let idx = index; trackBy:config.trackRecordBy">
+            <tr class="ngx-table-row ngx-table-row--data" (click)="onRowClick($event, item, idx + startNode)">
                 <ng-container *ngFor="let cDef of outputColumnDefinitions">
-                    <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx }">
+                    <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx + startNode }">
                     </ng-container>
                 </ng-container>
             </tr>
             <ng-container *ngIf="expansionDefinition">
-                <ng-container *ngTemplateOutlet="expansionDefinition; context: { $implicit: item, index: idx }">
+                <ng-container *ngTemplateOutlet="expansionDefinition; context: { $implicit: item, index: idx + startNode }">
                 </ng-container>
             </ng-container>
         </ng-container>
     </tbody>
-    <tfoot>
+    <tfoot #foot>
         <tr class="ngx-table-row ngx-table-row--footer">
             <ng-container *ngFor="let cDef of outputColumnDefinitions">
                 <ng-container *ngIf="cDef.footer; else defaultFooterTemplate">
@@ -36,7 +36,9 @@
 <ng-template #empty>
     <tbody>
         <ng-container *ngIf="emptyDefinition">
-            <ng-container *ngTemplateOutlet="emptyDefinition; context: { numberOfColumns: outputColumnDefinitions.length }"></ng-container>
+            <ng-container
+                *ngTemplateOutlet="emptyDefinition; context: { numberOfColumns: outputColumnDefinitions.length }">
+            </ng-container>
         </ng-container>
     </tbody>
 </ng-template>

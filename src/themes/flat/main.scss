@@ -4,6 +4,7 @@
  */
 
  // Import general
+ @import "./general/general.scss";
  @import "./general/typography";
 
  // Import components
@@ -11,3 +12,4 @@
  @import "./components/pagination";
  @import "./components/select";
  @import "./components/button";
+ @import "./components/table.scss";

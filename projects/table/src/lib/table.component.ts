@@ -1,5 +1,7 @@
 // External modules
-import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector, TemplateRef, ContentChild, OnInit } from '@angular/core';
+import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector, TemplateRef, ContentChild, OnInit, NgZone, OnDestroy, Renderer2, DoCheck, IterableDiffers, IterableDiffer, ElementRef, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { asapScheduler, fromEvent, Subscription } from 'rxjs';
+import { auditTime, debounceTime, startWith } from 'rxjs/operators';
 
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
@@ -27,7 +29,7 @@ import { TableHeaderComponent } from './components/header/header.component';
 	templateUrl: "./table.component.html",
 	styleUrls: ["./table.component.scss"]
 })
-export class TableComponent implements AfterContentChecked, OnInit {
+export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, DoCheck {
 
 	// List of columns
 	@Input("columns")
@@ -39,13 +41,87 @@ export class TableComponent implements AfterContentChecked, OnInit {
 		this.build();
 	}
 
+	@Input("scrollContainer")
+	public set scrollContainer(container: HTMLElement) {
+		// Assign scroll container
+		this._scrollContainer = container;
+
+		// Make sure to unsubscribe scroll container subscription
+		this._scrollContainerScrolledSubscription && this._scrollContainerScrolledSubscription.unsubscribe();
+
+		// Check for container
+		if (!container) {
+			// Do nothing
+			return;
+		}
+
+		// Run outside of angular zone
+		this.ngZone.runOutsideAngular(() => {
+			// Set to be position relative
+			this.renderer.setStyle(this._scrollContainer, "position", "relative");
+
+			// Subscribe to scroll event
+			this._scrollContainerScrolledSubscription = fromEvent(this._scrollContainer, "scroll")
+				.pipe(startWith(null!))
+				.pipe(auditTime(0, asapScheduler))
+				.subscribe((event) => this.handleScrollContainerScroll(event));
+		});
+	};
+
+	@Input("scrollSpacer")
+	public set scrollSpacer(spacer: HTMLElement) {
+		// Assign spacer
+		this._scrollSpacer = spacer;
+
+		// Check for spacer
+		if (!spacer) {
+			// Do nothing
+			return;
+		}
+
+		// Run outside angular zone
+		this.ngZone.runOutsideAngular(() => {
+			// Set styles for spacer
+			this.renderer.setStyle(this._scrollSpacer, "position", "absolute");
+			this.renderer.setStyle(this._scrollSpacer, "width", "1px");
+			this.renderer.setStyle(this._scrollSpacer, "top", 0);
+			this.renderer.setStyle(this._scrollSpacer, "left", 0);
+		});
+	}
+
 	// List of columns
 	private _columns: string[] = [];
 
+	// Scroll container
+	private _scrollContainer: HTMLElement;
+
+	// Scroll spacer
+	private _scrollSpacer: HTMLElement;
+
+	// Scroll container scrolled subscription
+	private _scrollContainerScrolledSubscription: Subscription;
+
+	// Iterable differ
+	private _iterableDiffer: IterableDiffer<any>;
+
+	// Total height
+	public totalHeight: number = 0;
+	public startNode: number = 0;
+	public offsetY: number = 0;
+	public visibleNodesCount: number = 0;
+
 	// Data
 	@Input("data")
-	public data: any[] = [];
+	private _data: any[] = [];
 
+	// List of items
+	private _items: any[] = [];
+
+	// Items getter
+	public get items(): any[] {
+		// Return items
+		return this._items;
+	}
 
 	@Input("sort")
 	public set sort(value: any[]) {
@@ -88,8 +164,16 @@ export class TableComponent implements AfterContentChecked, OnInit {
 	public sortChange: EventEmitter<ITableSortColumn[]> = new EventEmitter<ITableSortColumn[]>();
 
 	// Clickable class binding
-	@HostBinding("class.clickable")
+	@HostBinding("class.ngx-table--clickable")
 	public get isClickable(): boolean { return this._config.allowRowClick; }
+
+	// Head element ref
+	@ViewChild("head", { read: ElementRef, static: true })
+	public headElementRef: ElementRef<HTMLElement>;
+
+	// Foot element ref
+	@ViewChild("foot", { read: ElementRef, static: false })
+	public footElementRef: ElementRef<HTMLElement>;
 
 	// List of column definitions
 	@ContentChildren(TableColumnDefinitionDirective)
@@ -112,31 +196,78 @@ export class TableComponent implements AfterContentChecked, OnInit {
 
 	/**
 	 * Constructor
+	 * @param ngZone 
+	 * @param renderer 
 	 * @param injector 
+	 * @param elementRef 
+	 * @param iterableDiffers 
+	 * @param changeDetectorRef
 	 */
-	constructor(private injector: Injector) { }
+	constructor(
+		private readonly ngZone: NgZone,
+		private readonly renderer: Renderer2,
+		private readonly injector: Injector,
+		private readonly elementRef: ElementRef<HTMLElement>,
+		private readonly iterableDiffers: IterableDiffers,
+		private readonly changeDetectorRef: ChangeDetectorRef
+	) {
+		// Init iterable differ
+		this._iterableDiffer = this.iterableDiffers.find([]).create(null);
+	}
 
 	/**
 	 * On init hook
 	 */
 	public ngOnInit(): void {
-		// Check for config
-		if (this._config) {
-			// Do nothing
-			return;
-		}
-
-		// Get module configuration
+		// Process component configuration
 		try {
-			// Get config
-			const config = Object.assign({}, tableConfigDefault, this.injector.get(CONFIG));
-			// Also make sure sort is set
-			config.sort = Object.assign({}, tableSortDefault, config.sort);
+			// Get global config
+			const global = this.injector.get(CONFIG);
 
-			// Finally assign config
-			this._config = config;
+			// Check if current config is set
+			if (!this._config) {
+				// Assign global config and do nothing else
+				const config = Object.assign({}, tableConfigDefault, global || {});
+				// Also make sure sort is set
+				config.sort = Object.assign({}, tableSortDefault, config.sort || {});
+
+				// Assign config
+				this._config = config;
+
+				// Return
+				return;
+			}
+
+			// Make sure undefined value are set from default and global config
+			this._config = Object.assign({}, tableConfigDefault, global || {}, this._config || {});
 		}
 		catch (e) { }
+	}
+
+	/**
+	 * Do check hook
+	 */
+	public ngDoCheck(): void {
+		// Check if data changed
+		if (this._iterableDiffer.diff(this._data)) {
+			// Check for virtual scroll config
+			if (!this._config.virtualScroll || !this._config.virtualScroll.allow) {
+				// Assign data
+				this._items = this._data;
+			}
+			else {
+				// Emit scroll handler
+				this.handleScrollContainerScroll(null);
+			}
+		}
+	}
+
+	/**
+	 * On destroy hook
+	 */
+	public ngOnDestroy(): void {
+		// Unsubscribe from subscriptions
+		this._scrollContainerScrolledSubscription && this._scrollContainerScrolledSubscription.unsubscribe();
 	}
 
 	/**
@@ -255,6 +386,114 @@ export class TableComponent implements AfterContentChecked, OnInit {
 
 		// Emit sort change
 		this.sortChange.emit(this.config.sort.mapGetFn(this._sort));
+	}
+
+	/**
+	 * Handle scroll container scroll
+	 * @param event 
+	 */
+	private async handleScrollContainerScroll(event: Event): Promise<void> {
+		// Make sure virtual scroll is allowed
+		if (!this._config.virtualScroll || !this._config.virtualScroll.allow) {
+			// Do nothing
+			return;
+		}
+
+		// Get head height
+		const headHeight: number = this.headElementRef ? this.headElementRef.nativeElement.clientHeight : 0;
+		const footHeight: number = this.footElementRef ? this.footElementRef.nativeElement.clientHeight : 0;
+
+		// Get scroll position and height
+		const scrollPosition = this._scrollContainer.scrollTop;
+		const scrollHeight = this._scrollContainer.offsetHeight;
+
+		// Get total height needed for items (including header and footer)
+		const totalHeight: number = (this._data || []).length * this._config.virtualScroll.rowHeight + headHeight + footHeight;
+		// Get padding
+		const nodePadding: number = this._config.virtualScroll.paddingRowsCount;
+		// Get start node
+		const startNode: number = Math.max(0, Math.floor(scrollPosition / this.config.virtualScroll.rowHeight) - nodePadding);
+
+		// Get number of visible items
+		const visibleNodesCount = Math.ceil(scrollHeight / this.config.virtualScroll.rowHeight) + 2 * nodePadding;
+
+		// Get offset
+		const offsetY = startNode * this.config.virtualScroll.rowHeight;
+
+		// Changed flags
+		let totalHeightChanged: boolean = false;
+		let offsetChanged: boolean = false;
+		let startNodeChanged: boolean = false;
+		let visibleNodesCountChanged: boolean = false;
+
+		// Check total height
+		if (totalHeightChanged = this.totalHeight !== totalHeight) {
+			// Set total height
+			this.totalHeight = totalHeight;
+		}
+
+		// Check start node
+		if (startNodeChanged = this.startNode !== startNode) {
+			// Set start node
+			this.startNode = startNode;
+		}
+
+		// Check visible nodes count
+		if (visibleNodesCountChanged = this.visibleNodesCount !== visibleNodesCount) {
+			// Assign visible nodes count
+			this.visibleNodesCount = visibleNodesCount;
+		}
+
+		// Check offset
+		if (offsetChanged = this.offsetY !== offsetY) {
+			// Assign offset
+			this.offsetY = offsetY;
+		}
+
+		// Check if total height changed
+		if (totalHeightChanged) {
+			// Set new spacer height
+			this.renderer.setStyle(this._scrollSpacer, "height", `${totalHeight}px`);
+		}
+
+		// Check if offset changed
+		if (offsetChanged) {
+			// Update element offset
+			this.renderer.setStyle(this.elementRef.nativeElement, "transform", `translateY(${offsetY}px)`);
+		}
+
+		// Check for sticky head
+		if (this._config.virtualScroll.stickyHead) {
+			// Calculate offset
+			const headOffsetY = Math.max(scrollPosition - offsetY, 0);
+
+			// Set offset to head
+			this.renderer.setStyle(this.headElementRef.nativeElement, "transform", `translateY(${headOffsetY}px)`);
+		}
+
+		// Check for sticky foot
+		if (this._config.virtualScroll.stickyFoot && this.footElementRef) {
+			// Get number of rendered items
+			const renderedCount = Math.min(visibleNodesCount, (this._data || []).length - startNode);
+
+			// Calculate offset
+			const footOffsetY = Math.min((scrollPosition + scrollHeight) - (offsetY + headHeight + footHeight + renderedCount * this._config.virtualScroll.rowHeight));
+
+			// Set offset to foot
+			this.renderer.setStyle(this.footElementRef.nativeElement, "transform", `translateY(${footOffsetY}px)`);
+		}
+
+		// Check for start node and visible nodes count changes
+		if (startNodeChanged || visibleNodesCountChanged) {
+			// Run code inside Angular zone
+			this.ngZone.run(() => {
+				// Assign items
+				this._items = (this._data || []).slice(startNode, startNode + visibleNodesCount);
+
+				// Mark changes for check
+				this.changeDetectorRef.markForCheck();
+			});
+		}
 	}
 
 	/**

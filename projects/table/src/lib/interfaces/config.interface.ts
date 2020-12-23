@@ -1,5 +1,6 @@
 // Data
 import { ITableSort } from "./sort.interface";
+import { ITableVirtualScroll } from "./virtual-scroll.interface";
 
 // Table config interface
 export interface ITableConfig<T> {
@@ -25,4 +26,10 @@ export interface ITableConfig<T> {
      * @default Track by item
      */
     trackRecordBy?: (index: number, item: T) => any;
+
+    /**
+     * Virtual scroll
+     * @description Virtual scroll configuration
+     */
+    virtualScroll?: ITableVirtualScroll;
 }
