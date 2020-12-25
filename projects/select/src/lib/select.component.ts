@@ -913,7 +913,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		const bottom = optionRef.nativeElement.offsetHeight + top;
 
 		// Now it is time to check whether the option is within the boundaries
-		if (top >= bTop && bottom <= bTop) {
+		if (top >= bTop && bottom <= bBottom) {
 			// Nothing to do
 			return;
 		}
