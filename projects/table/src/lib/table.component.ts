@@ -269,7 +269,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 			}
 			else {
 				// Emit scroll handler
-				this.handleScrollContainerScroll(null);
+				this.handleScrollContainerScroll(null, true);
 			}
 		}
 	}
@@ -402,9 +402,10 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 
 	/**
 	 * Handle scroll container scroll
-	 * @param event 
+	 * @param event
+	 * @param dataChanged 
 	 */
-	private async handleScrollContainerScroll(event: Event): Promise<void> {
+	private async handleScrollContainerScroll(event: Event, dataChanged: boolean = false): Promise<void> {
 		// Make sure virtual scroll is allowed
 		if (!this._config.virtualScroll || !this._config.virtualScroll.allow) {
 			// Do nothing
@@ -496,7 +497,7 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 		}
 
 		// Check for start node and visible nodes count changes
-		if (startNodeChanged || visibleNodesCountChanged) {
+		if (startNodeChanged || visibleNodesCountChanged || dataChanged) {
 			// Run code inside Angular zone
 			this.ngZone.run(() => {
 				// Assign items

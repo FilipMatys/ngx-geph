@@ -28,7 +28,7 @@ export class TablePage implements OnInit {
     }
 
     // Number of items to generate
-    private readonly ITEMS_COUNT: number = 100000; 
+    private readonly ITEMS_COUNT: number = 100000;
 
     // Items
     public items: any[] = [];
@@ -45,5 +45,31 @@ export class TablePage implements OnInit {
                 age: (((index * 2) / 5) + index * 2) % 100
             });
         }
+    }
+
+    /**
+     * On add row click
+     * @param event 
+     */
+    public onAddRowClick(event: Event): void {
+        // Prevent event propagation
+        event.stopPropagation();
+
+        // Add row
+        this.addRow();
+    }
+
+    /**
+     * Add row
+     */
+    private addRow(): void {
+        // Get index
+        const index = (this.items || []).length;
+
+        // Add item
+        this.items.push({
+            name: `Item_${index}`,
+            age: (((index * 2) / 5) + index * 2) % 100
+        });
     }
 }

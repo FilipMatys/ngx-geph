@@ -8,7 +8,7 @@
 <ng-container *ngIf="(items || []).length; else empty">
     <tbody>
         <ng-container *ngFor="let item of items; let idx = index; trackBy:config.trackRecordBy">
-            <tr class="ngx-table-row ngx-table-row--data" (click)="onRowClick($event, item, idx + startNode)">
+            <tr class="ngx-table-row ngx-table-row--data" [class.ngx-table-row--even]="!((idx + startNode) % 2)" [class.ngx-table-row--odd]="(idx + startNode) % 2" (click)="onRowClick($event, item, idx + startNode)">
                 <ng-container *ngFor="let cDef of outputColumnDefinitions">
                     <ng-container *ngTemplateOutlet="cDef.cell; context: { $implicit: item, index: idx + startNode }">
                     </ng-container>

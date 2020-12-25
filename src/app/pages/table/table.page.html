@@ -2,6 +2,11 @@
     <h1>Table</h1>
     <p>Data table component</p>
 </header>
+<div class="toolbar">
+    <button (click)="onAddRowClick($event)" class="tooolbar-button">
+        Add row
+    </button>
+</div>
 <main #container>
     <div #spacer></div>
     <ngx-table [data]="items" [config]="tableConfig" [scrollContainer]="container" [scrollSpacer]="spacer">
