@@ -125,11 +125,15 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 
 	@Input("sort")
 	public set sort(value: any[]) {
-		// Assign value
-		this._sort = this.config.sort.mapSetFn(value);
+		// Postpone resolution, because we need
+		// config to be set
+		Promise.resolve().then(() => {
+			// Assign value
+			this._sort = this.config.sort.mapSetFn(value);
 
-		// Update headers
-		this.updateHeaders();
+			// Update headers
+			this.updateHeaders();
+		});
 	}
 
 	// List of sort columns
@@ -139,10 +143,23 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 	@Input("config")
 	public set config(value: ITableConfig<any>) {
 		// First make sure config is set
-		const config = Object.assign({}, tableConfigDefault, value);
+		let config = Object.assign({}, tableConfigDefault, value);
 
-		// Finally assign config
-		this._config = config;
+		try {
+			// Get global config
+			const global = this.injector.get(CONFIG);
+
+			// First make sure sort is set
+			config.sort = Object.assign({}, tableSortDefault, global.sort || {}, config.sort || {});
+
+			// Now make sure the whole config has all the default values
+			config = Object.assign({}, tableConfigDefault, global || {}, config);
+		}
+		catch (_) { }
+		finally {
+			// Finally assign config
+			this._config = config;
+		}
 	};
 
 	// Table config getter
@@ -217,30 +234,24 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 	 * On init hook
 	 */
 	public ngOnInit(): void {
-		// Process component configuration
+		// Check for config
+		if (this._config) {
+			// Nothing to do
+			return;
+		}
+
+		// Process global configuration
 		try {
 			// Get global config
 			const global = this.injector.get(CONFIG);
 
-			// Check if current config is set
-			if (!this._config) {
-				// Assign global config and do nothing else
-				const config = Object.assign({}, tableConfigDefault, global || {});
-				// Also make sure sort is set
-				config.sort = Object.assign({}, tableSortDefault, config.sort || {});
+			// Init global config
+			const config = Object.assign({}, tableConfigDefault, global || {});
+			// Also make sure sort is set
+			config.sort = Object.assign({}, tableSortDefault, config.sort || {});
 
-				// Assign config
-				this._config = config;
-
-				// Return
-				return;
-			}
-
-			// First make sure sort is set
-			this._config.sort = Object.assign({}, tableSortDefault, global.sort || {}, this._config.sort || {});
-
-			// Now make sure the whole config has all the default values
-			this._config = Object.assign({}, tableConfigDefault, global || {}, this._config);
+			// Assign config
+			this._config = config;
 		}
 		catch (e) { }
 	}
