@@ -10,7 +10,14 @@ import { TablePage } from "./table.page";
 @NgModule({
     imports: [
         CommonModule,
-        TableModule,
+        TableModule.forRoot({
+            sort: {
+                allow: true,
+                multi: false,
+                mapGetFn: () => [] 
+            },
+            allowRowClick: false
+        }),
         RouterModule.forChild([
             {
                 path: "",

@@ -1,7 +1,7 @@
 // External modules
 import { Component, Input, QueryList, ContentChildren, AfterContentChecked, EventEmitter, Output, HostBinding, Injector, TemplateRef, ContentChild, OnInit, NgZone, OnDestroy, Renderer2, DoCheck, IterableDiffers, IterableDiffer, ElementRef, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { asapScheduler, fromEvent, Subscription } from 'rxjs';
-import { auditTime, debounceTime, startWith } from 'rxjs/operators';
+import { auditTime, startWith } from 'rxjs/operators';
 
 // Data
 import { TableSortDirection } from './enums/sort-direction.enum';
@@ -140,8 +140,6 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 	public set config(value: ITableConfig<any>) {
 		// First make sure config is set
 		const config = Object.assign({}, tableConfigDefault, value);
-		// Also make sure sort is set
-		config.sort = Object.assign({}, tableSortDefault, config.sort);
 
 		// Finally assign config
 		this._config = config;
@@ -238,8 +236,11 @@ export class TableComponent implements AfterContentChecked, OnInit, OnDestroy, D
 				return;
 			}
 
-			// Make sure undefined value are set from default and global config
-			this._config = Object.assign({}, tableConfigDefault, global || {}, this._config || {});
+			// First make sure sort is set
+			this._config.sort = Object.assign({}, tableSortDefault, global.sort || {}, this._config.sort || {});
+
+			// Now make sure the whole config has all the default values
+			this._config = Object.assign({}, tableConfigDefault, global || {}, this._config);
 		}
 		catch (e) { }
 	}

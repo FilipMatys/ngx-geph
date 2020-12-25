@@ -18,7 +18,13 @@ export class TablePage implements OnInit {
             stickyHead: true,
             stickyFoot: true
         },
-        trackRecordBy: (index, item) => item.age
+        trackRecordBy: (index, item) => item.age,
+        allowRowClick: false,
+        sort: {
+            allow: false,
+            multi: false,
+            mapSetFn: () => [{}]
+        }
     }
 
     // Number of items to generate
