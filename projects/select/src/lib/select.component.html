@@ -1,5 +1,5 @@
 <div class="ngx-select-container">
-    <ng-container [ngSwitch]="config.mode">
+    <ng-container [ngSwitch]="mode">
         <ng-container *ngSwitchCase="SelectMode.STANDARD">
             <ng-container *ngIf="config.multi && (!(value | isUndefined) && value.length)">
                 <span class="ngx-select-value-multi" *ngFor="let item of value; let idx = index">

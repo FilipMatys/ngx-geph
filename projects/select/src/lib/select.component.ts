@@ -928,7 +928,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		}
 
 		// Check mode
-		switch (this.config.mode) {
+		switch (this.mode) {
 			// Standard mode
 			case SelectMode.STANDARD:
 				// Set loading flag
