@@ -1,0 +1,15 @@
+<header>
+    <h1>Select</h1>
+    <p>Select component</p>
+</header>
+
+<main>
+    Selected: {{ selected }}
+    <ngx-select [(ngModel)]="selected" [config]="optionsSelectConfig" [placeholder]="'Select band'">
+        <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
+        <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
+        <ng-container *ngxSelectToggle>
+            <Button>Toggle</Button>
+        </ng-container>
+    </ngx-select>
+</main>

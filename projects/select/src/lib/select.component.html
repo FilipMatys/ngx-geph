@@ -1,29 +1,45 @@
 <div class="ngx-select-container">
-    <ng-container *ngIf="config.multi && (!(value | isUndefined) && value.length)">
-        <span class="ngx-select-value-multi" *ngFor="let item of value; let idx = index">
-            <ngx-select-value>
-                <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: item, index: idx }">
-                </ng-container>
-            </ngx-select-value>
-            <ngx-select-clear (click)="onClearClick($event, idx)" *ngIf="config.allowClear">
-                <ng-container *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value, index: idx }"></ng-container>
-            </ngx-select-clear>
-        </span>
+    <ng-container [ngSwitch]="config.mode">
+        <ng-container *ngSwitchCase="SelectMode.STANDARD">
+            <ng-container *ngIf="config.multi && (!(value | isUndefined) && value.length)">
+                <span class="ngx-select-value-multi" *ngFor="let item of value; let idx = index">
+                    <ngx-select-value>
+                        <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: item, index: idx }">
+                        </ng-container>
+                    </ngx-select-value>
+                    <ngx-select-clear (click)="onClearClick($event, idx)" *ngIf="config.allowClear">
+                        <ng-container
+                            *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value, index: idx }">
+                        </ng-container>
+                    </ngx-select-clear>
+                </span>
+            </ng-container>
+            <span *ngIf="(value | isUndefined) || config.multi; else hasValue" class="ngx-select-placeholder">{{
+                placeholder }}</span>
+            <ng-template #hasValue>
+                <ngx-select-value>
+                    <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: value }"></ng-container>
+                </ngx-select-value>
+                <ngx-select-clear (click)="onClearClick($event)" *ngIf="config.allowClear">
+                    <ng-container *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value }"></ng-container>
+                </ngx-select-clear>
+            </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchCase="SelectMode.AUTOFILL">
+            <div class="ngx-select-autofill-container">
+                <input #autofillInput (focus)="onAutofillInputFocus($event)" class="ngx-select-autofill-input"
+                    type="search" autocomplete="off" [placeholder]="placeholder">
+                <ngx-select-toggle *ngIf="selectToggleTemplate" (click)="onToggleClick($event)">
+                    <ng-container *ngTemplateOutlet="selectToggleTemplate"></ng-container>
+                </ngx-select-toggle>
+            </div>
+        </ng-container>
     </ng-container>
-    <span *ngIf="(value | isUndefined) || config.multi; else hasValue"
-        class="ngx-select-placeholder">{{ placeholder }}</span>
-    <ng-template #hasValue>
-        <ngx-select-value>
-            <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: value }"></ng-container>
-        </ngx-select-value>
-        <ngx-select-clear (click)="onClearClick($event)" *ngIf="config.allowClear">
-            <ng-container *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value }"></ng-container>
-        </ngx-select-clear>
-    </ng-template>
 </div>
 <ul *ngIf="isSelectionOpen" class="ngx-select-options">
     <li [class.ngx-select-input--hidden]="!config.allowSearch" class="ngx-select-input">
-        <input autocomplete="off" (click)="onSearchInputClick($event)" (blur)="onSearchInputBlur($event)" (focus)="onSearchInputFocus($event)" #searchInput type="search" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
+        <input autocomplete="off" (click)="onSearchInputClick($event)" (focus)="onSearchInputFocus($event)" #searchInput
+            type="search" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">
     </li>
     <ng-container *ngIf="isLoading">
         <ng-content select="ngx-select-loading"></ng-content>
@@ -32,7 +48,8 @@
         <ng-content select="ngx-select-empty"></ng-content>
     </ng-container>
     <div class="ngx-select-options-container" #optionsContainer>
-        <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)" [class.ngx-select-option--focused]="focusedOptionIndex === idx">
+        <ngx-select-option *ngFor="let option of options; let idx = index" (click)="onOptionClick($event, option)"
+            [class.ngx-select-option--focused]="focusedOptionIndex === idx">
             <ng-container *ngTemplateOutlet="selectOptionTemplate; context: { $implicit: option, index: idx }">
             </ng-container>
         </ngx-select-option>

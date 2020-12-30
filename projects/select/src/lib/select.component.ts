@@ -7,6 +7,9 @@ import { fromEvent, Observable, Subject } from 'rxjs';
 // Interfaces
 import { ISelectConfig } from "./interfaces/select.interfaces";
 
+// Enums
+import { SelectMode } from "./enums/mode.enum";
+
 // Constants
 import { KEY_CODES } from "./constants/key-codes.const";
 
@@ -14,6 +17,7 @@ import { KEY_CODES } from "./constants/key-codes.const";
 import { SelectOptionDirective, ISelectOptionContext } from "./directives/option.directive";
 import { SelectValueDirective, ISelectValueContext } from "./directives/value.directive";
 import { SelectClearDirective, ISelectClearContext } from "./directives/clear.directive";
+import { SelectToggleDirective } from "./directives/toggle.directive";
 
 // Components
 import { SelectOptionComponent } from "./components/option/option.component";
@@ -31,6 +35,9 @@ import { SelectOptionComponent } from "./components/option/option.component";
 	],
 })
 export class SelectComponent implements ControlValueAccessor, OnInit {
+
+	// Make enums available to template
+	public readonly SelectMode = SelectMode;
 
 	// Bind select class
 	@HostBinding("class.ngx-select")
@@ -80,6 +87,12 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Propagate change
 		propagateChange && this.propagateChange(this._value);
+
+		// Check mode
+		if (this.mode === SelectMode.AUTOFILL && value) {
+			// Assign value to input
+			this.autofillInput.nativeElement.value = this.config.autofillPropertySelectorFn(value);
+		}
 	}
 
 	// List of options
@@ -94,6 +107,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	@Input("config")
 	public config: ISelectConfig<any> = {
 		allowSearch: false,
+		mode: SelectMode.STANDARD,
 		allowClear: false,
 		searchPlaceholder: "",
 		searchInputDelay: 300,
@@ -119,6 +133,20 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	public set multi(value: boolean) {
 		// Assign multi flag
 		this.config.multi = value;
+	}
+
+	// Select mode
+	@Input("mode")
+	public set mode(value: number) {
+		// Assign mode
+		this.config.mode = value;
+	}
+
+	/**
+	 * Mode getter
+	 */
+	public get mode(): number {
+		return this.config.mode || SelectMode.STANDARD;
 	}
 
 	// Search input delay
@@ -173,6 +201,12 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	public onClick(event: Event): void {
 		// Check disabled or readonly
 		if (this.disabled || this.readonly) {
+			// Do nothing
+			return;
+		}
+
+		// Check for mode
+		if (this.mode === SelectMode.AUTOFILL) {
 			// Do nothing
 			return;
 		}
@@ -235,9 +269,17 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	@ContentChild(SelectClearDirective, { read: TemplateRef })
 	public selectClearTemplate: TemplateRef<ISelectClearContext<any>>;
 
+	// Toggle template
+	@ContentChild(SelectToggleDirective, { read: TemplateRef })
+	public selectToggleTemplate: TemplateRef<any>;
+
 	// Search input
 	@ViewChild('searchInput')
-	public searchInputRef: ElementRef;
+	public searchInputRef: ElementRef<HTMLInputElement>;
+
+	// Autofill input
+	@ViewChild("autofillInput")
+	public autofillInput: ElementRef<HTMLInputElement>;
 
 	// Options container
 	@ViewChild("optionsContainer")
@@ -253,6 +295,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	// Component focus flag
 	private _hasComponentFocus: boolean = false;
 	private _hasSearchInputFocus: boolean = false;
+	private _hasAutofillInputFocus: boolean = false;
 
 	/**
 	 * Select constructor
@@ -333,6 +376,24 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	}
 
 	/**
+	 * On autofill input focus
+	 * @param event 
+	 */
+	public onAutofillInputFocus(event: Event): void {
+		// Set input focus
+		this._hasAutofillInputFocus = true;
+
+		// Also select input value
+		(event.target as HTMLInputElement).select();
+
+		// Emit focus change
+		this.focusChangeSource.next();
+
+		// Listen to autofill input change
+		this.listenToAutofillInput();
+	}
+
+	/**
 	 * On search input focus
 	 * @param event 
 	 */
@@ -342,18 +403,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Set search input focus flag
 		this.focusChangeSource.next();
-	}
 
-	/**
-	 * On search input blur
-	 * @param event 
-	 */
-	public onSearchInputBlur(event: Event): void {
-		// Set input focus
-		this._hasSearchInputFocus = false;
-
-		// Reset search input focus flag
-		this.focusChangeSource.next();
+		// Listen to search input
+		this.listenToSearchInput();
 	}
 
 	/**
@@ -363,6 +415,21 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	public onSearchInputClick(event: Event): void {
 		// Prevent event propagation
 		event.stopPropagation();
+	}
+
+	/**
+	 * On toggle click
+	 * @param event 
+	 */
+	public onToggleClick(event: Event): void {
+		// Check disabled or readonly
+		if (this.disabled || this.readonly) {
+			// Do nothing
+			return;
+		}
+
+		// Toggle selection
+		this.toggleSelection();
 	}
 
 	/**
@@ -417,15 +484,22 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Reload options if get options is set
 		if (this.config.getOptions && !config.waitForSearch) {
-			this.reloadOptions();
+			// Check mode
+			if (this.mode === SelectMode.AUTOFILL) {
+				// Reload options with input value
+				this.reloadOptions(this.autofillInput.nativeElement.value);
+			}
+			else {
+				// Reload options
+				this.reloadOptions();
+			}
+
 		}
 
 		// Initialize search input if is allowed
 		if (this.config.allowSearch) {
 			// Set focus
 			this.setFocusOnSearchInput();
-			// Listen to changes
-			this.listenToSearchInput();
 		}
 	}
 
@@ -456,7 +530,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			// Wait 50ms to get the most recent value 
 			.pipe((debounceTime(100)))
 			// Subscribe to focus change
-			.subscribe(() => this.handleFocusChange(this._hasSearchInputFocus || this._hasComponentFocus));
+			.subscribe(() => this.handleFocusChange(this._hasSearchInputFocus || this._hasComponentFocus || this._hasAutofillInputFocus));
 	}
 
 	/**
@@ -473,70 +547,234 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			return;
 		}
 
+		// Check mode
+		if (this.mode === SelectMode.AUTOFILL && !this.value) {
+			// Reset input value if not value is set
+			this.autofillInput.nativeElement.value = "";
+		}
+
 		// Close selection as the component received "blur" event
 		this.closeSelection();
 	}
 
 	/**
+	 * Listen to autofill input
+	 */
+	private async listenToAutofillInput(): Promise<void> {
+		// Create observable from typing event
+		const keyupSubscription = fromEvent(this.autofillInput.nativeElement, "keyup")
+			.pipe(filter((event: KeyboardEvent) => {
+				// Check key value
+				if (event.shiftKey || event.ctrlKey || event.altKey) {
+					// Ignore control keys
+					return false;
+				}
+
+				// Get key
+				const key = event.key;
+
+				// Check key
+				switch (key) {
+					// Component control keys
+					case KEY_CODES.TAB:
+					case KEY_CODES.ARROW_DOWN:
+					case KEY_CODES.ARROW_UP:
+					case KEY_CODES.ARROW_LEFT:
+					case KEY_CODES.ARROW_RIGHT:
+					case KEY_CODES.ENTER:
+						return false;
+				}
+
+				// Pass the key
+				return true;
+			}))
+			// Debounce event
+			.pipe(debounceTime(this.config.autofillInputDelay))
+			.subscribe(async (event: KeyboardEvent) => {
+				// Get selection start
+				const selectionStart = this.autofillInput.nativeElement.selectionStart;
+				// Get value
+				const value = this.autofillInput.nativeElement.value;
+
+				// Check if there is any value
+				if (!value) {
+					// Reset value
+					this.value = null;
+
+					// Do not do anything else
+					return;
+				}
+
+				// Init found option
+				let option = null;
+
+				// Get list of options
+				const options = await this.config.getOptions(value);
+
+				// Check code again
+				switch (event.key) {
+					case KEY_CODES.DELETE:
+					case KEY_CODES.BACKSPACE:
+						// Get option that equals
+						option = options.find((option) => this.config.autofillPropertySelectorFn(option) === value);
+						break;
+
+					default:
+						// Get option that starts
+						option = options.find((option) => this.config.autofillPropertySelectorFn(option).startsWith(value));
+						break;
+				}
+
+				// Now check of option was found
+				if (!option) {
+					// Reset value
+					this.value = null;
+
+					// Do not do anything else
+					return;
+				}
+
+				// Assign value
+				this.value = option;
+
+				// Update input selection
+				const start = selectionStart;
+				const end = this.config.autofillPropertySelectorFn(option).length;
+				const field = this.autofillInput.nativeElement;
+
+				// Check selection range
+				if (field.setSelectionRange) {
+					// Set selection range
+					field.setSelectionRange(start, end);
+				}
+				else if (field["createTextRange"]) {
+					// Create range
+					const range = (field["createTextRange"] as any)();
+
+					// Collapse
+					range.collapse(true);
+
+					// Move start and end
+					range.moveStart("character", start);
+					range.moveEnd("character", end);
+
+					// Select given range
+					range.select();
+				}
+				else if (typeof field.selectionStart !== "undefined") {
+					// Set start and end
+					field.selectionStart = start;
+					field.selectionEnd = end;
+				}
+			});
+
+		// Listen to blur event
+		const blurSubscription = fromEvent(this.autofillInput.nativeElement, "blur")
+			.subscribe((event: FocusEvent) => {
+				// Unsubscribe
+				keyupSubscription && keyupSubscription.unsubscribe();
+				blurSubscription && blurSubscription.unsubscribe();
+
+				// Set input focus
+				this._hasAutofillInputFocus = false;
+
+				// Emit focus change
+				this.focusChangeSource.next();
+			});
+	}
+
+	/**
 	 * Listen to search input
 	 */
-	private listenToSearchInput() {
-		// Set timeout to make sure search input is attached
-		setTimeout(() => {
-			// Create observable from typing event
-			fromEvent(this.searchInputRef.nativeElement, "keyup")
-				.pipe(filter((event: KeyboardEvent) => {
-					// Check key value
-					if (event.shiftKey || event.ctrlKey || event.altKey) {
-						// Ignore control keys
+	private async listenToSearchInput(): Promise<void> {
+		// Create observable from typing event
+		const keyupSubscription = fromEvent(this.searchInputRef.nativeElement, "keyup")
+			.pipe(filter((event: KeyboardEvent) => {
+				// Check key value
+				if (event.shiftKey || event.ctrlKey || event.altKey) {
+					// Ignore control keys
+					return false;
+				}
+
+				// Get key
+				const key = event.key;
+
+				// Check key
+				switch (key) {
+					// Component control keys
+					case KEY_CODES.TAB:
+					case KEY_CODES.ARROW_DOWN:
+					case KEY_CODES.ARROW_UP:
+					case KEY_CODES.ARROW_LEFT:
+					case KEY_CODES.ARROW_RIGHT:
+					case KEY_CODES.ENTER:
 						return false;
-					}
+				}
 
-					// Get key
-					const key = event.key;
+				// Pass the key
+				return true;
+			}))
+			.pipe(debounceTime(this.config.searchInputDelay), distinctUntilChanged())
+			.subscribe(async (event: KeyboardEvent) => {
+				// Get value
+				const value = this.searchInputRef.nativeElement.value;
 
-					// Check key
-					switch (key) {
-						// Component control keys
-						case KEY_CODES.TAB:
-						case KEY_CODES.ARROW_DOWN:
-						case KEY_CODES.ARROW_UP:
-						case KEY_CODES.ARROW_LEFT:
-						case KEY_CODES.ARROW_RIGHT:
-						case KEY_CODES.ENTER:
-							return false;
-					}
+				// Emit
+				this.searchInputChange.emit(value);
 
-					// Pass the key
-					return true;
-				}))
-				.pipe(debounceTime(this.config.searchInputDelay), distinctUntilChanged())
-				.subscribe(async (event: KeyboardEvent) => {
-					// Get value
-					const value = (event.target as any).value;
+				// Check if getOptions is set
+				if (!this.config.getOptions) {
+					return;
+				}
 
-					// Emit
-					this.searchInputChange.emit(value);
+				// Reload options
+				await this.reloadOptions(value);
 
-					// Check if getOptions is set
-					if (!this.config.getOptions) {
-						return;
-					}
+				// Reset focused option
+				this.focusedOptionIndex = 0;
+			});
 
-					// Reload options
-					await this.reloadOptions(value);
+		// Listen to blur event
+		const blurSubscription = fromEvent(this.searchInputRef.nativeElement, "blur")
+			.subscribe((event: FocusEvent) => {
+				// Unsubscribe
+				keyupSubscription && keyupSubscription.unsubscribe();
+				blurSubscription && blurSubscription.unsubscribe();
 
-					// Reset focused option
-					this.focusedOptionIndex = 0;
-				});
-		});
+				// Set input focus
+				this._hasSearchInputFocus = false;
+
+				// Reset search input focus flag
+				this.focusChangeSource.next();
+			});
 	}
 
 	/**
 	 * Set focus on search input
 	 */
-	private setFocusOnSearchInput() {
-		setTimeout(() => this.searchInputRef.nativeElement.focus());
+	private async setFocusOnSearchInput(): Promise<void> {
+		// Pospone execution
+		await new Promise<void>((resolve) => setTimeout(() => resolve()));
+
+		// Set focus
+		this.searchInputRef.nativeElement.focus();
+
+		// Check mode
+		if (this.mode === SelectMode.AUTOFILL) {
+			// Propagate value
+			this.searchInputRef.nativeElement.value = this.autofillInput.nativeElement.value;
+		}
+	}
+
+	/**
+	 * Set focus on autofill input
+	 */
+	private async setFocusOnAutofillInput(): Promise<void> {
+		// Pospone execution
+		await new Promise<void>((resolve) => setTimeout(() => resolve()));
+
+		// Set focus
+		this.autofillInput.nativeElement.focus();
 	}
 
 	/**
@@ -561,6 +799,8 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	private async reloadOptions(term?: string): Promise<void> {
 		// Set loading
 		this.isLoading = true;
+
+		console.log("Reloading options");
 
 		// Reset list of options
 		this.options = [];
@@ -673,7 +913,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	 */
 	private handleDefaultKeydownClosed(event: KeyboardEvent): void {
 		// Check search
-		if (!this.config.allowSearch) {
+		if (!this.config.allowSearch || (this.mode === SelectMode.AUTOFILL && this._hasAutofillInputFocus)) {
 			// Do nothing
 			return;
 		}
@@ -686,15 +926,30 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 			// Do nothing
 			return;
 		}
-		
-		// Set loading flag
-		this.isLoading = true;
 
-		// Open selection
-		this.openSelection({ waitForSearch: true });
+		// Check mode
+		switch (this.config.mode) {
+			// Standard mode
+			case SelectMode.STANDARD:
+				// Set loading flag
+				this.isLoading = true;
 
-		// Assign value
-		setTimeout(() => this.searchInputRef.nativeElement.value = event.key);
+				// Open selection
+				this.openSelection({ waitForSearch: true });
+
+				// Assign value
+				setTimeout(() => this.searchInputRef.nativeElement.value = event.key);
+				break;
+
+			// Autofill mode
+			case SelectMode.AUTOFILL:
+				// Assign value
+				this.setFocusOnAutofillInput();
+
+				// Assign value
+				this.autofillInput.nativeElement.value = event.key;
+				break;
+		}
 	}
 	/**
 	 * Handle enter keydown closed
