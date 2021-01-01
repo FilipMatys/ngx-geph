@@ -1,5 +1,5 @@
 // External modules
-import { Component, ContentChildren, QueryList, AfterContentInit, Input, ViewChild, HostBinding } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Input, ViewChild, HostBinding, AfterContentChecked } from '@angular/core';
 
 // Directives
 import { TabDirective } from "./directives/tab/tab.directive";
@@ -11,7 +11,7 @@ import { TabsContentOutlet } from "./outlets/content/content.outlet";
 	selector: 'ngx-tabs',
 	templateUrl: "./tabs.component.html"
 })
-export class TabsComponent implements AfterContentInit {
+export class TabsComponent implements AfterContentChecked {
 
 	@HostBinding("class.ngx-tabs")
 	public ngxTabs: boolean = true;
@@ -68,7 +68,7 @@ export class TabsComponent implements AfterContentInit {
 	/**
 	 * After content init hook
 	 */
-	public ngAfterContentInit() {
+	public ngAfterContentChecked() {
 		//Rebuild
 		this.rebuild();
 	}

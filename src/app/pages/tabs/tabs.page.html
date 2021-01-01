@@ -1,0 +1,19 @@
+<header>
+    <h1>Tabs</h1>
+    <p>Tabs component</p>
+</header>
+
+<ngx-tabs>
+    <ng-container ngxTab="general">
+        <ng-container *ngxTabLabel>Tab1</ng-container>
+        <ng-container *ngxTabContent>Tab1 Content</ng-container>
+    </ng-container>
+    <ng-container *ngIf="isTabVisible">
+        <ng-container ngxTab="visibile">
+            <ng-container *ngxTabLabel>Tab2</ng-container>
+            <ng-container *ngxTabContent>Tab2 Content</ng-container>
+        </ng-container>
+    </ng-container>
+</ngx-tabs>
+
+<button (click)="onToggleTabClick($event)">Toggle</button>

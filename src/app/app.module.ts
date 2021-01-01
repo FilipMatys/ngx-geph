@@ -17,6 +17,10 @@ import { AppComponent } from './app.component';
 				loadChildren: () => import("./pages/table/table.module").then((m) => m.TablePageModule)
 			},
 			{
+				path: "tabs",
+				loadChildren: () => import("./pages/tabs/tabs.module").then((m) => m.TabsPageModule)
+			},
+			{
 				path: "select",
 				loadChildren: () => import("./pages/select/select.module").then((m) => m.SelectPageModule)
 			}
