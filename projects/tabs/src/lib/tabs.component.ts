@@ -1,5 +1,5 @@
 // External modules
-import { Component, ContentChildren, QueryList, AfterContentInit, Input, ViewChild, HostBinding, AfterContentChecked } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Input, ViewChild, HostBinding } from '@angular/core';
 
 // Directives
 import { TabDirective } from "./directives/tab/tab.directive";
@@ -11,7 +11,7 @@ import { TabsContentOutlet } from "./outlets/content/content.outlet";
 	selector: 'ngx-tabs',
 	templateUrl: "./tabs.component.html"
 })
-export class TabsComponent implements AfterContentChecked {
+export class TabsComponent implements AfterContentInit {
 
 	@HostBinding("class.ngx-tabs")
 	public ngxTabs: boolean = true;
@@ -68,7 +68,7 @@ export class TabsComponent implements AfterContentChecked {
 	/**
 	 * After content init hook
 	 */
-	public ngAfterContentChecked() {
+	public ngAfterContentInit() {
 		//Rebuild
 		this.rebuild();
 	}
@@ -82,6 +82,12 @@ export class TabsComponent implements AfterContentChecked {
 	public onTabClick(event: Event, tab: TabDirective, index: number) {
 		// Prevent event propagation
 		event.stopPropagation();
+
+		// Check if tab is disabled
+		if (tab.isDisabled) {
+			// Do nothing
+			return;
+		}
 
 		// Check if selected index is the same 
 		if (this._activeIndex === index) {

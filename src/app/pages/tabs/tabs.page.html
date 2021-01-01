@@ -8,11 +8,9 @@
         <ng-container *ngxTabLabel>Tab1</ng-container>
         <ng-container *ngxTabContent>Tab1 Content</ng-container>
     </ng-container>
-    <ng-container *ngIf="isTabVisible">
-        <ng-container ngxTab="visibile">
-            <ng-container *ngxTabLabel>Tab2</ng-container>
-            <ng-container *ngxTabContent>Tab2 Content</ng-container>
-        </ng-container>
+    <ng-container [visible]="isTabVisible" ngxTab="visibile">
+        <ng-container *ngxTabLabel>Tab2</ng-container>
+        <ng-container *ngxTabContent>Tab2 Content</ng-container>
     </ng-container>
 </ngx-tabs>
 

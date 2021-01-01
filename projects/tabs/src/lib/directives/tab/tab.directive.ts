@@ -14,6 +14,12 @@ export class TabDirective {
     @Input("ngxTab")
     public name: string;
 
+    @Input("disabled")
+    public isDisabled: boolean = false;
+
+    @Input("visible")
+    public isVisible: boolean = true;
+
     @ContentChild(TabLabelDirective, { read: TemplateRef })
     public label: TemplateRef<any>;
 
