@@ -224,7 +224,7 @@ export class SpreadsheetComponent implements OnInit, OnDestroy {
 		this.focusChangeSource.next();
 
 		// Check if tab key is active
-		if (!this.isTabKeyActive) {
+		if (!this.isTabKeyActive || this._selectedCell) {
 			// Do nothing
 			return;
 		}
