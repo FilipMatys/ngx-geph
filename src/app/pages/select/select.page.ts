@@ -17,11 +17,17 @@ export class SelectPage {
     // Options select config
     public optionsSelectConfig: ISelectConfig<string> = {
         allowClear: false,
-        mode: SelectMode.AUTOFILL,
+        mode: SelectMode.STANDARD,
         allowSearch: true,
         searchPlaceholder: "Search",
         autofillPropertySelectorFn: (option) => option,
-        getOptions: async (term) => this.options.filter((option) => option.includes(term))
+        getOptions: async (term) => {
+            if (!term) {
+                return this.options;
+            }
+
+            return this.options.filter((option) => option.includes(term));
+        }
     }
 
     // List of options

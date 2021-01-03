@@ -874,8 +874,10 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 				this.handleArrowUpKeydownOpen(event);
 				break;
 
-			// Tab
+			// Tab/Left/Right
 			case KEY_CODES.TAB:
+			case KEY_CODES.ARROW_LEFT:
+			case KEY_CODES.ARROW_RIGHT:
 				// Handle tab key
 				this.handleTabKeydownOpen(event);
 				break;
