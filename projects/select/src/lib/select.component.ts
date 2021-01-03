@@ -800,8 +800,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		// Set loading
 		this.isLoading = true;
 
-		console.log("Reloading options");
-
 		// Reset list of options
 		this.options = [];
 
@@ -1039,6 +1037,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Prevent event propagation
 		event.stopPropagation();
+		event.stopImmediatePropagation();
 
 		// Check if is loading
 		if (this.isLoading) {
@@ -1066,6 +1065,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 		// Prevent event propagation
 		event.stopPropagation();
+		event.stopImmediatePropagation();
 
 		// Check if is loading
 		if (this.isLoading) {
