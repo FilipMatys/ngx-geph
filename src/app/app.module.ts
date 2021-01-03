@@ -23,6 +23,10 @@ import { AppComponent } from './app.component';
 			{
 				path: "select",
 				loadChildren: () => import("./pages/select/select.module").then((m) => m.SelectPageModule)
+			},
+			{
+				path: "spreadsheet",
+				loadChildren: () => import("./pages/spreadsheet/spreadsheet.module").then((m) => m.SpreadsheetPageModule)
 			}
 		])
 	],

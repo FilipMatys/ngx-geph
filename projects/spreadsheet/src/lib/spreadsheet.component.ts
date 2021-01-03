@@ -1,5 +1,5 @@
 // External modules
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, NgZone, OnDestroy, OnInit, Output, QueryList, Renderer2, ViewChild, ViewChildren } from "@angular/core";
 import { debounceTime } from "rxjs/operators";
 import { Observable, Subject } from "rxjs";
 
@@ -32,7 +32,7 @@ import { SpreadsheetCellComponent } from "./components/cell/cell.component";
 	templateUrl: "./spreadsheet.component.html",
 	styleUrls: ["./spreadsheet.component.scss"]
 })
-export class SpreadsheetComponent implements OnInit {
+export class SpreadsheetComponent implements OnInit, OnDestroy {
 
 	/**
 	 * Spreadsheet class
@@ -216,12 +216,28 @@ export class SpreadsheetComponent implements OnInit {
 	}
 
 	@HostListener("focus", ["$event"])
-	public onFocus(event: Event): void {
+	public onFocus(event: FocusEvent): void {
 		// Set component focus flag
 		this._hasComponentFocus = true;
 
 		// Emit focus change
 		this.focusChangeSource.next();
+
+		// Check if tab key is active
+		if (!this.isTabKeyActive) {
+			// Do nothing
+			return;
+		}
+
+		// Select first cell
+		if (!this.isShiftKeyActive) {
+			// Select first cell
+			this.selectCell(0, 0);
+		}
+		else {
+			// Select last cell
+			this.selectCell(this._rows.length - 1, this._columns.length - 1);
+		}
 	}
 
 	@HostListener("blur", ["$event"])
@@ -231,19 +247,6 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Emit focus change
 		this.focusChangeSource.next();
-	}
-
-	@HostListener("document:click", ["$event"])
-	public onClick(event: Event): void {
-		// Check click target
-		if (!this.element || this.element.nativeElement.contains(event.target)) {
-			// Do nothing
-			return;
-		}
-
-
-		// Reset select
-		this.resetSelect();
 	}
 
 	@HostListener("document:copy", ["$event"])
@@ -358,12 +361,26 @@ export class SpreadsheetComponent implements OnInit {
 	// List of columns
 	private _columns: ISpreadsheetColumns = [];
 
+	// Document click listener
+	private documentClickListener: () => void;
+	private documentShiftListener: () => void;
+	private documentTabListener: () => void;
+	private documentShiftTabListener: () => void;
+
+	// Is keys active flags
+	private isShiftKeyActive: boolean = false;
+	private isTabKeyActive: boolean = false;
+
 	/**
 	 * Constructor
-	 * @param element
-	 * @param service
+	 * @param ngZone 
+	 * @param renderer 
+	 * @param element 
+	 * @param service 
 	 */
 	constructor(
+		private readonly ngZone: NgZone,
+		private readonly renderer: Renderer2,
 		private readonly element: ElementRef,
 		private readonly service: SpreadsheetUtilityService
 	) { }
@@ -372,8 +389,34 @@ export class SpreadsheetComponent implements OnInit {
 	 * On init hook
 	 */
 	public ngOnInit(): void {
+		// Run outside angular zone
+		this.ngZone.runOutsideAngular(() => {
+			// Register to document click
+			this.documentClickListener = this.renderer.listen("document", "click", (event: MouseEvent) => this.handleDocumentClick(event) as any);
+			// Register to shift key
+			this.documentShiftListener = this.renderer.listen("document", "keydown.shift", (event: KeyboardEvent) => this.handleDocumentShiftKeydown(event) as any);
+			// Register to tab key
+			this.documentTabListener = this.renderer.listen("document", "keydown.tab", (event: KeyboardEvent) => this.handleDocumentTabKeydown(event) as any);
+			// Register to shift tab key
+			this.documentTabListener = this.renderer.listen("document", "keydown.shift.tab", (event: KeyboardEvent) => this.handleDocumentShiftTabKeydown(event) as any);
+		});
+
 		// Register to focus change
 		this.registerToFocusChange();
+	}
+
+	/**
+	 * On destroy hook
+	 */
+	public ngOnDestroy(): void {
+		// Document click listener
+		this.documentClickListener && this.documentClickListener();
+		// Document shift listener
+		this.documentShiftListener && this.documentShiftListener();
+		// Document tab listener
+		this.documentTabListener && this.documentTabListener();
+		// Document shift tab listener
+		this.documentShiftTabListener && this.documentShiftTabListener();
 	}
 
 	/**
@@ -531,6 +574,75 @@ export class SpreadsheetComponent implements OnInit {
 
 		// Reset cell
 		this._selectedCell = null;
+	}
+
+	/**
+	 * Handle document click
+	 * @param event 
+	 */
+	private async handleDocumentClick(event: MouseEvent): Promise<void> {
+		// Check click target
+		if (!this.element || this.element.nativeElement.contains(event.target)) {
+			// Do nothing
+			return;
+		}
+
+		// Reset select
+		this.ngZone.run(() => this.resetSelect());
+	}
+
+	/**
+	 * Handle document shift keydown
+	 * @param event 
+	 */
+	private async handleDocumentShiftKeydown(event: KeyboardEvent): Promise<void> {
+		// Set shift key active flag
+		this.isShiftKeyActive = true;
+
+		// Register to shift keyup
+		const documentShiftListener = this.renderer.listen("document", "keyup.shift", (event: KeyboardEvent) => {
+			// Remove listener
+			documentShiftListener();
+
+			// Reset flag
+			this.isShiftKeyActive = false;
+		});
+	}
+
+	/**
+	 * Handle document shift tab keydown
+	 * @param event 
+	 */
+	private async handleDocumentShiftTabKeydown(event: KeyboardEvent): Promise<void> {
+		// Set tab key active flag
+		this.isTabKeyActive = true;
+
+		// Register to tab keyup
+		const documentTabListener = this.renderer.listen("document", "keyup.shift.tab", (event: KeyboardEvent) => {
+			// Remove listener
+			documentTabListener();
+
+			// Reset flag
+			this.isTabKeyActive = false;
+		});
+	}
+
+	/**
+	 * Handle document tab keydown
+	 * @param event 
+	 */
+	private async handleDocumentTabKeydown(event: KeyboardEvent): Promise<void> {
+		// Set tab key active flag
+		this.isTabKeyActive = true;
+
+		// Register to tab keyup
+		const documentTabListener = this.renderer.listen("document", "keyup.tab", (event: KeyboardEvent) => {
+			// Remove listener
+			documentTabListener();
+
+			// Reset flag
+			this.isTabKeyActive = false;
+		});
 	}
 
 	/**
@@ -705,15 +817,21 @@ export class SpreadsheetComponent implements OnInit {
 			return;
 		}
 
-		// Prevent default
-		event.preventDefault();
-
 		// Init selected indexes
 		let selectedRowIndex = this._selectedRowIndex;
 		let selectedColumnIndex = this._selectedColumnIndex;
 
 		// Check for shift
 		if (event.shiftKey) {
+			// Check out of bounds movement
+			if (selectedColumnIndex === 0 && selectedRowIndex === 0) {
+				// Reset selected and do nothing else
+				return this.resetSelect();
+			}
+
+			// Prevent default
+			event.preventDefault();
+
 			// Check column index
 			if (selectedColumnIndex === 0) {
 				// Select last column of the previous row
@@ -725,6 +843,15 @@ export class SpreadsheetComponent implements OnInit {
 			}
 		}
 		else {
+			// Check out of bounds movement
+			if (selectedColumnIndex >= (this.columns.length - 1) && selectedRowIndex >= (this.rows.length - 1)) {
+				// Reset selected and do nothing else
+				return this.resetSelect();
+			}
+
+			// Prevent default
+			event.preventDefault();
+
 			// Check column index
 			if (selectedColumnIndex >= (this.columns.length - 1)) {
 				// Select first column of the next row
