@@ -1,5 +1,5 @@
 // External modules
-import { Directive, TemplateRef, ViewContainerRef, Input, Renderer2 } from "@angular/core";
+import { Directive, TemplateRef, ViewContainerRef, Input, Renderer2, HostBinding } from "@angular/core";
 
 // Services
 import { CollapsibleService } from "../../collapsible.service";
@@ -11,34 +11,36 @@ export class CollapseDirective {
 
     @Input("ngxCollapsibleCollapse")
     public identifier: string = "default";
-    
+
+    @HostBinding("class.ngx-collapsible-collapse")
+    public hasDefaultClass: boolean = true;
+
     /**
      * Constructor
-     * @param collapsibeService 
+     * @param collapsibleService 
      * @param templateRef 
      * @param viewContainerRef 
      * @param renderer
      */
     constructor(
-        private collapsibeService: CollapsibleService,
-        private templateRef: TemplateRef<any>,
-        private viewContainerRef: ViewContainerRef,
-        private renderer: Renderer2
-    ) { 
+        private readonly service: CollapsibleService,
+        private readonly templateRef: TemplateRef<any>,
+        private readonly viewContainerRef: ViewContainerRef,
+        private readonly renderer: Renderer2
+    ) {
         // Create view
-        let element = this.viewContainerRef.createEmbeddedView(this.templateRef).rootNodes[0];
+        const element = this.viewContainerRef.createEmbeddedView(this.templateRef).rootNodes[0];
 
         // Listen to click event
-        // Listen to click event
-this.renderer.listen(element, "click", (e) => this.onClick(e));
+        this.renderer.listen(element, "click", (e) => this.collapse(e));
     }
 
     /**
-     * On click
+     * Collapse
      * @param event 
      */
-    private onClick(event: Event) {
+    private collapse(event: Event): void {
         // Emit collapse
-        this.collapsibeService.collapse(this.identifier);
+        this.service.collapse(this.identifier);
     }
 }

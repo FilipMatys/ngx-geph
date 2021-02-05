@@ -9,14 +9,14 @@ import { CollapseDirective } from './directives/collapse/collapse.directive';
 
 // List of directives
 const DIRECTIVES = [
-  CollapsibleDirective,
-  ToggleDirective,
-  ExpandDirective,
-  CollapseDirective
+	CollapsibleDirective,
+	ToggleDirective,
+	ExpandDirective,
+	CollapseDirective
 ];
 
 @NgModule({
-  declarations: [DIRECTIVES],
-  exports: [DIRECTIVES]
+	declarations: [DIRECTIVES],
+	exports: [DIRECTIVES]
 })
 export class CollapsibleModule { }
