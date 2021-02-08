@@ -62,6 +62,10 @@
       "toggle": [
         "dist/toggle/toggle",
         "dist/toggle"
+      ],
+      "tree": [
+        "dist/tree/tree",
+        "dist/tree"
       ]
     }
   }

@@ -13,3 +13,13 @@
  @import "./components/select";
  @import "./components/button";
  @import "./components/table.scss";
+
+ .ngx-tree {
+    .ngx-tree-node {
+        display: block
+    }
+
+    .ngx-nested-nodes {
+        margin-left: 1rem;
+    }
+}

@@ -1,0 +1,11 @@
+<header>
+    <h1>Tree</h1>
+    <p>Tree component</p>
+</header>
+
+<ngx-tree [nodes]="nodes" [config]="config">
+    <ng-container *ngxTreeNodeContent="let node">
+        <button *ngIf="node.children" (click)="onToggleNodeClick($event, node)">+</button>
+        {{ node.data.title }}
+    </ng-container>
+</ngx-tree>

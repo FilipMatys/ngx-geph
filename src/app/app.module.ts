@@ -21,6 +21,10 @@ import { AppComponent } from './app.component';
 				loadChildren: () => import("./pages/tabs/tabs.module").then((m) => m.TabsPageModule)
 			},
 			{
+				path: "tree",
+				loadChildren: () => import("./pages/tree/tree.module").then((m) => m.TreePageModule)
+			},
+			{
 				path: "select",
 				loadChildren: () => import("./pages/select/select.module").then((m) => m.SelectPageModule)
 			},
