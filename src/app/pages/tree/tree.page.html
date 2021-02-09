@@ -4,8 +4,8 @@
 </header>
 
 <ngx-tree [nodes]="nodes" [config]="config">
-    <ng-container *ngxTreeNodeContent="let node">
+    <div *ngxTreeNodeContent="let node">
         <button *ngIf="node.children" (click)="onToggleNodeClick($event, node)">+</button>
         {{ node.data.title }}
-    </ng-container>
+    </div>
 </ngx-tree>

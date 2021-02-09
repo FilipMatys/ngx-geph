@@ -20,7 +20,7 @@
                 <ngx-select-value>
                     <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: value }"></ng-container>
                 </ngx-select-value>
-                <ngx-select-clear (click)="onClearClick($event)" *ngIf="config.allowClear">
+                <ngx-select-clear (click)="onClearClick($event)" *ngIf="config.allowClear && !disabled && !readonly">
                     <ng-container *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value }"></ng-container>
                 </ngx-select-clear>
             </ng-template>

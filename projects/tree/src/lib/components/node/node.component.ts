@@ -18,6 +18,9 @@ export class TreeNodeComponent {
     @Input("node")
     public node: ITreeNode;
 
+    @Input("parent")
+    public parent: ITreeNode;
+
     @Input("index")
     public index: number;
 

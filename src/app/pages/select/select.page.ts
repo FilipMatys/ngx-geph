@@ -12,11 +12,11 @@ import { ISelectConfig, SelectMode } from "select";
 export class SelectPage {
 
     // Selected
-    public selected: string;
+    public selected: string = "BigBang";
 
     // Options select config
     public optionsSelectConfig: ISelectConfig<string> = {
-        allowClear: false,
+        allowClear: true,
         mode: SelectMode.STANDARD,
         allowSearch: true,
         searchPlaceholder: "Search",
