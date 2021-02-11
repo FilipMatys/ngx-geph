@@ -37,7 +37,13 @@ export class TreeNodeComponent {
     public get isExpanded(): boolean { return this.node.isExpanded; }  
 
     @HostBinding("class.ngx-tree-node--collapsed")
-    public get isCollapsed(): boolean { return !this.node.isExpanded; }  
+    public get isCollapsed(): boolean { return !this.node.isExpanded; } 
+    
+    @HostBinding("class.ngx-tree-node--hidden")
+    public get isHidden(): boolean { return this.node.isHidden; };
+    
+    @HostBinding("class.ngx-tree-node--visible")
+    public get isVisible(): boolean { return !this.node.isHidden; };
 
 	// Content template
     @Input("contentTemplate")

@@ -11,6 +11,12 @@ export interface ITreeNode<TNodeData = any> {
     isExpanded?: boolean;
 
     /**
+     * Is hidden
+     * @description Is hidden flag
+     */
+    isHidden?: boolean;
+
+    /**
      * Data
      * @description Node data
      */

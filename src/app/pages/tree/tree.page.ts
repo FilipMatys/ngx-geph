@@ -53,7 +53,8 @@ export class TreePage {
                     data: { title: "ID.3" }
                 },
                 {
-                    data: { title: "ID.4" }
+                    data: { title: "ID.4" },
+                    isHidden: true
                 },
                 {
                     data: { title: "ID.5" }
