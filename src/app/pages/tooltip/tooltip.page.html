@@ -1,0 +1,11 @@
+<header>
+    <h1>Tooltip</h1>
+    <p>Tooltip component</p>
+</header>
+
+<button [ngx-tooltip]="generalTooltip">Toggle tooltip</button>
+
+<ngx-tooltip #generalTooltip>
+    <button ngxTooltipClose>Close</button>
+    This is some tooltip content
+</ngx-tooltip>

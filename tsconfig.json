@@ -66,6 +66,10 @@
       "tree": [
         "dist/tree/tree",
         "dist/tree"
+      ],
+      "tooltip": [
+        "dist/tooltip/tooltip",
+        "dist/tooltip"
       ]
     }
   }

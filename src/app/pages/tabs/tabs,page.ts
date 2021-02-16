@@ -27,5 +27,4 @@ export class TabsPage {
         // Toggle tab
         this.isTabVisible = !this.isTabVisible;
     }
-
 }

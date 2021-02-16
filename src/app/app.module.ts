@@ -29,6 +29,10 @@ import { AppComponent } from './app.component';
 				loadChildren: () => import("./pages/select/select.module").then((m) => m.SelectPageModule)
 			},
 			{
+				path: "tooltip",
+				loadChildren: () => import("./pages/tooltip/tooltip.module").then((m) => m.TooltipPageModule)
+			},
+			{
 				path: "spreadsheet",
 				loadChildren: () => import("./pages/spreadsheet/spreadsheet.module").then((m) => m.SpreadsheetPageModule)
 			}
