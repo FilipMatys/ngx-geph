@@ -33,6 +33,10 @@ import { AppComponent } from './app.component';
 				loadChildren: () => import("./pages/tooltip/tooltip.module").then((m) => m.TooltipPageModule)
 			},
 			{
+				path: "toggle",
+				loadChildren: () => import("./pages/toggle/toggle.module").then((m) => m.TogglePageModule)
+			},
+			{
 				path: "spreadsheet",
 				loadChildren: () => import("./pages/spreadsheet/spreadsheet.module").then((m) => m.SpreadsheetPageModule)
 			}

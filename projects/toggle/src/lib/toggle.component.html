@@ -1,3 +1,4 @@
+<ng-content select=".ngx-toggle-content--before"></ng-content>
 <div class="ngx-toggle-wrapper">
     <ng-container *ngIf="value; else inactive">
         <ng-container *ngTemplateOutlet="toggleActiveTemplate"></ng-container>
@@ -6,3 +7,4 @@
         <ng-container *ngTemplateOutlet="toggleInactiveTemplate"></ng-container>
     </ng-template>
 </div>
+<ng-content select=".ngx-toggle-content--after"></ng-content>

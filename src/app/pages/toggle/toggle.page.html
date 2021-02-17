@@ -1,0 +1,23 @@
+<header>
+    <h1>Toggle</h1>
+    <p>Toggle component</p>
+</header>
+
+<ngx-toggle>
+    <div class="ngx-toggle-content--before">
+        Before
+    </div>
+    <ng-container *ngxToggleActive>
+        <i class="material-icons">
+            check_box
+        </i>
+    </ng-container>
+    <ng-container *ngxToggleInactive>
+        <i class="material-icons">
+            check_box_outline_blank
+        </i>
+    </ng-container>
+    <div class="ngx-toggle-content--after">
+        After
+    </div>
+</ngx-toggle>
