@@ -109,6 +109,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 		allowSearch: false,
 		mode: SelectMode.STANDARD,
 		allowClear: false,
+		isSelectionAlwaysRendered: false,
 		searchPlaceholder: "",
 		searchInputDelay: 300,
 		isValueChangedFn: (prev, next) => true
@@ -188,6 +189,12 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	// Is selection open flag
 	@HostBinding("class.ngx-select--open")
 	public isSelectionOpen: boolean = false;
+
+	// Closed flag
+	@HostBinding("class.ngx-select--closed")
+	public get isSelectionClosed(): boolean {
+		return !this.isSelectionOpen;
+	}
 
 	// Focused flag
 	@HostBinding("class.ngx-select--focused")

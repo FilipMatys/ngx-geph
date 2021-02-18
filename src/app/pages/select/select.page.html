@@ -5,7 +5,7 @@
 
 <main>
     Selected: {{ selected }}
-    <ngx-select [disabled]="true" [(ngModel)]="selected" [config]="optionsSelectConfig" [placeholder]="'Select band'">
+    <ngx-select [(ngModel)]="selected" [config]="optionsSelectConfig" [placeholder]="'Select band'">
         <ng-container *ngxSelectValue="let value">{{ value }}</ng-container>
         <ng-container *ngxSelectOption="let option">{{ option }}</ng-container>
         <ng-container *ngxSelectClear>

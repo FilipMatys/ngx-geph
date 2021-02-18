@@ -7,7 +7,8 @@
                         <ng-container *ngTemplateOutlet="selectValueTemplate; context: { $implicit: item, index: idx }">
                         </ng-container>
                     </ngx-select-value>
-                    <ngx-select-clear (click)="onClearClick($event, idx)" *ngIf="config.allowClear && !disabled && !readonly">
+                    <ngx-select-clear (click)="onClearClick($event, idx)"
+                        *ngIf="config.allowClear && !disabled && !readonly">
                         <ng-container
                             *ngTemplateOutlet="selectClearTemplate; context: { $implicit: value, index: idx }">
                         </ng-container>
@@ -36,7 +37,7 @@
         </ng-container>
     </ng-container>
 </div>
-<ul *ngIf="isSelectionOpen" class="ngx-select-options">
+<ul *ngIf="isSelectionOpen || config.isSelectionAlwaysRendered" class="ngx-select-options">
     <li [class.ngx-select-input--hidden]="!config.allowSearch" class="ngx-select-input">
         <input autocomplete="off" (click)="onSearchInputClick($event)" (focus)="onSearchInputFocus($event)" #searchInput
             type="search" [placeholder]="config.searchPlaceholder" name="search-input" id="search-input">

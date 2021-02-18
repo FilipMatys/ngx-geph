@@ -3,6 +3,7 @@ export interface ISelectConfig<TOption> {
     mode?: number;
     allowSearch?: boolean;
     allowClear?: boolean;
+    isSelectionAlwaysRendered?: boolean;
     autofillInputDelay?: number;
     searchInputDelay?: number;
     searchPlaceholder?: string;

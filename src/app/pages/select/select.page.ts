@@ -17,6 +17,7 @@ export class SelectPage {
     // Options select config
     public optionsSelectConfig: ISelectConfig<string> = {
         allowClear: true,
+        isSelectionAlwaysRendered: true,
         mode: SelectMode.STANDARD,
         allowSearch: true,
         searchPlaceholder: "Search",
