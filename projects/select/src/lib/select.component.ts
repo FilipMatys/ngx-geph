@@ -107,6 +107,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	@Input("config")
 	public config: ISelectConfig<any> = {
 		allowSearch: false,
+		isModelOmitted: false,
 		mode: SelectMode.STANDARD,
 		allowClear: false,
 		isSelectionAlwaysRendered: false,
@@ -180,11 +181,14 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 
 	// Get options error event
 	@Output('getOptionsError')
-	public getOptionsError: EventEmitter<any> = new EventEmitter<any>();
+	public readonly getOptionsError: EventEmitter<any> = new EventEmitter<any>();
 
 	// Search input change
 	@Output('searchInputChange')
-	public searchInputChange: EventEmitter<string> = new EventEmitter<string>();
+	public readonly searchInputChange: EventEmitter<string> = new EventEmitter<string>();
+
+	@Output("selected")
+	public readonly optionSelected: EventEmitter<any> = new EventEmitter<any>();
 
 	// Is selection open flag
 	@HostBinding("class.ngx-select--open")
@@ -452,25 +456,31 @@ export class SelectComponent implements ControlValueAccessor, OnInit {
 	 * @param option 
 	 */
 	private selectOption(option: any): void {
-		// Check for multi
-		if (this.config.multi) {
-			// Check if value is set
-			if (!this.value) {
-				// Init value with selected option
-				this.value = [option];
+		// Check for omit
+		if (!this.config.isModelOmitted) {
+			// Check for multi
+			if (this.config.multi) {
+				// Check if value is set
+				if (!this.value) {
+					// Init value with selected option
+					this.value = [option];
+				}
+				else {
+					// Add option to values
+					(this.value as Array<any>).push(option);
+
+					// Propagate change
+					this.propagateChange(this.value);
+				}
 			}
 			else {
-				// Add option to values
-				(this.value as Array<any>).push(option);
-
-				// Propagate change
-				this.propagateChange(this.value);
+				// Assign value
+				this.value = option;
 			}
 		}
-		else {
-			// Assign value
-			this.value = option;
-		}
+
+		// Emit selected event
+		this.optionSelected.emit(option);
 
 		// Close selection
 		this.closeSelection();
