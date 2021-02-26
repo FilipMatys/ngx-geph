@@ -20,7 +20,7 @@
             [config]="config" [nextTemplateRef]="nextTemplateRef" [previousTemplateRef]="previousTemplateRef">
         </ngx-datepicker-years>
     </ng-container>
-    <div class="ngx-datepicker-footer">
+    <div *ngIf="activeView === DatepickerView.DAYS" class="ngx-datepicker-footer">
         <span *ngIf="cancelTemplateRef" (click)="onCancelClick($event)" class="ngx-datepicker-button ngx-datepicker-button--cancel">
             <ng-container *ngTemplateOutlet="cancelTemplateRef"></ng-container>
         </span>

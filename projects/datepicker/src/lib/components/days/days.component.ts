@@ -47,7 +47,7 @@ export class DatepickerDaysComponent implements OnInit {
     public weeks: IDatepickerWeek[] = [];
 
     // List of weekday
-    public weekdays: number[] = Array.from({ length }, (_, index) => index + 1);
+    public weekdays: number[] = Array.from({ length: 7 }, (_, index) => index + 1);
 
     // Year getter
     public get year(): number {
@@ -277,7 +277,7 @@ export class DatepickerDaysComponent implements OnInit {
         this.weeks = [];
 
         // Iterate 6 weeks
-        for (let index = 0; index < 7; index++) {
+        for (let index = 0; index < 6; index++) {
             // Init week
             const week: IDatepickerWeek = { number: current.isoWeek(), days: [] };
 

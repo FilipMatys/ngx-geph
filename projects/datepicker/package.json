@@ -1,6 +1,6 @@
 {
   "name": "@calf/ngx-datepicker",
-  "version": "0.0.1-alpha",
+  "version": "0.0.3-alpha",
   "peerDependencies": {
     "@angular/common": "^10.1.6",
     "@angular/core": "^10.1.6",
