@@ -1,0 +1,12 @@
+{
+  "name": "@calf/ngx-datepicker",
+  "version": "0.0.1-alpha",
+  "peerDependencies": {
+    "@angular/common": "^10.1.6",
+    "@angular/core": "^10.1.6",
+    "moment": "^2.29.1"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}

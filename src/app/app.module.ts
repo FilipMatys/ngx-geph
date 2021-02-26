@@ -33,6 +33,10 @@ import { AppComponent } from './app.component';
 				loadChildren: () => import("./pages/tooltip/tooltip.module").then((m) => m.TooltipPageModule)
 			},
 			{
+				path: "datepicker",
+				loadChildren: () => import("./pages/datepicker/datepicker.module").then((m) => m.DatepickerPageModule)
+			},
+			{
 				path: "toggle",
 				loadChildren: () => import("./pages/toggle/toggle.module").then((m) => m.TogglePageModule)
 			},

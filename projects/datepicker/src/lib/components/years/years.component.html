@@ -1,0 +1,15 @@
+<div class="ngx-datepicker-header">
+    <span (click)="onPreviousClick($event)" class="ngx-datepicker-period ngx-datepicker-period--previous">
+        <ng-container *ngTemplateOutlet="previousTemplateRef"></ng-container>
+    </span>
+    <div class="ngx-datepicker-spacer"></div>
+    <span (click)="onNextClick($event)" class="ngx-datepicker-period ngx-datepicker-period--next">
+        <ng-container *ngTemplateOutlet="nextTemplateRef"></ng-container>
+    </span>
+</div>
+<div class="ngx-datepicker-content">
+    <span *ngFor="let year of years" (click)="onYearClick($event, year)" class="ngx-datepicker-year"
+        [class.ngx-datepicker-year--selected]="year === selected">
+        {{ year | format:yearFormatterFn }}
+    </span>
+</div>

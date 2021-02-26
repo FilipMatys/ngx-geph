@@ -1,0 +1,11 @@
+<div class="ngx-datepicker-header">
+    <div class="ngx-datepicker-select">
+        <span (click)="onSelectYearClick($event)" class="ngx-datepicker-select-year">{{ year | format:yearFormatterFn }}</span>
+    </div>
+</div>
+<div class="ngx-datepicker-content">
+    <span *ngFor="let month of months" (click)="onMonthClick($event, month)" class="ngx-datepicker-month"
+        [class.ngx-datepicker-month--selected]="month === selected">
+        {{ month | format:monthFormatterFn }}
+    </span>
+</div>

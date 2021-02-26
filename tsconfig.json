@@ -70,6 +70,10 @@
       "tooltip": [
         "dist/tooltip/tooltip",
         "dist/tooltip"
+      ],
+      "datepicker": [
+        "dist/datepicker/datepicker",
+        "dist/datepicker"
       ]
     }
   }

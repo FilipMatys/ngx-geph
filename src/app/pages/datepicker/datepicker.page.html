@@ -1,0 +1,14 @@
+<header>
+    <h1>Datepicker</h1>
+    <p>Datepicker component</p>
+</header>
+
+<main>
+    <ngx-datepicker name="value" [(ngModel)]="value" [config]="config" [placeholder]="'Ahoj'">
+        <ng-container *ngxDatepickerValue="let value">{{ value | date }}</ng-container>
+        <ng-container *ngxDatepickerPrevious>Prev</ng-container>
+        <ng-container *ngxDatepickerNext>Next</ng-container>
+        <ng-container *ngxDatepickerConfirm>Confirm</ng-container>
+        <ng-container *ngxDatepickerCancel>Cancel</ng-container>
+    </ngx-datepicker>
+</main>

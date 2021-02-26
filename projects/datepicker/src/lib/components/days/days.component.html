@@ -1,0 +1,34 @@
+<div class="ngx-datepicker-header">
+    <span (click)="onPreviousClick($event)" class="ngx-datepicker-period ngx-datepicker-period--previous">
+        <ng-container *ngTemplateOutlet="previousTemplateRef"></ng-container>
+    </span>
+    <div class="ngx-datepicker-select">
+        <span (click)="onSelectMonthClick($event)" class="ngx-datepicker-select-month">
+            <span>{{ month | format:monthFormatterFn }}</span>
+            <span>{{ year | format:yearFormatterFn }}</span>
+        </span>
+    </div>
+    <span (click)="onNextClick($event)" class="ngx-datepicker-period ngx-datepicker-period--next">
+        <ng-container *ngTemplateOutlet="nextTemplateRef"></ng-container>
+    </span>
+</div>
+<div class="ngx-datepicker-content">
+    <table>
+        <thead>
+            <th></th>
+            <th *ngFor="let weekday of weekdays" class="ngx-datepicker-weekday">
+                {{ weekday | format:weekdayFormatterFn }}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let week of weeks" class="ngx-datepicker-week">
+                <td class="ngx-datepicker-week-number">{{ week.number | format:weekFormatterFn }}</td>
+                <td *ngFor="let day of week.days" class="ngx-datepicker-day"
+                    [class.ngx-datepicker-day--today]="day.isToday"
+                    [class.ngx-datepicker-day--current-month]="day.isCurrentMonth"
+                    [class.ngx-datepicker-day--selected]="day.isSelected">
+                    <span (click)="onDayClick($event, day)">{{ day.number | format:dayFormatterFn }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
