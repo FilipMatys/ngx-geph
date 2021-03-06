@@ -15,6 +15,7 @@ import { DatepickerPreviousDirective } from "./directives/previous.directive";
 import { DatepickerValueDirective } from "./directives/value.directive";
 import { DatepickerConfirmDirective } from "./directives/confirm.directive";
 import { DatepickerCancelDirective } from "./directives/cancel.directive";
+import { DatepickerClearDirective } from "./directives/clear.directive";
 
 @Component({
 	selector: "ngx-datepicker",
@@ -91,7 +92,7 @@ export class DatepickerComponent implements ControlValueAccessor {
 	public placeholder: string = "";
 
 	// Active view
-	public activeView: number = DatepickerView.DAYS;
+	public activeView: number = DatepickerView.UNDEFINED;
 
 	// Value template reference
 	@ContentChild(DatepickerValueDirective, { read: TemplateRef })
@@ -112,6 +113,10 @@ export class DatepickerComponent implements ControlValueAccessor {
 	// Cancel template ref
 	@ContentChild(DatepickerCancelDirective, { read: TemplateRef })
 	public cancelTemplateRef: TemplateRef<HTMLElement>;
+
+	// Clear template ref
+	@ContentChild(DatepickerClearDirective, { read: TemplateRef })
+	public clearTemplateRef: TemplateRef<HTMLElement>
 
 	/**
 	 * Write value
@@ -158,6 +163,18 @@ export class DatepickerComponent implements ControlValueAccessor {
 
 		// Close
 		this.close();
+	}
+
+	/**
+	 * On clear click
+	 * @param event 
+	 */
+	public onClearClick(event: Event): void {
+		// Prevent event propagation
+		event.stopPropagation();
+
+		// Clear value
+		this.clear();
 	}
 
 	/**
@@ -248,6 +265,18 @@ export class DatepickerComponent implements ControlValueAccessor {
 	}
 
 	/**
+	 * Clear
+	 * @description Clear selected value
+	 */
+	private async clear(): Promise<void> {
+		// Set value to null
+		this.value = null;
+
+		// Make sure dialog is closed
+		await this.close();
+	}
+
+	/**
 	 * Confirm
 	 * @description Confirm date
 	 */
@@ -256,7 +285,7 @@ export class DatepickerComponent implements ControlValueAccessor {
 		this.value = Moment(this.selected).toDate();
 
 		// Close dialog
-		this.close();
+		await this.close();
 	}
 
 	/**
@@ -274,6 +303,13 @@ export class DatepickerComponent implements ControlValueAccessor {
 		if (this.isClosed) {
 			// Init selected from value or default
 			this.selected = Moment(this.value || new Date()).toDate();
+
+			// Init view
+			this.activeView = DatepickerView.DAYS;
+		}
+		else {
+			// Reset view
+			this.activeView = DatepickerView.UNDEFINED;
 		}
 
 		// Toggle open flag

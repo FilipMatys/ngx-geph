@@ -10,6 +10,7 @@ export * from "./lib/directives/previous.directive";
 export * from "./lib/directives/value.directive";
 export * from "./lib/directives/confirm.directive";
 export * from "./lib/directives/cancel.directive";
+export * from "./lib/directives/clear.directive";
 export * from "./lib/datepicker.module";
 export * from "./lib/interfaces/config";
 export * from "./lib/interfaces/formatter.interface";

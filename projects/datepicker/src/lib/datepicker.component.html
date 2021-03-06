@@ -2,6 +2,10 @@
     <div *ngIf="value; else placeholderTemplate" class="ngx-datepicker-input-value">
         <ng-container *ngTemplateOutlet="valueTemplateRef; context: { $implicit: value }">
         </ng-container>
+        <span *ngIf="config?.allowClear && clearTemplateRef" (click)="onClearClick($event)"
+            class="ngx-datepicker-input-clear">
+            <ng-container *ngTemplateOutlet="clearTemplateRef; context: { $implicit: value }"></ng-container>
+        </span>
     </div>
     <ng-template #placeholderTemplate>
         <div class="ngx-datepicker-input-placeholder">{{ placeholder }}</div>
@@ -21,10 +25,12 @@
         </ngx-datepicker-years>
     </ng-container>
     <div *ngIf="activeView === DatepickerView.DAYS" class="ngx-datepicker-footer">
-        <span *ngIf="cancelTemplateRef" (click)="onCancelClick($event)" class="ngx-datepicker-button ngx-datepicker-button--cancel">
+        <span *ngIf="cancelTemplateRef" (click)="onCancelClick($event)"
+            class="ngx-datepicker-button ngx-datepicker-button--cancel">
             <ng-container *ngTemplateOutlet="cancelTemplateRef"></ng-container>
         </span>
-        <span *ngIf="confirmTemplateRef" (click)="onConfirmClick($event)" class="ngx-datepicker-button ngx-datepicker-button--confirm">
+        <span *ngIf="confirmTemplateRef" (click)="onConfirmClick($event)"
+            class="ngx-datepicker-button ngx-datepicker-button--confirm">
             <ng-container *ngTemplateOutlet="confirmTemplateRef"></ng-container>
         </span>
     </div>

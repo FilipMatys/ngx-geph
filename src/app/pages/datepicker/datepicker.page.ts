@@ -13,7 +13,8 @@ export class DatepickerPage {
 
     // Config
     public readonly config: IDatepickerConfig = { 
-        isDialogAlwaysRendered: true,
+        isDialogAlwaysRendered: false,
+        allowClear: true,
         formatters: {
             monthFormatterFn: (month: number) => `${month}M`
         } 

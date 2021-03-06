@@ -18,4 +18,11 @@ export interface IDatepickerConfig {
      * @description Is dialog always rendered flag
      */
     isDialogAlwaysRendered?: boolean;
+
+    /**
+     * Allow clear
+     * @description Allow user to clear
+     * selected date
+     */
+    allowClear?: boolean;
 }

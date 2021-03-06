@@ -74,6 +74,10 @@
       "datepicker": [
         "dist/datepicker/datepicker",
         "dist/datepicker"
+      ],
+      "dialog": [
+        "dist/dialog/dialog",
+        "dist/dialog"
       ]
     }
   }
