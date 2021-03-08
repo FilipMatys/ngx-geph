@@ -13,6 +13,10 @@ import { AppComponent } from './app.component';
 		BrowserModule,
 		RouterModule.forRoot([
 			{
+				path: "drawer",
+				loadChildren: () => import("./pages/drawer/drawer.module").then((m) => m.DrawerPageModule)
+			},
+			{
 				path: "table",
 				loadChildren: () => import("./pages/table/table.module").then((m) => m.TablePageModule)
 			},

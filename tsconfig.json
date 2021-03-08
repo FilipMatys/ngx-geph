@@ -78,6 +78,10 @@
       "dialog": [
         "dist/dialog/dialog",
         "dist/dialog"
+      ],
+      "drawer": [
+        "dist/drawer/drawer",
+        "dist/drawer"
       ]
     }
   }

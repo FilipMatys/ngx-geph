@@ -1,0 +1,14 @@
+<header>
+    <h1>Drawer</h1>
+    <p>Drawer component</p>
+</header>
+
+<div #overlayElement></div>
+
+<button (click)="onCollapseClick($event)">Collapse</button>
+<button (click)="onExpandClick($event)">Expand</button>
+<button (click)="onToggleClick($event)">Toggle</button>
+
+<ngx-drawer [overlay]="overlayElement">
+    This is drawer content
+</ngx-drawer>

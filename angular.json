@@ -859,6 +859,46 @@
           }
         }
       }
+    },
+    "drawer": {
+      "projectType": "library",
+      "root": "projects/drawer",
+      "sourceRoot": "projects/drawer/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/drawer/tsconfig.lib.json",
+            "project": "projects/drawer/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/drawer/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/drawer/src/test.ts",
+            "tsConfig": "projects/drawer/tsconfig.spec.json",
+            "karmaConfig": "projects/drawer/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/drawer/tsconfig.lib.json",
+              "projects/drawer/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "geph",
