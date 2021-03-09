@@ -1,6 +1,6 @@
 // External modules
 import { Component, HostBinding, Input, NgZone, OnDestroy, OnInit, Renderer2 } from "@angular/core";
-import { BehaviorSubject, fromEvent, Subscription } from "rxjs";
+import { BehaviorSubject, fromEvent, Observable, Subscription } from "rxjs";
 
 // Enums
 import { DrawerState } from "./enums/state.enum";
@@ -19,38 +19,43 @@ export class DrawerComponent implements OnInit, OnDestroy {
 	// Expanded flag
 	@HostBinding("class.ngx-drawer--expanded")
 	public get isExpanded(): boolean {
-		return this.state$.value === DrawerState.EXPANDED;
+		return this.stateSource.value === DrawerState.EXPANDED;
 	}
 
 	// Expanding flag
 	@HostBinding("class.ngx-drawer--expanding")
 	public get isExpanding(): boolean {
-		return this.state$.value === DrawerState.EXPANDING;
+		return this.stateSource.value === DrawerState.EXPANDING;
 	}
 
 	// Collapsed flag
 	@HostBinding("class.ngx-drawer--collapsed")
 	public get isCollapsed(): boolean {
-		return this.state$.value === DrawerState.COLLAPSED;
+		return this.stateSource.value === DrawerState.COLLAPSED;
 	}
 
 	// Collapsing flag
 	@HostBinding("class.ngx-drawer--collapsing")
 	public get isCollapsing(): boolean {
-		return this.state$.value === DrawerState.COLLAPSING;
+		return this.stateSource.value === DrawerState.COLLAPSING;
 	}
 
 	@Input("collapsingDuration")
-	public collapsingDuration: number = 200;
+	public collapsingDuration: number = 250;
 
 	@Input("expandingDuration")
-	public expandingDuration: number = 200;
+	public expandingDuration: number = 250;
 
 	@Input("overlay")
 	public overlayElement: HTMLElement;
 
+	// State observable getter
+	public get state$(): Observable<number> {
+		return this.stateSource.asObservable();
+	}
+
 	// State
-	private readonly state$: BehaviorSubject<number> = new BehaviorSubject<number>(DrawerState.COLLAPSED);
+	private readonly stateSource: BehaviorSubject<number> = new BehaviorSubject<number>(DrawerState.COLLAPSED);
 
 	// Overlay click subscription
 	private overlayClickSubscription: Subscription;
@@ -86,16 +91,16 @@ export class DrawerComponent implements OnInit, OnDestroy {
 	 */
 	public collapse(): void {
 		// Only allow collapse when state is expanded
-		if (this.state$.value !== DrawerState.EXPANDED) {
+		if (this.stateSource.value !== DrawerState.EXPANDED) {
 			// Nothing to do
 			return;
 		}
 
 		// Emit collapsing state
-		this.state$.next(DrawerState.COLLAPSING);
+		this.stateSource.next(DrawerState.COLLAPSING);
 
 		// Collapse with timeout
-		setTimeout(() => this.state$.next(DrawerState.COLLAPSED), this.collapsingDuration);
+		setTimeout(() => this.stateSource.next(DrawerState.COLLAPSED), this.collapsingDuration);
 	}
 
 	/**
@@ -103,16 +108,16 @@ export class DrawerComponent implements OnInit, OnDestroy {
 	 */
 	public expand(): void {
 		// Only allow expand when state is collapsed
-		if (this.state$.value !== DrawerState.COLLAPSED) {
+		if (this.stateSource.value !== DrawerState.COLLAPSED) {
 			// Nothing to do
 			return;
 		}
 
 		// Emit collapsing state
-		this.state$.next(DrawerState.EXPANDING);
+		this.stateSource.next(DrawerState.EXPANDING);
 
 		// Collapse with timeout
-		setTimeout(() => this.state$.next(DrawerState.EXPANDED), this.expandingDuration);
+		setTimeout(() => this.stateSource.next(DrawerState.EXPANDED), this.expandingDuration);
 	}
 
 	/**
@@ -120,7 +125,7 @@ export class DrawerComponent implements OnInit, OnDestroy {
 	 */
 	public toggle(): void {
 		// Check state
-		switch (this.state$.value) {
+		switch (this.stateSource.value) {
 			// Expanded
 			case DrawerState.EXPANDED:
 				// Collapse
@@ -147,7 +152,7 @@ export class DrawerComponent implements OnInit, OnDestroy {
 		this.renderer.addClass(this.overlayElement, "ngx-drawer-overlay");
 
 		// Register to drawer events
-		this.state$.subscribe((state) => {
+		this.stateSource.subscribe((state) => {
 			// Check state
 			switch (state) {
 				// Collapsed
