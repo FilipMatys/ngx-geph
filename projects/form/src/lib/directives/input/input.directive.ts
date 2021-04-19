@@ -1,9 +1,7 @@
 // External modules
 import { Directive, HostBinding, Input } from "@angular/core";
 
-@Directive({
-    selector: "[ngxFormInput]"
-})
+@Directive({ selector: "[ngxFormInput]" })
 export class FormInputDirective {
 
     @HostBinding("class.ngx-form-input")

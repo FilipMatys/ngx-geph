@@ -1,5 +1,5 @@
 // External modules
-import { AfterContentInit, ContentChild, ContentChildren, Directive, HostBinding, Input, OnDestroy, QueryList, TemplateRef, ViewChildren } from "@angular/core";
+import { AfterContentInit, ContentChild, ContentChildren, Directive, HostBinding, Input, OnDestroy, QueryList, TemplateRef } from "@angular/core";
 import { Subscription } from "rxjs";
 
 // Interfaces
@@ -13,9 +13,7 @@ import { FormMessageDirective } from "../message/message.directive";
 // Outlets
 import { FormMessagesOutletDirective } from "../../outlets/messages/messages.outlet";
 
-@Directive({
-    selector: "[ngxForm]"
-})
+@Directive({ selector: "[ngxForm]" })
 export class FormDirective implements AfterContentInit, OnDestroy {
 
     @HostBinding("class.ngx-form")
