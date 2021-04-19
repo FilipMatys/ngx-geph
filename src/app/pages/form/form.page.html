@@ -1,0 +1,28 @@
+<header>
+    <h1>Form</h1>
+    <p>Form component</p>
+</header>
+
+Hehe
+
+<form [ngxForm]="validation">
+    <div *ngxFormMessage="let message">{{ message?.text }}</div>
+
+    <div class="input-group">
+        <label for="name">Name</label>
+        <input ngxFormInput id="name" name="name" type="text">
+        <div class="input-errors">
+            <ng-container ngxFormMessagesOutlet id="name"></ng-container>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="password">Password</label>
+        <input ngxFormInput id="password" name="password" type="text">
+        <div class="input-errors">
+            <ng-container ngxFormMessagesOutlet id="password"></ng-container>
+        </div>
+    </div>
+
+    <button (click)="onSetErrorClick($event)">Set error</button>
+</form>

@@ -82,6 +82,10 @@
       "drawer": [
         "dist/drawer/drawer",
         "dist/drawer"
+      ],
+      "form": [
+        "dist/form/form",
+        "dist/form"
       ]
     }
   }
