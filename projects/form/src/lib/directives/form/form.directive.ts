@@ -63,10 +63,10 @@ export class FormDirective implements AfterContentInit, OnDestroy {
      */
     public ngAfterContentInit(): void {
         // Make first validation processing
-        this.processValidationChange();
+        Promise.resolve(null).then(() => this.processValidationChange());
 
         // Subscribe to inputs change
-        this.inputsChangeSubscription = this.inputs.changes.subscribe(() => this.processValidationChange());
+        this.inputsChangeSubscription = this.inputs.changes.subscribe(() => Promise.resolve(null).then(() => this.processValidationChange()));
     }
 
     /**
@@ -94,7 +94,7 @@ export class FormDirective implements AfterContentInit, OnDestroy {
         (this._validation.errors || []).forEach((message) => gErrors[message.id] ? gErrors[message.id].push(message) : gErrors[message.id] = [message]);
 
         // Now process inputs and set 
-        this.inputs.forEach((input) => input.isValid = !this._validation ? null : !(gErrors[input.identifier] || []).length);
+        this.inputs.forEach((input) => input.isValid = (!this._validation || typeof this._validation.isValid === "undefined") ? null : !(gErrors[input.identifier] || []).length);
 
         // Now process outlets
         this.outlets.forEach((outlet) => {
