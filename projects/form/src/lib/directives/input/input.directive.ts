@@ -16,6 +16,6 @@ export class FormInputDirective {
 
     @HostBinding("class.ngx-form-input--invalid")
     public get isInvalid(): boolean {
-        return typeof this.isValid !== "undefined" && !this.isValid;
+        return typeof this.isValid === "boolean" && !this.isValid;
     }
 }

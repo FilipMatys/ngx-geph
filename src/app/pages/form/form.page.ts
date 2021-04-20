@@ -12,16 +12,20 @@ import { IFormValidation } from "form";
 export class FormPage {
 
     // Init validation
-    public validation: IFormValidation = {
-        isValid: true,
-        errors: []
-    };
+    public validation: IFormValidation = {};
 
     public onSetErrorClick(event: Event): void {
         event.stopPropagation();
         event.preventDefault();
 
         this.setError();
+    }
+
+    public onSetSuccessClick(event: Event): void {
+        event.stopPropagation();
+        event.preventDefault();
+
+        this.setSuccess();
     }
 
     /**
@@ -35,5 +39,12 @@ export class FormPage {
                 { id: "password", text: "Please, fill the password with proper one." },
             ]
         };
+    }
+
+    /**
+     * Set success
+     */
+    private setSuccess(): void {
+        this.validation = { isValid: true };
     }
 }

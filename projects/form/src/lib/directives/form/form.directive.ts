@@ -94,7 +94,7 @@ export class FormDirective implements AfterContentInit, OnDestroy {
         (this._validation.errors || []).forEach((message) => gErrors[message.id] ? gErrors[message.id].push(message) : gErrors[message.id] = [message]);
 
         // Now process inputs and set 
-        this.inputs.forEach((input) => input.isValid = (!this._validation || typeof this._validation.isValid === "undefined") ? null : !(gErrors[input.identifier] || []).length);
+        this.inputs.forEach((input) => input.isValid = (!this._validation || typeof this._validation.isValid === "undefined") ? undefined : !(gErrors[input.identifier] || []).length);
 
         // Now process outlets
         this.outlets.forEach((outlet) => {

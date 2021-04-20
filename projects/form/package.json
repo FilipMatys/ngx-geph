@@ -1,6 +1,6 @@
 {
   "name": "@calf/ngx-form",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "peerDependencies": {
     "@angular/common": "^10.1.6",
     "@angular/core": "^10.1.6"
